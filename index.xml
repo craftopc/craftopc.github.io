@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>(๑¯ω¯๑)</title>
+    <link>https://example.org/</link>
+    <description>Recent content on (๑¯ω¯๑)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>@ 2024 lhon901</copyright>
+    <lastBuildDate>Fri, 08 Nov 2024 18:18:46 +0800</lastBuildDate>
+    <atom:link href="https://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwn 环境搭建</title>
+      <link>https://example.org/blog/pwn-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Fri, 08 Nov 2024 17:47:49 +0800</pubDate>
+      <guid>https://example.org/blog/pwn-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+      <description>&lt;h3 id=&#34;使用-docker-搭建&#34;&gt;使用 docker 搭建&lt;/h3&gt;
+&lt;h4 id=&#34;pwndockerhttpsgithubcomskysiderpwndocker&#34;&gt;&lt;a href=&#34;https://github.com/skysider/pwndocker&#34;&gt;pwndocker&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;步骤:&lt;/p&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git clone https://github.com/skysider/pwndocker.git &lt;span style=&#34;color:#75715e&#34;&gt;# git 克隆仓库&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cd pwndocker &lt;span style=&#34;color:#75715e&#34;&gt;# 进入工作目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker-compose up -d &lt;span style=&#34;color:#75715e&#34;&gt;# docker 环境搭建&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker exec -it pwn_test /bin/zsh &lt;span style=&#34;color:#75715e&#34;&gt;# 连接 docker 容器&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;结果:&lt;/p&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;❯ docker-compose up -d
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;WARN&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0000&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; /home/craftopc/pwn/tools/pwndocker/docker-compose.yml: the attribute &lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;version&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt; is obsolete, it will be ignored, please remove it to avoid potential confusion
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;+&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; Running 40/1
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ✔ pwn Pulled                                                                            779.2s
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;+&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; Running 2/2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ✔ Network pwndocker_default  Created                                                      0.0s
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ✔ Container pwn_test         Started                                                      0.8s&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tips: &lt;code&gt;docker exec -it pwn_test /bin/zsh&lt;/code&gt; 进入容器后，默认目录不是家目录，而是 /ctf/work 😠&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<h3 id="使用-docker-搭建">使用 docker 搭建</h3>
+<h4 id="pwndockerhttpsgithubcomskysiderpwndocker"><a href="https://github.com/skysider/pwndocker">pwndocker</a></h4>
+<p>步骤:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git clone https://github.com/skysider/pwndocker.git <span style="color:#75715e"># git 克隆仓库</span>
+</span></span><span style="display:flex;"><span>cd pwndocker <span style="color:#75715e"># 进入工作目录</span>
+</span></span><span style="display:flex;"><span>docker-compose up -d <span style="color:#75715e"># docker 环境搭建</span>
+</span></span><span style="display:flex;"><span>docker exec -it pwn_test /bin/zsh <span style="color:#75715e"># 连接 docker 容器</span></span></span></code></pre></div>
+<p>结果:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>❯ docker-compose up -d
+</span></span><span style="display:flex;"><span>WARN<span style="color:#f92672">[</span>0000<span style="color:#f92672">]</span> /home/craftopc/pwn/tools/pwndocker/docker-compose.yml: the attribute <span style="color:#e6db74">`</span>version<span style="color:#e6db74">`</span> is obsolete, it will be ignored, please remove it to avoid potential confusion
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Running 40/1
+</span></span><span style="display:flex;"><span> ✔ pwn Pulled                                                                            779.2s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Running 2/2
+</span></span><span style="display:flex;"><span> ✔ Network pwndocker_default  Created                                                      0.0s
+</span></span><span style="display:flex;"><span> ✔ Container pwn_test         Started                                                      0.8s</span></span></code></pre></div>
+<blockquote>
+<p>Tips: <code>docker exec -it pwn_test /bin/zsh</code> 进入容器后，默认目录不是家目录，而是 /ctf/work 😠</p>
+</blockquote>
+<h3 id="额外工具安装">额外工具安装</h3>
+<h4 id="glibc-all-in-onehttpsgithubcommatrix1001glibc-all-in-one"><a href="https://github.com/matrix1001/glibc-all-in-one">glibc-all-in-one</a></h4>
+<p>步骤:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd ~
+</span></span><span style="display:flex;"><span>git clone https://github.com/matrix1001/glibc-all-in-one
+</span></span><span style="display:flex;"><span>cd glibc-all-in-one
+</span></span><span style="display:flex;"><span>./update_list</span></span></code></pre></div>
+<p>问题：</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>➜  glibc-all-in-one git:<span style="color:#f92672">(</span>master<span style="color:#f92672">)</span> ./update_list
+</span></span><span style="display:flex;"><span>zsh: ./update_list: bad interpreter: /usr/bin/python: no such file or directory</span></span></code></pre></div>
+<p>解决:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sed -i <span style="color:#e6db74">&#39;s/\/usr\/bin\/python/\/usr\/bin\/python3/g&#39;</span> ./update_list <span style="color:#f92672">&amp;&amp;</span> ./update_list</span></span></code></pre></div>
+<h4 id="xclibchttpsgithubcomef4tlessxclibcgit"><a href="https://github.com/ef4tless/xclibc.git">xclibc</a></h4>
+<p>步骤:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd ~
+</span></span><span style="display:flex;"><span>git clone https://github.com/ef4tless/xclibc.git
+</span></span><span style="display:flex;"><span>cd xclibc
+</span></span><span style="display:flex;"><span>rm /usr/local/bin/xclibc <span style="color:#75715e"># 如果你之前没有安装过 xclibc ，这行命令不用执行</span>
+</span></span><span style="display:flex;"><span>mv ./xclibc /usr/local/bin
+</span></span><span style="display:flex;"><span>chmod +x /usr/local/bin/xclibc</span></span></code></pre></div>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Git--分布式版本控制</title>
+      <link>https://example.org/blog/git/</link>
+      <pubDate>Mon, 04 Nov 2024 21:03:59 +0800</pubDate>
+      <guid>https://example.org/blog/git/</guid>
+      <description>&lt;h3 id=&#34;简介&#34;&gt;简介&lt;/h3&gt;
+&lt;p&gt;Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目 🤔&lt;/p&gt;
+&lt;h3 id=&#34;常用命令&#34;&gt;常用命令&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;命令&lt;/th&gt;
+          &lt;th&gt;效果&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git init&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;创建 git 仓库&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git brach&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;查看当前分支&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git add &amp;lt;文件名/目录名&amp;gt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;将文件添加到 暂存区/追踪文件&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git status&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;查看当前git状态&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git commit&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;提交暂存区文件&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git log&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;查看提交历史&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git switch &amp;lt;分支名&amp;gt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;切换分支/提交节点&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git checkout&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;检出分支/提交节点&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git reflog&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;查看操作历史&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git merge &amp;lt;分支名&amp;gt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;合并分支到当前分支&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git rebase &amp;lt;提交的哈希值&amp;gt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;（无 commit 信息）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git reset &amp;lt;提交的哈希值&amp;gt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;回退版本&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git revert&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;修补commit&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git cherry-pick&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;复制一次commit&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git push&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;推送本地仓库到远程仓库&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;git pull&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;拉取远程仓库&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</description>
+      <content:encoded><![CDATA[<h3 id="简介">简介</h3>
+<p>Git 是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目 🤔</p>
+<h3 id="常用命令">常用命令</h3>
+<table>
+  <thead>
+      <tr>
+          <th>命令</th>
+          <th>效果</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>git init</code></td>
+          <td>创建 git 仓库</td>
+      </tr>
+      <tr>
+          <td><code>git brach</code></td>
+          <td>查看当前分支</td>
+      </tr>
+      <tr>
+          <td><code>git add &lt;文件名/目录名&gt;</code></td>
+          <td>将文件添加到 暂存区/追踪文件</td>
+      </tr>
+      <tr>
+          <td><code>git status</code></td>
+          <td>查看当前git状态</td>
+      </tr>
+      <tr>
+          <td><code>git commit</code></td>
+          <td>提交暂存区文件</td>
+      </tr>
+      <tr>
+          <td><code>git log</code></td>
+          <td>查看提交历史</td>
+      </tr>
+      <tr>
+          <td><code>git switch &lt;分支名&gt;</code></td>
+          <td>切换分支/提交节点</td>
+      </tr>
+      <tr>
+          <td><code>git checkout</code></td>
+          <td>检出分支/提交节点</td>
+      </tr>
+      <tr>
+          <td><code>git reflog</code></td>
+          <td>查看操作历史</td>
+      </tr>
+      <tr>
+          <td><code>git merge &lt;分支名&gt;</code></td>
+          <td>合并分支到当前分支</td>
+      </tr>
+      <tr>
+          <td><code>git rebase &lt;提交的哈希值&gt;</code></td>
+          <td>（无 commit 信息）</td>
+      </tr>
+      <tr>
+          <td><code>git reset &lt;提交的哈希值&gt;</code></td>
+          <td>回退版本</td>
+      </tr>
+      <tr>
+          <td><code>git revert</code></td>
+          <td>修补commit</td>
+      </tr>
+      <tr>
+          <td><code>git cherry-pick</code></td>
+          <td>复制一次commit</td>
+      </tr>
+      <tr>
+          <td><code>git push</code></td>
+          <td>推送本地仓库到远程仓库</td>
+      </tr>
+      <tr>
+          <td><code>git pull</code></td>
+          <td>拉取远程仓库</td>
+      </tr>
+  </tbody>
+</table>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>
