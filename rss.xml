@@ -1,1 +1,64 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Mon, 14 Apr 2025 20:18:58 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>Hello_world</title><link>/posts/hello_world/</link><pubDate>Mon, 14 Apr 2025 20:18:58 +0800</pubDate><guid>/posts/hello_world/</guid><description>&lt;p>md test~ 🤔&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Thu, 17 Apr 2025 22:03:37 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>House_of_BotCake</title><link>/posts/house_of_botcake/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/house_of_botcake/</guid><description>&lt;h2 id="0x01-利用背景">0x01 利用背景
+&lt;a class="header-anchor" href="#0x01-%e5%88%a9%e7%94%a8%e8%83%8c%e6%99%af">&lt;/a>
+&lt;/h2>&lt;p>自 glibc 2.29 开始加入了对 tcache 的 double free 检查, 使得之前的 tcache double free 失效&lt;/p>
+&lt;h3 id="源码解读">源码解读
+&lt;a class="header-anchor" href="#%e6%ba%90%e7%a0%81%e8%a7%a3%e8%af%bb">&lt;/a>
+&lt;/h3>&lt;p>tcache 结构体&lt;/p>
+
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-0-1">&lt;a class="lnlinks" href="#hl-0-1">1&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-2">&lt;a class="lnlinks" href="#hl-0-2">2&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-3">&lt;a class="lnlinks" href="#hl-0-3">3&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-4">&lt;a class="lnlinks" href="#hl-0-4">4&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-5">&lt;a class="lnlinks" href="#hl-0-5">5&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-6">&lt;a class="lnlinks" href="#hl-0-6">6&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">typedef&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="n">tcache_entry&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">tcache_entry&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">//链表指针，对应chunk中的fd字段
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="cm">/* This field exists to detect double frees. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">struct&lt;/span> &lt;span class="n">tcache_perthread_struct&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">key&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">//指向所属的tcache结构体，对应chunk中的bk字段
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="n">tcache_entry&lt;/span>&lt;span class="p">;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;p>tcache 被置入链表&lt;/p>
+
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-1-1">&lt;a class="lnlinks" href="#hl-1-1"> 1&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-2">&lt;a class="lnlinks" href="#hl-1-2"> 2&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-3">&lt;a class="lnlinks" href="#hl-1-3"> 3&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-4">&lt;a class="lnlinks" href="#hl-1-4"> 4&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-5">&lt;a class="lnlinks" href="#hl-1-5"> 5&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-6">&lt;a class="lnlinks" href="#hl-1-6"> 6&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-7">&lt;a class="lnlinks" href="#hl-1-7"> 7&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-8">&lt;a class="lnlinks" href="#hl-1-8"> 8&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-9">&lt;a class="lnlinks" href="#hl-1-9"> 9&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-10">&lt;a class="lnlinks" href="#hl-1-10">10&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-11">&lt;a class="lnlinks" href="#hl-1-11">11&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-12">&lt;a class="lnlinks" href="#hl-1-12">12&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-13">&lt;a class="lnlinks" href="#hl-1-13">13&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-1-14">&lt;a class="lnlinks" href="#hl-1-14">14&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">static&lt;/span> &lt;span class="n">__always_inline&lt;/span> &lt;span class="kt">void&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nf">tcache_put&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">mchunkptr&lt;/span> &lt;span class="n">chunk&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">size_t&lt;/span> &lt;span class="n">tc_idx&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tcache_entry&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">e&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">tcache_entry&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="nf">chunk2mem&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">chunk&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="cm">/* Mark this chunk as &amp;#34;in the tcache&amp;#34; so the test in _int_free will
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> detect a double free. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">e&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">key&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tcache&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">//设置所属的tcache
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">e&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tcache&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">entries&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">tc_idx&lt;/span>&lt;span class="p">];&lt;/span>&lt;span class="c1">//单链表头插法
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">tcache&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">entries&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">tc_idx&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">e&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">++&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tcache&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">counts&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">tc_idx&lt;/span>&lt;span class="p">]);&lt;/span> &lt;span class="c1">//计数增加
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;p>tcache double free 检查&lt;/p></description></item><item><title>Hello_world</title><link>/posts/hello_world/</link><pubDate>Mon, 14 Apr 2025 20:18:58 +0800</pubDate><guid>/posts/hello_world/</guid><description>&lt;p>md test~ 🤔&lt;/p></description></item></channel></rss>

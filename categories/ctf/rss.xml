@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Thu, 17 Apr 2025 22:03:37 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>House_of_BotCake</title><link>/posts/house_of_botcake/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/house_of_botcake/</guid><description>&lt;h2 id="0x01-利用背景">0x01 利用背景
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/categories/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Thu, 17 Apr 2025 22:03:37 +0800</lastBuildDate><atom:link href="/categories/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>House_of_BotCake</title><link>/posts/house_of_botcake/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/house_of_botcake/</guid><description>&lt;h2 id="0x01-利用背景">0x01 利用背景
 &lt;a class="header-anchor" href="#0x01-%e5%88%a9%e7%94%a8%e8%83%8c%e6%99%af">&lt;/a>
 &lt;/h2>&lt;p>自 glibc 2.29 开始加入了对 tcache 的 double free 检查, 使得之前的 tcache double free 失效&lt;/p>
 &lt;h3 id="源码解读">源码解读
@@ -61,4 +61,4 @@
 &lt;/div>
 &lt;/div>
 
-&lt;p>tcache double free 检查&lt;/p></description></item><item><title>Hello_world</title><link>/posts/hello_world/</link><pubDate>Mon, 14 Apr 2025 20:18:58 +0800</pubDate><guid>/posts/hello_world/</guid><description>&lt;p>md test~ 🤔&lt;/p></description></item></channel></rss>
+&lt;p>tcache double free 检查&lt;/p></description></item></channel></rss>
