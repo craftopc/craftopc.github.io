@@ -61,4 +61,7 @@
 &lt;/div>
 &lt;/div>
 
-&lt;p>tcache double free 检查&lt;/p></description></item><item><title>Hello_world</title><link>/posts/hello_world/</link><pubDate>Mon, 14 Apr 2025 20:18:58 +0800</pubDate><guid>/posts/hello_world/</guid><description>&lt;p>md test~ 🤔&lt;/p></description></item></channel></rss>
+&lt;p>tcache double free 检查&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 深入了解 elf 文件.md</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</guid><description>&lt;h2 id="elf-文件初识">ELF 文件初识
+&lt;a class="header-anchor" href="#elf-%e6%96%87%e4%bb%b6%e5%88%9d%e8%af%86">&lt;/a>
+&lt;/h2>&lt;p>ELF 文件即 Linux 下的可执行文件，ELF 是 Executable and Linkable Format 的缩写。它是一个标准的二进制文件格式，用于存储可执行文件、目标代码、共享库和核心转储等。&lt;/p>
+&lt;p>使用 Linux 内置命令 file 可以轻松查看文件类型：&lt;/p></description></item><item><title>Hello_world</title><link>/posts/hello_world/</link><pubDate>Mon, 14 Apr 2025 20:18:58 +0800</pubDate><guid>/posts/hello_world/</guid><description>&lt;p>md test~ 🤔&lt;/p></description></item></channel></rss>
