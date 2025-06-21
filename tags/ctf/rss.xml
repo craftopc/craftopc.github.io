@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/tags/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Thu, 17 Apr 2025 22:03:37 +0800</lastBuildDate><atom:link href="/tags/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>House_of_BotCake</title><link>/posts/house_of_botcake/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/house_of_botcake/</guid><description>&lt;h2 id="利用背景">利用背景
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/tags/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 20 Jun 2025 23:25:37 +0800</lastBuildDate><atom:link href="/tags/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 深入了解 elf 文件</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</link><pubDate>Fri, 20 Jun 2025 22:00:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</guid><description>&lt;h2 id="elf-文件初识">ELF 文件初识
+&lt;a class="header-anchor" href="#elf-%e6%96%87%e4%bb%b6%e5%88%9d%e8%af%86">&lt;/a>
+&lt;/h2>&lt;p>ELF 文件即 Linux 下的可执行文件，ELF 是 Executable and Linkable Format 的缩写。它是一个标准的二进制文件格式，用于存储可执行文件、目标代码、共享库和核心转储等。&lt;/p>
+&lt;p>使用 Linux 内置命令 file 可以轻松查看文件类型：&lt;/p></description></item><item><title>House_of_BotCake</title><link>/posts/house_of_botcake/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/house_of_botcake/</guid><description>&lt;h2 id="利用背景">利用背景
 &lt;a class="header-anchor" href="#%e5%88%a9%e7%94%a8%e8%83%8c%e6%99%af">&lt;/a>
 &lt;/h2>&lt;p>自 glibc 2.29 开始加入了对 tcache 的 double free 检查, 使得之前的 tcache double free 失效&lt;/p>
 &lt;h3 id="源码解读">源码解读
@@ -61,7 +64,4 @@
 &lt;/div>
 &lt;/div>
 
-&lt;p>tcache double free 检查&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 深入了解 elf 文件.md</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</guid><description>&lt;h2 id="elf-文件初识">ELF 文件初识
-&lt;a class="header-anchor" href="#elf-%e6%96%87%e4%bb%b6%e5%88%9d%e8%af%86">&lt;/a>
-&lt;/h2>&lt;p>ELF 文件即 Linux 下的可执行文件，ELF 是 Executable and Linkable Format 的缩写。它是一个标准的二进制文件格式，用于存储可执行文件、目标代码、共享库和核心转储等。&lt;/p>
-&lt;p>使用 Linux 内置命令 file 可以轻松查看文件类型：&lt;/p></description></item></channel></rss>
+&lt;p>tcache double free 检查&lt;/p></description></item></channel></rss>
