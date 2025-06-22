@@ -1,0 +1,235 @@
+<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅 - x86 汇编基础"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Pwn,Ctf"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅 - x86 汇编基础"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-06-22 14:00:00 +0800 +0800"><meta property="article:modified_time" content="2025-06-22 16:29:37 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1750581017"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 - x86 汇编基础 - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>lhon901's blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description></p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-example"><a href=/ class="menus-parent hvr-icon-pulse" rel=section><i class="fa fa-angles-down hvr-icon"></i>语法示例
+<span class=menu-item-shrink-icon><i class="fa fa-angle-right"></i></span></a><ul class=menu-children><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>语法高亮</a></li><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>数学公式</a></li><li class=menu-child-item><a href=/post/11-mermaid-charts class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>流程图</a></li></ul></li><li class="menu-item menu-item-archives"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>4</span></a></li><li class="menu-item menu-item-commonweal"><a href=/404.html class=hvr-icon-pulse rel=section><i class="fa fa-heartbeat hvr-icon"></i>公益 404</a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#汇编语言风格>汇编语言风格</a></li><li><a href=#寄存器>寄存器</a><ul><li><a href=#特殊寄存器>特殊寄存器</a></li></ul></li><li><a href=#常见指令>常见指令</a></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=lhon901 src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>lhon901</p><div class=site-description itemprop=description>不想写博客...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>4</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>2</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>3</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/craftopc title="Github → https://github.com/craftopc" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github
+</a></span><span class=links-of-social-item><a href=mailto:lhon901@163.com title="E-Mail → mailto:lhon901@163.com" rel=noopener class=hvr-icon-pulse target=_blank><i class="fa fa-envelope fa-fw hvr-icon"></i>
+E-Mail</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=7709></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=17></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-06-22 16:29:37 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a><a href=https://github.com/hugo-next rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg>
+</a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅 - x86 汇编基础"><meta itemprop=description content="汇编语言风格
+
+
+  
+      
+          AT&amp;T
+          Intel
+      
+  
+  
+      
+          寄存器前缀 %
+          寄存器无前缀
+      
+      
+          立即数前缀 $
+          立即数无前缀
+      
+      
+          16 进制数前缀 0x
+          16 进制数后缀 h
+      
+      
+          源操作数在前，目标操作数在后
+          源操作数在后，目标操作数在前
+      
+      
+          间接寻址使用 (%reg)
+          间接寻址使用 [reg]
+      
+      
+          间接寻址格式为 (%reg, %reg, scale)
+          间接寻址格式为 [reg + reg * scale]
+      
+      
+          操作数大小后缀 b、w、l
+          操作数大小后缀 byte ptr、word ptr、dword ptr
+      
+  
+
+寄存器
+
+
+  
+    寄存器是 CPU 内部的高速存储器，用于存储临时数据和指令执行状态。"></span><header class=post-header><h1 class=post-title itemprop="name headline">从零开始的 Pwn 之旅 - x86 汇编基础
+<a href=https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20x86%20%e6%b1%87%e7%bc%96%e5%9f%ba%e7%a1%80.md rel="noopener external nofollow noreferrer" target=_blank class="exturl post-edit-link" title=编辑><i class="fa fa-pen-nib"></i></a></h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar"></i>
+</span><span class=post-meta-item-text title=发表于>发表于：
+</span><time title="创建时间：2025-06-22 14:00:00 +08:00" itemprop="dateCreated datePublished" datetime="2025-06-22 14:00:00 +0800 +0800">2025-06-22
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar-check"></i>
+</span><span class=post-meta-item-text title=更新于>更新于：
+</span><time title="修改时间：2025-06-22 16:29:37 +08:00" itemprop="dateModified dateLastmod" datetime="2025-06-22 16:29:37 +0800 +0800">2025-06-22
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-folder-open"></i>
+</span><span class=post-meta-item-text title=分类于>分类于：
+</span><span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/ctf/ itemprop=url rel=index><span itemprop=name>Ctf</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="fas fa-solid fa-file-word"></i>
+</span><span class=post-meta-item-text>字数：</span>
+<span>2978</span>
+</span><span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="fas fa-solid fa-clock"></i>
+</span><span class=post-meta-item-text>阅读：&ap;</span>
+<span>6分钟</span>
+</span><span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="fas fa-solid fa-eye"></i>
+</span><span class=post-meta-item-text>浏览：
+</span><span id=busuanzi_value_page_pv data-path=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><h2 id=汇编语言风格>汇编语言风格
+<a class=header-anchor href=#%e6%b1%87%e7%bc%96%e8%af%ad%e8%a8%80%e9%a3%8e%e6%a0%bc></a></h2><table><thead><tr><th>AT&amp;T</th><th>Intel</th></tr></thead><tbody><tr><td>寄存器前缀 <code>%</code></td><td>寄存器无前缀</td></tr><tr><td>立即数前缀 <code>$</code></td><td>立即数无前缀</td></tr><tr><td>16 进制数前缀 <code>0x</code></td><td>16 进制数后缀 <code>h</code></td></tr><tr><td>源操作数在前，目标操作数在后</td><td>源操作数在后，目标操作数在前</td></tr><tr><td>间接寻址使用 <code>(%reg)</code></td><td>间接寻址使用 <code>[reg]</code></td></tr><tr><td>间接寻址格式为 <code>(%reg, %reg, scale)</code></td><td>间接寻址格式为 <code>[reg + reg * scale]</code></td></tr><tr><td>操作数大小后缀 <code>b</code>、<code>w</code>、<code>l</code></td><td>操作数大小后缀 <code>byte ptr</code>、<code>word ptr</code>、<code>dword ptr</code></td></tr></tbody></table><h2 id=寄存器>寄存器
+<a class=header-anchor href=#%e5%af%84%e5%ad%98%e5%99%a8></a></h2><blockquote><p>寄存器是 CPU 内部的高速存储器，用于存储临时数据和指令执行状态。</p><a id=more></a></blockquote><p>如下图所示，以 r 开头的寄存器为 64 位寄存器，e 开头的寄存器为 32 位寄存器，ax、bx 等为 16 位寄存器。
+在 64 位模式下，寄存器的高 32 位可以通过 <code>e</code> 前缀访问，例如 <code>eax</code> 是 <code>rax</code> 的低 32 位。
+同样，寄存器的低 16 位可以通过 <code>x</code> 后缀访问，例如 <code>ax</code> 是 <code>eax</code> 的低 16 位。</p><p><img src=/imgs/img-lazy-loading.gif data-src=https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/figure/register.png alt=通用寄存器示意图></p><h3 id=特殊寄存器>特殊寄存器
+<a class=header-anchor href=#%e7%89%b9%e6%ae%8a%e5%af%84%e5%ad%98%e5%99%a8></a></h3><ul><li><p>段寄存器：用于存储内存段的基地址，常用的段寄存器有 <code>cs</code>（代码段）、<code>ds</code>（数据段）、<code>ss</code>（堆栈段）、<code>es</code>、<code>fs</code>、<code>gs</code>。</p></li><li><p>标志寄存器：用于存储 CPU 的状态信息，包括零标志位、符号标志位、进位标志位等。</p></li><li><p>指令指针寄存器：<code>eip</code>（32 位模式）或 <code>rip</code>（64 位模式），用于存储下一条要执行的指令的地址。</p></li><li><p>堆栈指针寄存器：<code>esp</code>（32 位模式）或 <code>rsp</code>（64 位模式），用于指向当前堆栈的顶部。</p></li><li><p>基址寄存器：<code>ebp</code>（32 位模式）或 <code>rbp</code>（64 位模式），用于指向当前函数的堆栈帧基址。</p></li></ul><h2 id=常见指令>常见指令
+<a class=header-anchor href=#%e5%b8%b8%e8%a7%81%e6%8c%87%e4%bb%a4></a></h2><ul><li>MOV：数据传送指令，用于将数据从一个位置移动到另一个位置。</li></ul><blockquote><p>![NOTE] BYTE、WORD 和 DWORD 分别表示 1 字节、2 字节和 4 字节的数据类型。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-0-1><a class=lnlinks href=#hl-0-1> 1</a>
+</span><span class=lnt id=hl-0-2><a class=lnlinks href=#hl-0-2> 2</a>
+</span><span class=lnt id=hl-0-3><a class=lnlinks href=#hl-0-3> 3</a>
+</span><span class=lnt id=hl-0-4><a class=lnlinks href=#hl-0-4> 4</a>
+</span><span class=lnt id=hl-0-5><a class=lnlinks href=#hl-0-5> 5</a>
+</span><span class=lnt id=hl-0-6><a class=lnlinks href=#hl-0-6> 6</a>
+</span><span class=lnt id=hl-0-7><a class=lnlinks href=#hl-0-7> 7</a>
+</span><span class=lnt id=hl-0-8><a class=lnlinks href=#hl-0-8> 8</a>
+</span><span class=lnt id=hl-0-9><a class=lnlinks href=#hl-0-9> 9</a>
+</span><span class=lnt id=hl-0-10><a class=lnlinks href=#hl-0-10>10</a>
+</span><span class=lnt id=hl-0-11><a class=lnlinks href=#hl-0-11>11</a>
+</span><span class=lnt id=hl-0-12><a class=lnlinks href=#hl-0-12>12</a>
+</span><span class=lnt id=hl-0-13><a class=lnlinks href=#hl-0-13>13</a>
+</span><span class=lnt id=hl-0-14><a class=lnlinks href=#hl-0-14>14</a>
+</span><span class=lnt id=hl-0-15><a class=lnlinks href=#hl-0-15>15</a>
+</span><span class=lnt id=hl-0-16><a class=lnlinks href=#hl-0-16>16</a>
+</span><span class=lnt id=hl-0-17><a class=lnlinks href=#hl-0-17>17</a>
+</span><span class=lnt id=hl-0-18><a class=lnlinks href=#hl-0-18>18</a>
+</span><span class=lnt id=hl-0-19><a class=lnlinks href=#hl-0-19>19</a>
+</span><span class=lnt id=hl-0-20><a class=lnlinks href=#hl-0-20>20</a>
+</span><span class=lnt id=hl-0-21><a class=lnlinks href=#hl-0-21>21</a>
+</span><span class=lnt id=hl-0-22><a class=lnlinks href=#hl-0-22>22</a>
+</span><span class=lnt id=hl-0-23><a class=lnlinks href=#hl-0-23>23</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>mov eax, ebx  ; 将 ebx 的值复制到 eax
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>mov [eax], ebx  ; 将 ebx 的值存储到 eax 指向的内存地址
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>mov eax, 0x1234  ; 将立即数 0x1234 传送到 eax
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>mov eax, [ebx + 4]  ; 将 ebx 指向的内存地址加 4 后的值加载到 eax
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>.data
+</span></span><span class=line><span class=cl>  testArrayB BYTE 99h, 98h, 97h  ; 定义一个字节数组
+</span></span><span class=line><span class=cl>  testArrayW WORD 0x1234, 0x5678  ; 定义一个字
+</span></span><span class=line><span class=cl>  testArrayD DWORD 0x12345678, 0x9ABCDEF0  ; 定义一个双字数组
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>.code
+</span></span><span class=line><span class=cl>  mov al, [testArray]  ; 将 testArray 数组的第一个字节加载到 al 寄存器
+</span></span><span class=line><span class=cl>  mov [testArray + 1], al  ; 将 al 寄存器的值存储到 testArray 数组的第二个字节
+</span></span><span class=line><span class=cl>  mov [testArray + 2], 0x00  ; 将 0x00 存储到 testArray 数组的第三个字节
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  mov bx, [testArrayW]  ; 将 testArrayW 数组的第一个字加载到 bx 寄存器
+</span></span><span class=line><span class=cl>  mov [testArrayW + 2], bx  ; 将 bx 寄存器的值存储到 testArrayW 数组的第二个字
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  mov [testArrayD], 0x12345678  ; 将 0x12345678 存储到 testArrayD 数组的第一个双字
+</span></span><span class=line><span class=cl>  mov [testArrayD + 4], 0x9ABCDEF0  ; 将 0x9ABCDEF0 存储到 testArrayD 数组的第二个双字</span></span></code></pre></td></tr></table></div></div><ul><li>LEA：加载有效地址指令，用于将内存地址加载到寄存器中。</li></ul><div class=post-alert-warning><div class=post-alert-title><i class="fa-solid fa-triangle-exclamation"></i>
+<span>lea 指令中的 [] 不用于取值，表示一个内存地址计算表达式</span></div><div class=post-alert-content></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-1-1><a class=lnlinks href=#hl-1-1>1</a>
+</span><span class=lnt id=hl-1-2><a class=lnlinks href=#hl-1-2>2</a>
+</span><span class=lnt id=hl-1-3><a class=lnlinks href=#hl-1-3>3</a>
+</span><span class=lnt id=hl-1-4><a class=lnlinks href=#hl-1-4>4</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>lea eax, [ebx + 4]  ; 将 ebx 指向的内存地址加 4 后的地址加载到 eax
+</span></span><span class=line><span class=cl>; 若 ebx = 0x1000，则 eax = 0x1004
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>lea eax, [ebx + 4*ecx]  ; 将 ebx 指向的内存地址加 4 倍的 ecx 后的地址加载到 eax</span></span></code></pre></td></tr></table></div></div><ul><li>INC：自增指令，用于将寄存器或内存中的值加 1。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-2-1><a class=lnlinks href=#hl-2-1>1</a>
+</span><span class=lnt id=hl-2-2><a class=lnlinks href=#hl-2-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>inc eax  ; 将 eax 的值加 1
+</span></span><span class=line><span class=cl>inc [ebx]  ; 将 ebx 指向的内存地址中的值加 1</span></span></code></pre></td></tr></table></div></div><ul><li>DEC：自减指令，用于将寄存器或内存中的值减 1。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-3-1><a class=lnlinks href=#hl-3-1>1</a>
+</span><span class=lnt id=hl-3-2><a class=lnlinks href=#hl-3-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>dec eax  ; 将 eax 的值减 1
+</span></span><span class=line><span class=cl>dec [ebx]  ; 将 ebx 指向的内存地址中的值减 1</span></span></code></pre></td></tr></table></div></div><ul><li>ADD：加法指令，用于将两个操作数相加。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-4-1><a class=lnlinks href=#hl-4-1>1</a>
+</span><span class=lnt id=hl-4-2><a class=lnlinks href=#hl-4-2>2</a>
+</span><span class=lnt id=hl-4-3><a class=lnlinks href=#hl-4-3>3</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>add eax, ebx  ; 将 ebx 的值加到 eax 中
+</span></span><span class=line><span class=cl>add [ebx], ecx  ; 将 ecx 的值加到 ebx 指向的内存地址中的值
+</span></span><span class=line><span class=cl>add eax, 0x1234  ; 将立即数 0x1234 加到 eax 中</span></span></code></pre></td></tr></table></div></div><ul><li>SUB：减法指令，用于将一个操作数从另一个操作数中减去。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
+</span><span class=lnt id=hl-5-2><a class=lnlinks href=#hl-5-2>2</a>
+</span><span class=lnt id=hl-5-3><a class=lnlinks href=#hl-5-3>3</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>sub eax, ebx  ; 将 ebx 的值从 eax 中减去
+</span></span><span class=line><span class=cl>sub [ebx], ecx  ; 将 ecx 的值从 ebx 指向的内存地址中的值中减去
+</span></span><span class=line><span class=cl>sub eax, 0x1234  ; 将立即数 0x1234 从 eax 中减去</span></span></code></pre></td></tr></table></div></div><ul><li>NEG：取反指令，用于将寄存器或内存中的值取反。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1>1</a>
+</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>neg eax  ; 将 eax 的值取反
+</span></span><span class=line><span class=cl>neg [ebx]  ; 将 ebx 指向的内存地址中的值取反</span></span></code></pre></td></tr></table></div></div><ul><li>XOR：按位异或指令，用于将两个操作数按位异或。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-7-1><a class=lnlinks href=#hl-7-1>1</a>
+</span><span class=lnt id=hl-7-2><a class=lnlinks href=#hl-7-2>2</a>
+</span><span class=lnt id=hl-7-3><a class=lnlinks href=#hl-7-3>3</a>
+</span><span class=lnt id=hl-7-4><a class=lnlinks href=#hl-7-4>4</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>xor eax, ebx  ; 将 eax 和 ebx 的值按位异或
+</span></span><span class=line><span class=cl>xor [ebx], ecx  ; 将 ebx 指向的内存地址中的值和 ecx 的值按位异或
+</span></span><span class=line><span class=cl>xor eax, 0x1234  ; 将立即数 0x1234 和 eax 的值按位异或
+</span></span><span class=line><span class=cl>xor eax, eax  ; 将 eax 的值清零（等同于 mov eax, 0）</span></span></code></pre></td></tr></table></div></div><ul><li>XCHG：交换指令，用于交换两个操作数的值。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-8-1><a class=lnlinks href=#hl-8-1>1</a>
+</span><span class=lnt id=hl-8-2><a class=lnlinks href=#hl-8-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>xchg eax, ebx  ; 交换 eax 和 ebx 的值
+</span></span><span class=line><span class=cl>xchg [ebx], ecx  ; 交换 ebx 指向的内存地址中的值和 ecx 的值</span></span></code></pre></td></tr></table></div></div><ul><li>CMP：比较指令，用于比较两个操作数的值。</li></ul><div class=post-alert-note><div class=post-alert-title><i class="fa-solid fa-bell"></i>
+<span>CMP 指令不会修改操作数的值，只会设置标志寄存器中的标志位。</span></div><div class=post-alert-content></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-9-1><a class=lnlinks href=#hl-9-1>1</a>
+</span><span class=lnt id=hl-9-2><a class=lnlinks href=#hl-9-2>2</a>
+</span><span class=lnt id=hl-9-3><a class=lnlinks href=#hl-9-3>3</a>
+</span><span class=lnt id=hl-9-4><a class=lnlinks href=#hl-9-4>4</a>
+</span><span class=lnt id=hl-9-5><a class=lnlinks href=#hl-9-5>5</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>cmp eax, ebx  ; 比较 eax 和 ebx 的值
+</span></span><span class=line><span class=cl>jmp label  ; 如果比较结果为零，则跳转到 label
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cmp [ebx], ecx  ; 比较 ebx 指向的内存地址中的值和 ecx 的值
+</span></span><span class=line><span class=cl>jmp label  ; 如果比较结果为零，则跳转到 label</span></span></code></pre></td></tr></table></div></div><ul><li>TEST：按位与指令，用于将两个操作数按位与，并设置标志寄存器中的标志位。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-10-1><a class=lnlinks href=#hl-10-1>1</a>
+</span><span class=lnt id=hl-10-2><a class=lnlinks href=#hl-10-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>test eax, ebx  ; 将 eax 和 ebx 的值按位与，并设置标志寄存器中的标志位
+</span></span><span class=line><span class=cl>jmp label  ; 如果结果为零，则跳转到 label</span></span></code></pre></td></tr></table></div></div><ul><li>JZ/JNZ：条件跳转指令，用于根据标志寄存器中的零标志位进行跳转。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-11-1><a class=lnlinks href=#hl-11-1>1</a>
+</span><span class=lnt id=hl-11-2><a class=lnlinks href=#hl-11-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>cmp eax, ebx  ; 比较 eax 和 ebx 的值
+</span></span><span class=line><span class=cl>jz label  ; 如果比较结果为零，则跳转到 label</span></span></code></pre></td></tr></table></div></div><table><thead><tr><th>指令</th><th>英文全称</th><th>跳转条件（标志位）</th><th>对应关系（易懂）</th><th>常见用途（有/无符号）</th></tr></thead><tbody><tr><td><code>JE</code></td><td>Jump Equal</td><td>ZF=1</td><td>等于时跳转</td><td>有符号/无符号</td></tr><tr><td><code>JZ</code></td><td>Jump Zero</td><td>ZF=1</td><td>等于时跳转</td><td>有符号/无符号</td></tr><tr><td><code>JNE</code></td><td>Jump Not Equal</td><td>ZF=0</td><td>不等于时跳转</td><td>有符号/无符号</td></tr><tr><td><code>JNZ</code></td><td>Jump Not Zero</td><td>ZF=0</td><td>不等于时跳转</td><td>有符号/无符号</td></tr><tr><td><code>JA</code></td><td>Jump Above</td><td>CF=0 且 ZF=0</td><td>（无符号）大于时跳转</td><td>无符号</td></tr><tr><td><code>JNBE</code></td><td>Jump Not Below or Equal</td><td>CF=0 且 ZF=0</td><td>（无符号）大于时跳转</td><td>无符号（同 JA）</td></tr><tr><td><code>JAE</code></td><td>Jump Above or Equal</td><td>CF=0</td><td>（无符号）大于等于时跳转</td><td>无符号</td></tr><tr><td><code>JNB</code></td><td>Jump Not Below</td><td>CF=0</td><td>（无符号）大于等于时跳转</td><td>无符号（同 JAE）</td></tr><tr><td><code>JB</code></td><td>Jump Below</td><td>CF=1</td><td>（无符号）小于时跳转</td><td>无符号</td></tr><tr><td><code>JNAE</code></td><td>Jump Not Above or Equal</td><td>CF=1</td><td>（无符号）小于时跳转</td><td>无符号（同 JB）</td></tr><tr><td><code>JBE</code></td><td>Jump Below or Equal</td><td>CF=1 或 ZF=1</td><td>（无符号）小于等于时跳转</td><td>无符号</td></tr><tr><td><code>JNA</code></td><td>Jump Not Above</td><td>CF=1 或 ZF=1</td><td>（无符号）小于等于时跳转</td><td>无符号（同 JBE）</td></tr><tr><td><code>JG</code></td><td>Jump Greater</td><td>ZF=0 且 SF=OF</td><td>（有符号）大于时跳转</td><td>有符号</td></tr><tr><td><code>JNLE</code></td><td>Jump Not Less or Equal</td><td>ZF=0 且 SF=OF</td><td>（有符号）大于时跳转</td><td>有符号（同 JG）</td></tr><tr><td><code>JGE</code></td><td>Jump Greater or Equal</td><td>SF=OF</td><td>（有符号）大于等于时跳转</td><td>有符号</td></tr><tr><td><code>JNL</code></td><td>Jump Not Less</td><td>SF=OF</td><td>（有符号）大于等于时跳转</td><td>有符号（同 JGE）</td></tr><tr><td><code>JL</code></td><td>Jump Less</td><td>SF≠OF</td><td>（有符号）小于时跳转</td><td>有符号</td></tr><tr><td><code>JNGE</code></td><td>Jump Not Greater or Equal</td><td>SF≠OF</td><td>（有符号）小于时跳转</td><td>有符号（同 JL）</td></tr><tr><td><code>JLE</code></td><td>Jump Less or Equal</td><td>ZF=1 或 SF≠OF</td><td>（有符号）小于等于时跳转</td><td>有符号</td></tr><tr><td><code>JNG</code></td><td>Jump Not Greater</td><td>ZF=1 或 SF≠OF</td><td>（有符号）小于等于时跳转</td><td>有符号（同 JLE）</td></tr><tr><td><code>JC</code></td><td>Jump Carry</td><td>CF=1</td><td>有进位时跳转</td><td>无符号运算</td></tr><tr><td><code>JNC</code></td><td>Jump No Carry</td><td>CF=0</td><td>无进位时跳转</td><td>无符号运算</td></tr><tr><td><code>JO</code></td><td>Jump Overflow</td><td>OF=1</td><td>溢出时跳转</td><td></td></tr><tr><td><code>JNO</code></td><td>Jump No Overflow</td><td>OF=0</td><td>无溢出时跳转</td><td></td></tr><tr><td><code>JS</code></td><td>Jump Sign</td><td>SF=1</td><td>结果为负时跳转</td><td></td></tr><tr><td><code>JNS</code></td><td>Jump No Sign</td><td>SF=0</td><td>结果为正时跳转</td><td></td></tr><tr><td><code>JP</code></td><td>Jump Parity</td><td>PF=1</td><td>奇偶标志为1时跳转（偶数）</td><td></td></tr><tr><td><code>JPE</code></td><td>Jump Parity Even</td><td>PF=1</td><td>奇偶标志为1时跳转（偶数）</td><td></td></tr><tr><td><code>JNP</code></td><td>Jump No Parity</td><td>PF=0</td><td>奇偶标志为0时跳转（奇数）</td><td></td></tr><tr><td><code>JPO</code></td><td>Jump Parity Odd</td><td>PF=0</td><td>奇偶标志为0时跳转（奇数）</td><td></td></tr><tr><td><code>JMP</code></td><td>Jump</td><td>无条件</td><td>直接跳转</td><td></td></tr><tr><td><code>JMPF</code></td><td>Jump Far</td><td>无条件</td><td>跳转到指定段/内存地址</td><td></td></tr></tbody></table><ul><li>CALL：调用指令，用于调用子程序或函数。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-12-1><a class=lnlinks href=#hl-12-1>1</a>
+</span><span class=lnt id=hl-12-2><a class=lnlinks href=#hl-12-2>2</a>
+</span><span class=lnt id=hl-12-3><a class=lnlinks href=#hl-12-3>3</a>
+</span><span class=lnt id=hl-12-4><a class=lnlinks href=#hl-12-4>4</a>
+</span><span class=lnt id=hl-12-5><a class=lnlinks href=#hl-12-5>5</a>
+</span><span class=lnt id=hl-12-6><a class=lnlinks href=#hl-12-6>6</a>
+</span><span class=lnt id=hl-12-7><a class=lnlinks href=#hl-12-7>7</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>call function_name  ; 调用名为 function_name 的函数
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>call [ebx]  ; 调用 ebx 指向的内存地址中的函数
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>call 0x12345678  ; 调用指定地址的函数
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>call eax  ; 调用 eax 寄存器中存储的函数地址</span></span></code></pre></td></tr></table></div></div><p>call 指令可以拆解为 push 和 jmp 两条指令的组合：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-13-1><a class=lnlinks href=#hl-13-1>1</a>
+</span><span class=lnt id=hl-13-2><a class=lnlinks href=#hl-13-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>push eip  ; 将当前指令指针压入堆栈 (eip 不允许被直接修改, 此条指令不存在)
+</span></span><span class=line><span class=cl>jmp function_name  ; 跳转到函数的入口地址</span></span></code></pre></td></tr></table></div></div><ul><li>PUSH：压栈指令，用于将数据压入堆栈。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-14-1><a class=lnlinks href=#hl-14-1>1</a>
+</span><span class=lnt id=hl-14-2><a class=lnlinks href=#hl-14-2>2</a>
+</span><span class=lnt id=hl-14-3><a class=lnlinks href=#hl-14-3>3</a>
+</span><span class=lnt id=hl-14-4><a class=lnlinks href=#hl-14-4>4</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>push eax  ; 将 eax 的值压入堆栈
+</span></span><span class=line><span class=cl>push [ebx]  ; 将 ebx 指向的内存地址中的值压入堆栈
+</span></span><span class=line><span class=cl>push 0x1234  ; 将立即数 0x1234 压入堆栈
+</span></span><span class=line><span class=cl>push dword ptr [ebx]  ; 将 ebx 指向的内存地址中的双字值压入堆栈</span></span></code></pre></td></tr></table></div></div><ul><li>POP：弹栈指令，用于从堆栈中弹出数据。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-15-1><a class=lnlinks href=#hl-15-1>1</a>
+</span><span class=lnt id=hl-15-2><a class=lnlinks href=#hl-15-2>2</a>
+</span><span class=lnt id=hl-15-3><a class=lnlinks href=#hl-15-3>3</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>pop eax  ; 从堆栈中弹出一个值到 eax
+</span></span><span class=line><span class=cl>pop [ebx]  ; 从堆栈中弹出一个值到 ebx 指向的内存地址
+</span></span><span class=line><span class=cl>pop dword ptr [ebx]  ; 从堆栈中弹出一个双字值到 ebx 指向的内存地址</span></span></code></pre></td></tr></table></div></div><ul><li>RET：返回指令，用于从子程序或函数中返回。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-16-1><a class=lnlinks href=#hl-16-1>1</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ret  ; 返回到栈顶的地址</span></span></code></pre></td></tr></table></div></div><p>等价于 <code>pop eip</code> (eip 不允许被直接修改, 此条指令不存在)</p><ul><li>LEAVE：离开指令，用于从子程序或函数中返回，并清理堆栈。</li></ul><p>一般配合 ret 使用</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-17-1><a class=lnlinks href=#hl-17-1>1</a>
+</span><span class=lnt id=hl-17-2><a class=lnlinks href=#hl-17-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>leave  ; 等价于 mov esp, ebp; pop ebp
+</span></span><span class=line><span class=cl>rep  ; 返回到栈顶的地址</span></span></code></pre></td></tr></table></div></div><ul><li>INT：中断指令，用于触发软件中断。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-18-1><a class=lnlinks href=#hl-18-1>1</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>int 0x80  ; 触发中断 0x80，通常用于系统调用</span></span></code></pre></td></tr></table></div></div><ul><li>SYSCALL：系统调用指令，用于调用操作系统提供的服务。(64 位模式)</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-19-1><a class=lnlinks href=#hl-19-1>1</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>syscall  ; 调用操作系统的系统调用</span></span></code></pre></td></tr></table></div></div><ul><li>LOOP：加载操作数指令，用于将数据从内存加载到寄存器。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-20-1><a class=lnlinks href=#hl-20-1>1</a>
+</span><span class=lnt id=hl-20-2><a class=lnlinks href=#hl-20-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>loop label  ; 循环执行，直到 CX 寄存器的值为 0
+</span></span><span class=line><span class=cl>; loop 指令会自动将 CX 寄存器的值减 1, jmp 到 label</span></span></code></pre></td></tr></table></div></div></div><footer class=post-footer><div class=post-tags><a href=/tags/pwn/>Pwn
+</a><a href=/tags/ctf/>Ctf</a></div><div class=post-share-tools><div class=post-share-loading><i class="fa-solid fa-ellipsis fa-spin"></i></div><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class=a2a_dd href=https://www.addtoany.com/share></a><a class=a2a_button_wechat></a><a class=a2a_button_qzone></a><a class=a2a_button_sina_weibo></a><a class=a2a_button_douban></a><a class=a2a_button_facebook></a><a class=a2a_button_x></a><a class=a2a_button_email></a><a class=a2a_button_printfriendly></a></div></div><hr><div class=reward-container><div><i class="fa-solid fa-mug-hot"></i>请我喝杯咖啡吧 ヾ(^▽^*)))</div><button>
+赞赏</button><div class=post-reward><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/ali-pay.jpg alt="lhon901 - 支付宝">
+<span>支付宝</span></div><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/wechat-pay.jpg alt="lhon901 - 微信">
+<span>微信</span></div></div></div><div class=post-copyright><img src=/imgs/cc/cc.svg class=cc-icon width=75 height=75 align=right alt=共享知识 title=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+从零开始的 Pwn 之旅 - x86 汇编基础</li><li class=post-copyright-author><strong>本文作者： </strong>lhon901</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/ title="从零开始的 Pwn 之旅 - x86 汇编基础">/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/</a></li><li class=post-copyright-license><strong>版权声明： </strong>本作品采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans>BY-NC-SA</a> 许可协议。转载请注明出处！</li><li><div class=license-icons><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans target=_blank><img src=/imgs/cc/big/by_nc_sa.svg alt=BY-NC-SA title=BY-NC-SA>
+</a><a href=https://notbyai.fyi target=_blank><img src=/imgs/notbyai/zh-hans/.svg title="Not By AI"></a></div></li></ul></div><div class=followme><span>欢迎关注我的其它发布渠道</span><div class=social-list><div class=social-item><a target=_blank class=social-link href=/images/wechat_channel.jpg><span class=icon><i class="fab fa-weixin"></i>
+</span><span class=label>WeChat</span></a></div><div class=social-item><a target=_blank class=social-link href=/atom.xml><span class=icon><i class="fa fa-rss"></i>
+</span><span class=label>RSS</span></a></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/ rel=prev title="从零开始的 Pwn 之旅 - 深入了解 elf 文件">从零开始的 Pwn 之旅 - 深入了解 elf 文件
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div id=i18n-translate class=i18n-translate><i class="fa fa-language"></i><div id=lang-select class=lang-select><div id=lang-selected class=selected-option><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=selected-language>简体中文</span>
+<i class="fa fa-chevron-down"></i></div><div id=lang-options class=lang-options><div class=lang-option lang-code=zh-cn lang-name=简体中文 lang-url=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=lang-name>简体中文</span></div></div></div></div><div class=copyright>&copy;
+<span itemprop=copyrightYear>2025
+</span><span class=with-love><i class="fa fa-heart"></i>
+</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/","title":"从零开始的 Pwn 之旅 - x86 汇编基础","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1750581017" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1750581017" defer></script></body></html>

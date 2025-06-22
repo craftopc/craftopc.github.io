@@ -1,4 +1,48 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/tags/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 20 Jun 2025 23:25:37 +0800</lastBuildDate><atom:link href="/tags/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 深入了解 elf 文件</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</link><pubDate>Fri, 20 Jun 2025 22:00:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</guid><description>&lt;h2 id="elf-文件初识">ELF 文件初识
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/tags/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sun, 22 Jun 2025 16:29:37 +0800</lastBuildDate><atom:link href="/tags/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - x86 汇编基础</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/</link><pubDate>Sun, 22 Jun 2025 14:00:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---x86-%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/</guid><description>&lt;h2 id="汇编语言风格">汇编语言风格
+&lt;a class="header-anchor" href="#%e6%b1%87%e7%bc%96%e8%af%ad%e8%a8%80%e9%a3%8e%e6%a0%bc">&lt;/a>
+&lt;/h2>&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>AT&amp;amp;T&lt;/th>
+ &lt;th>Intel&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>寄存器前缀 &lt;code>%&lt;/code>&lt;/td>
+ &lt;td>寄存器无前缀&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>立即数前缀 &lt;code>$&lt;/code>&lt;/td>
+ &lt;td>立即数无前缀&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>16 进制数前缀 &lt;code>0x&lt;/code>&lt;/td>
+ &lt;td>16 进制数后缀 &lt;code>h&lt;/code>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>源操作数在前，目标操作数在后&lt;/td>
+ &lt;td>源操作数在后，目标操作数在前&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>间接寻址使用 &lt;code>(%reg)&lt;/code>&lt;/td>
+ &lt;td>间接寻址使用 &lt;code>[reg]&lt;/code>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>间接寻址格式为 &lt;code>(%reg, %reg, scale)&lt;/code>&lt;/td>
+ &lt;td>间接寻址格式为 &lt;code>[reg + reg * scale]&lt;/code>&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>操作数大小后缀 &lt;code>b&lt;/code>、&lt;code>w&lt;/code>、&lt;code>l&lt;/code>&lt;/td>
+ &lt;td>操作数大小后缀 &lt;code>byte ptr&lt;/code>、&lt;code>word ptr&lt;/code>、&lt;code>dword ptr&lt;/code>&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;h2 id="寄存器">寄存器
+&lt;a class="header-anchor" href="#%e5%af%84%e5%ad%98%e5%99%a8">&lt;/a>
+&lt;/h2>
+ &lt;blockquote>
+ &lt;p>寄存器是 CPU 内部的高速存储器，用于存储临时数据和指令执行状态。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 深入了解 elf 文件</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</link><pubDate>Fri, 20 Jun 2025 22:00:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3-elf-%E6%96%87%E4%BB%B6/</guid><description>&lt;h2 id="elf-文件初识">ELF 文件初识
 &lt;a class="header-anchor" href="#elf-%e6%96%87%e4%bb%b6%e5%88%9d%e8%af%86">&lt;/a>
 &lt;/h2>&lt;p>ELF 文件即 Linux 下的可执行文件，ELF 是 Executable and Linkable Format 的缩写。它是一个标准的二进制文件格式，用于存储可执行文件、目标代码、共享库和核心转储等。&lt;/p>
 &lt;p>使用 Linux 内置命令 file 可以轻松查看文件类型：&lt;/p></description></item><item><title>House_of_BotCake</title><link>/posts/house_of_botcake/</link><pubDate>Thu, 17 Apr 2025 22:03:37 +0800</pubDate><guid>/posts/house_of_botcake/</guid><description>&lt;h2 id="利用背景">利用背景
