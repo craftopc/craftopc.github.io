@@ -1,4 +1,44 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Mon, 23 Jun 2025 17:06:37 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 掌握调试器 gdb 的基本使用</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%8E%8C%E6%8F%A1%E8%B0%83%E8%AF%95%E5%99%A8-gdb-%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><pubDate>Sun, 22 Jun 2025 16:32:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%8E%8C%E6%8F%A1%E8%B0%83%E8%AF%95%E5%99%A8-gdb-%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><description>&lt;h2 id="gdb">GDB
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Mon, 23 Jun 2025 19:00:00 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Pwn 环境的搭建</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pwn-%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA/</link><pubDate>Mon, 23 Jun 2025 18:15:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pwn-%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA/</guid><description>&lt;h2 id="静态代码分析">静态代码分析
+&lt;a class="header-anchor" href="#%e9%9d%99%e6%80%81%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90">&lt;/a>
+&lt;/h2>&lt;h3 id="ida-pro">ida pro
+&lt;a class="header-anchor" href="#ida-pro">&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;input disabled="" type="checkbox"> TODO&lt;/li>
+&lt;/ul>
+&lt;h2 id="静态代码分析-1">静态代码分析
+&lt;a class="header-anchor" href="#%e9%9d%99%e6%80%81%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90-1">&lt;/a>
+&lt;/h2>&lt;h3 id="gdb">gdb
+&lt;a class="header-anchor" href="#gdb">&lt;/a>
+&lt;/h3>&lt;p>前面的文章中已经介绍了如何使用 GDB 进行调试，这里不再赘述。&lt;/p>
+&lt;p>
+&lt;a href="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%20Pwn%20%E4%B9%8B%E6%97%85%20-%20x86%20%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80/" title="从零开始的 Pwn 之旅 - x86 汇编基础" >
+ 从零开始的 Pwn 之旅 - x86 汇编基础
+ 
+&lt;/a>&lt;/p>
+&lt;h2 id="pwn-相关工具">Pwn 相关工具
+&lt;a class="header-anchor" href="#pwn-%e7%9b%b8%e5%85%b3%e5%b7%a5%e5%85%b7">&lt;/a>
+&lt;/h2>&lt;h3 id="pwntools">pwntools
+&lt;a class="header-anchor" href="#pwntools">&lt;/a>
+&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-0-1">&lt;a class="lnlinks" href="#hl-0-1">1&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pip install pwntools&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;h3 id="ropgadget">ROPGadget
+&lt;a class="header-anchor" href="#ropgadget">&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;input disabled="" type="checkbox"> TODO&lt;/li>
+&lt;/ul>
+&lt;h3 id="libcsearcher">LibcSearcher
+&lt;a class="header-anchor" href="#libcsearcher">&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> TODO&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 掌握调试器 gdb 的基本使用</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%8E%8C%E6%8F%A1%E8%B0%83%E8%AF%95%E5%99%A8-gdb-%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link><pubDate>Sun, 22 Jun 2025 16:32:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%8E%8C%E6%8F%A1%E8%B0%83%E8%AF%95%E5%99%A8-gdb-%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</guid><description>&lt;h2 id="gdb">GDB
 &lt;a class="header-anchor" href="#gdb">&lt;/a>
 &lt;/h2>&lt;h3 id="介绍">介绍
 &lt;a class="header-anchor" href="#%e4%bb%8b%e7%bb%8d">&lt;/a>
