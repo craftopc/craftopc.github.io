@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Tue, 24 Jun 2025 23:13:37 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 栈对齐</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/</link><pubDate>Tue, 24 Jun 2025 12:37:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/</guid><description>&lt;h2 id="前言">前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Wed, 25 Jun 2025 14:32:23 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Ret2text</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/</link><pubDate>Wed, 25 Jun 2025 14:32:23 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/</guid><description>&lt;h2 id="前言">前言
+&lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
+&lt;/h2>&lt;p>之前我们已经初步介绍了栈溢出和栈对齐，这一节我们将做一个巩固练习&lt;/p>
+&lt;h2 id="ret2text">ret2text
+&lt;a class="header-anchor" href="#ret2text">&lt;/a>
+&lt;/h2>&lt;p>
+&lt;a href="https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/linux/user-mode/stackoverflow/ret2text/bamboofox-ret2text" title="ret2text" rel="noopener external nofollow noreferrer" target="_blank" class=" exturl">
+ ret2text
+ 
+ &lt;i class="fa fa-external-link-alt">&lt;/i>
+ 
+&lt;/a>&lt;/p>
+&lt;p>先进行安全防护检测&lt;/p>
+
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-0-1">&lt;a class="lnlinks" href="#hl-0-1"> 1&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-2">&lt;a class="lnlinks" href="#hl-0-2"> 2&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-3">&lt;a class="lnlinks" href="#hl-0-3"> 3&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-4">&lt;a class="lnlinks" href="#hl-0-4"> 4&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-5">&lt;a class="lnlinks" href="#hl-0-5"> 5&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-6">&lt;a class="lnlinks" href="#hl-0-6"> 6&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-7">&lt;a class="lnlinks" href="#hl-0-7"> 7&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-8">&lt;a class="lnlinks" href="#hl-0-8"> 8&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-9">&lt;a class="lnlinks" href="#hl-0-9"> 9&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-10">&lt;a class="lnlinks" href="#hl-0-10">10&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-11">&lt;a class="lnlinks" href="#hl-0-11">11&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ chmod +x ./ret2text &lt;span class="o">(&lt;/span>.venv&lt;span class="o">)&lt;/span> master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s1">&amp;#39;./ret2text&amp;#39;&lt;/span> 的模式已由 &lt;span class="m">0644&lt;/span> &lt;span class="o">(&lt;/span>rw-r--r--&lt;span class="o">)&lt;/span> 更改为 &lt;span class="m">0755&lt;/span> &lt;span class="o">(&lt;/span>rwxr-xr-x&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ pwn checksec ./ret2text &lt;span class="o">(&lt;/span>.venv&lt;span class="o">)&lt;/span> master ✱
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>*&lt;span class="o">]&lt;/span> &lt;span class="s1">&amp;#39;/home/lhon901/Pwn/ctf-challenges/pwn/linux/user-mode/stackoverflow/ret2text/bamboofox-ret2text/ret2text&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Arch: i386-32-little
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RELRO: Partial RELRO
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Stack: No canary found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> NX: NX enabled
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> PIE: No PIE &lt;span class="o">(&lt;/span>0x8048000&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Stripped: No
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Debuginfo: Yes&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;p>ida pro 逆向&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 栈对齐</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/</link><pubDate>Tue, 24 Jun 2025 12:37:00 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/</guid><description>&lt;h2 id="前言">前言
 &lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
 &lt;/h2>&lt;p>在上一节中为了成功执行 payload，我们在 exp.py 中加入了 &lt;code>ret&lt;/code> 指令，今天我们将继续深入了解栈对齐的问题。&lt;/p>
 &lt;h2 id="栈对齐">栈对齐

