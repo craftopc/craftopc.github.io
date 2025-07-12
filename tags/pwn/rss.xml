@@ -1,4 +1,16 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pwn on lhon901's blog</title><link>/tags/pwn/</link><description>Recent content in Pwn on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 12 Jul 2025 15:12:55 +0800</lastBuildDate><atom:link href="/tags/pwn/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 格式化字符串</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/</link><pubDate>Sat, 12 Jul 2025 10:51:35 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/</guid><description>&lt;h2 id="格式化字符串初识">格式化字符串初识
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pwn on lhon901's blog</title><link>/tags/pwn/</link><description>Recent content in Pwn on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 12 Jul 2025 19:05:47 +0800</lastBuildDate><atom:link href="/tags/pwn/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 Ret2csu</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/</link><pubDate>Sat, 12 Jul 2025 10:51:54 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ret2csu/</guid><description>&lt;h2 id="前言">前言
+&lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
+&lt;/h2>&lt;p>正常程序中是不可能有许多可利用的 gadget的，通常只有一个或几个 gadget 可以利用
+ret2csu 是一个常见的 gadget，通常在使用 C++ 的程序中会有这个 gadget&lt;/p>
+&lt;h2 id="程序解读">程序解读
+&lt;a class="header-anchor" href="#%e7%a8%8b%e5%ba%8f%e8%a7%a3%e8%af%bb">&lt;/a>
+&lt;/h2>&lt;p>
+&lt;a href="https://github.com/zhengmin1989/ROP_STEP_BY_STEP/blob/master/linux_x64/level5" title="蒸米的一步一步学 ROP level5" rel="noopener external nofollow noreferrer" target="_blank" class=" exturl">
+ 蒸米的一步一步学 ROP level5
+ 
+ &lt;i class="fa fa-external-link-alt">&lt;/i>
+ 
+&lt;/a>&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 格式化字符串</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/</link><pubDate>Sat, 12 Jul 2025 10:51:35 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/</guid><description>&lt;h2 id="格式化字符串初识">格式化字符串初识
 &lt;a class="header-anchor" href="#%e6%a0%bc%e5%bc%8f%e5%8c%96%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%88%9d%e8%af%86">&lt;/a>
 &lt;/h2>&lt;p>&lt;img src="/imgs/img-lazy-loading.gif" data-src="https://ctf-wiki.org/pwn/linux/user-mode/fmtstr/figure/printf.png" alt="示意图" />&lt;/p>
 &lt;p>常见的格式化字符串函数有 &lt;code>printf&lt;/code>、&lt;code>sprintf&lt;/code>、&lt;code>fprintf&lt;/code>、&lt;code>vprintf&lt;/code>、&lt;code>vfprintf&lt;/code> 等。&lt;/p>
