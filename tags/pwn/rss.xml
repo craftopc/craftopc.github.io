@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pwn on lhon901's blog</title><link>/tags/pwn/</link><description>Recent content in Pwn on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 19 Jul 2025 11:31:58 +0800</lastBuildDate><atom:link href="/tags/pwn/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - ORW</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---orw/</link><pubDate>Sat, 19 Jul 2025 10:49:56 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---orw/</guid><description>&lt;h2 id="orw-初识">ORW 初识
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pwn on lhon901's blog</title><link>/tags/pwn/</link><description>Recent content in Pwn on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 19 Jul 2025 22:03:03 +0800</lastBuildDate><atom:link href="/tags/pwn/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 异架构 Arm</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</link><pubDate>Sat, 19 Jul 2025 13:26:25 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</guid><description>&lt;h2 id="arm-汇编速探">Arm 汇编速探
+&lt;a class="header-anchor" href="#arm-%e6%b1%87%e7%bc%96%e9%80%9f%e6%8e%a2">&lt;/a>
+&lt;/h2>&lt;h3 id="函数调用约定">函数调用约定
+&lt;a class="header-anchor" href="#%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a">&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;input disabled="" type="checkbox"> TODO: 待完善&lt;/li>
+&lt;/ul>
+&lt;h4 id="arm32aarch32调用约定">ARM32（AArch32）调用约定
+&lt;a class="header-anchor" href="#arm32aarch32%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a">&lt;/a>
+&lt;/h4>&lt;ul>
+&lt;li>
+&lt;p>前 4 个参数：&lt;code>r0 ~ r3&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>返回值：&lt;code>r0&lt;/code>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>多余参数：栈上传递，&lt;strong>从右往左&lt;/strong>入栈&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>堆栈平衡：&lt;strong>被调用函数&lt;/strong>负责&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>函数调用：&lt;code>bl&lt;/code>/&lt;code>b&lt;/code>，返回用 &lt;code>bx lr&lt;/code> 或 &lt;code>mov pc, lr&lt;/code>&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - ORW</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---orw/</link><pubDate>Sat, 19 Jul 2025 10:49:56 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---orw/</guid><description>&lt;h2 id="orw-初识">ORW 初识
 &lt;a class="header-anchor" href="#orw-%e5%88%9d%e8%af%86">&lt;/a>
 &lt;/h2>&lt;p>ORW类题目是指程序开了沙箱保护，禁用了一些函数的调用（如 execve等），使得我们并不能正常 get shell，只能通过ROP的方式调用open, read, write的来读取并打印flag 内容&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 栈迁移</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E8%BF%81%E7%A7%BB/</link><pubDate>Sun, 13 Jul 2025 12:55:08 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E6%A0%88%E8%BF%81%E7%A7%BB/</guid><description>&lt;h2 id="栈迁移初识">栈迁移初识
 &lt;a class="header-anchor" href="#%e6%a0%88%e8%bf%81%e7%a7%bb%e5%88%9d%e8%af%86">&lt;/a>
