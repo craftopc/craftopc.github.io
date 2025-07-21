@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 19 Jul 2025 22:03:03 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 异架构 Arm</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</link><pubDate>Sat, 19 Jul 2025 13:26:25 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</guid><description>&lt;h2 id="arm-汇编速探">Arm 汇编速探
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Mon, 21 Jul 2025 11:14:23 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 异架构 Arm</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</link><pubDate>Sat, 19 Jul 2025 13:26:25 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%BC%82%E6%9E%B6%E6%9E%84-arm/</guid><description>&lt;h2 id="arm-汇编速探">Arm 汇编速探
 &lt;a class="header-anchor" href="#arm-%e6%b1%87%e7%bc%96%e9%80%9f%e6%8e%a2">&lt;/a>
 &lt;/h2>&lt;h3 id="函数调用约定">函数调用约定
 &lt;a class="header-anchor" href="#%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a">&lt;/a>
 &lt;/h3>&lt;ul>
-&lt;li>&lt;input disabled="" type="checkbox"> TODO: 待完善&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> TODO: 写一片文章介绍 arm 汇编相关知识&lt;/li>
 &lt;/ul>
 &lt;h4 id="arm32aarch32调用约定">ARM32（AArch32）调用约定
 &lt;a class="header-anchor" href="#arm32aarch32%e8%b0%83%e7%94%a8%e7%ba%a6%e5%ae%9a">&lt;/a>
