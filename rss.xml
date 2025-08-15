@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 15 Aug 2025 13:10:40 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Heap 深入理解</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---heap-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</link><pubDate>Fri, 15 Aug 2025 12:16:16 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---heap-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</guid><description>&lt;h2 id="bins-结构">bins 结构
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>lhon901's blog</title><link>/</link><description>Recent content on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 15 Aug 2025 13:18:47 +0800</lastBuildDate><atom:link href="/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Heap 深入理解</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---heap-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</link><pubDate>Fri, 15 Aug 2025 12:16:16 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---heap-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/</guid><description>&lt;h2 id="bins-结构">bins 结构
 &lt;a class="header-anchor" href="#bins-%e7%bb%93%e6%9e%84">&lt;/a>
-&lt;/h2>&lt;h3 id="fastbin">fastbin
+&lt;/h2>&lt;hr>
+&lt;h3 id="fastbin">fastbin
 &lt;a class="header-anchor" href="#fastbin">&lt;/a>
 &lt;/h3>&lt;ul>
 &lt;li>&lt;strong>结构&lt;/strong>：单向链表&lt;/li>
+&lt;li>&lt;strong>来源&lt;/strong>：free 时直接进入 fastbin&lt;/li>
 &lt;li>&lt;strong>用途&lt;/strong>：快速分配和释放小块内存&lt;/li>
 &lt;li>&lt;strong>chunk size 范围&lt;/strong>：
 &lt;ul>
@@ -22,9 +24,56 @@
 &lt;hr>
 &lt;h3 id="tcache">tcache
 &lt;a class="header-anchor" href="#tcache">&lt;/a>
-&lt;/h3>
- &lt;blockquote>
- &lt;p>注：glibc 2.26+ 引入 tcache，属于线程本地缓存（thread cache），比 fastbin 更快&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 堆溢出初探</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%A0%86%E6%BA%A2%E5%87%BA%E5%88%9D%E6%8E%A2/</link><pubDate>Mon, 28 Jul 2025 10:48:03 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%A0%86%E6%BA%A2%E5%87%BA%E5%88%9D%E6%8E%A2/</guid><description>&lt;h2 id="堆介绍">堆介绍
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>结构&lt;/strong>：单向链表&lt;/li>
+&lt;li>&lt;strong>来源&lt;/strong>：free 时直接进入 tcache（优先于 fastbin）&lt;/li>
+&lt;li>&lt;strong>用途&lt;/strong>：线程本地缓存，加速小块内存分配和释放&lt;/li>
+&lt;li>&lt;strong>chunk size 范围&lt;/strong>：
+&lt;ul>
+&lt;li>仅支持小于等于 &lt;code>0x410&lt;/code>（1040字节）的 chunk（包含头部，实际范围依 glibc 版本不同）&lt;/li>
+&lt;li>size 字段为 chunk_size + 标志位&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>特点&lt;/strong>：
+&lt;ul>
+&lt;li>每个 size 类别最多存储 7 个 chunk（超出则进入 unsorted bin）&lt;/li>
+&lt;li>不合并相邻空闲块&lt;/li>
+&lt;li>只支持单向链表（每个 chunk 的 fd 指向下一个 chunk）&lt;/li>
+&lt;li>属于线程本地数据结构，各线程 tcache 独立，提升多线程性能&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h3 id="unsorted-bin">unsorted bin
+&lt;a class="header-anchor" href="#unsorted-bin">&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>结构&lt;/strong>：双向链表（fd/bk）&lt;/li>
+&lt;li>&lt;strong>来源&lt;/strong>：
+&lt;ul>
+&lt;li>当一个较大的 chunk 被分割成两半后，如果剩下的部分大于 MINSIZE，就会被放到 unsorted bin 中。&lt;/li>
+&lt;li>释放一个不属于 fast bin 的 chunk，并且该 chunk 不和 top chunk 紧邻时，该 chunk 会被首先放到 unsorted bin 中。关于 top chunk 的解释，请参考下面的介绍。&lt;/li>
+&lt;li>当进行 malloc_consolidate 时，可能会把合并后的 chunk 放到 unsorted bin 中，如果不是和 top chunk 近邻的话。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>用途&lt;/strong>：存放刚释放的非 fastbin chunk（大于 fastbin 范围）&lt;/li>
+&lt;li>&lt;strong>特点&lt;/strong>：
+&lt;ul>
+&lt;li>不按大小排序，先进后出（FIFO）&lt;/li>
+&lt;li>后续 malloc 时会根据大小转移到 smallbin 或 largebin&lt;/li>
+&lt;li>所有非 fastbin 的 chunk 释放时都先进入 unsorted bin&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="unsorted-bin-转化">unsorted bin 转化
+&lt;a class="header-anchor" href="#unsorted-bin-%e8%bd%ac%e5%8c%96">&lt;/a>
+&lt;/h4>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>malloc 请求触发归类&lt;/strong>&lt;br>
+当你 malloc 时，会优先在 unsorted bin 中查找是否有足够大的 chunk。&lt;br>
+如果 unsorted bin 中有 chunk 不足以分配请求的大小，这些 chunk 会被按大小归类，分别转移到 smallbin 或 largebin。&lt;br>
+chunk size ≤ smallbin 最大值，进入 smallbin&lt;br>
+chunk size &amp;gt; smallbin 最大值，进入 largebin&lt;br>
+这个过程中，所有遍历到但不满足分配条件的 chunk 都会被“搬家”到对应的 bin。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 堆溢出初探</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%A0%86%E6%BA%A2%E5%87%BA%E5%88%9D%E6%8E%A2/</link><pubDate>Mon, 28 Jul 2025 10:48:03 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E5%A0%86%E6%BA%A2%E5%87%BA%E5%88%9D%E6%8E%A2/</guid><description>&lt;h2 id="堆介绍">堆介绍
 &lt;a class="header-anchor" href="#%e5%a0%86%e4%bb%8b%e7%bb%8d">&lt;/a>
 &lt;/h2>&lt;p>堆是动态分配内存的区域，通常用于存储在运行时需要动态分配的对象。堆内存的分配和释放由程序员控制，常见的操作包括 &lt;code>malloc&lt;/code>、&lt;code>free&lt;/code> 等。&lt;/p>
 &lt;p>&lt;img src="/imgs/img-lazy-loading.gif" data-src="https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/figure/program_virtual_address_memory_space.png" alt="操作系统内存布局示意图" />&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Ptrace 沙箱</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ptrace-%E6%B2%99%E7%AE%B1/</link><pubDate>Sun, 27 Jul 2025 21:27:26 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---ptrace-%E6%B2%99%E7%AE%B1/</guid><description>&lt;h2 id="前言">前言
