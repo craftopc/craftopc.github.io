@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 16 Aug 2025 12:02:43 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - 简单的堆溢出</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/</link><pubDate>Fri, 15 Aug 2025 13:22:57 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/</guid><description>&lt;h2 id="示例">示例
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on lhon901's blog</title><link>/posts/</link><description>Recent content in Posts on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sun, 17 Aug 2025 13:06:52 +0800</lastBuildDate><atom:link href="/posts/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Off_by_one</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---off_by_one/</link><pubDate>Sat, 16 Aug 2025 15:39:32 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---off_by_one/</guid><description>&lt;h1 id="从零开始的-pwn-之旅--off_by_one">从零开始的 Pwn 之旅 —— Off_by_one
+&lt;a class="header-anchor" href="#%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84-pwn-%e4%b9%8b%e6%97%85--off_by_one">&lt;/a>
+&lt;/h1>&lt;h2 id="漏洞成因">漏洞成因
+&lt;a class="header-anchor" href="#%e6%bc%8f%e6%b4%9e%e6%88%90%e5%9b%a0">&lt;/a>
+&lt;/h2>&lt;h3 id="1-循环条件计算错误">1. 循环条件计算错误
+&lt;a class="header-anchor" href="#1-%e5%be%aa%e7%8e%af%e6%9d%a1%e4%bb%b6%e8%ae%a1%e7%ae%97%e9%94%99%e8%af%af">&lt;/a>
+&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt" id="hl-0-1">&lt;a class="lnlinks" href="#hl-0-1">1&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-2">&lt;a class="lnlinks" href="#hl-0-2">2&lt;/a>
+&lt;/span>&lt;span class="lnt" id="hl-0-3">&lt;a class="lnlinks" href="#hl-0-3">3&lt;/a>
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-c" data-lang="c">&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 循环体
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>
+
+&lt;p>上述代码实际上会执行 &lt;strong>11 次循环&lt;/strong>。开发人员本意可能只想执行 10 次循环，实际上却多执行了一次，容易导致数组或缓冲区 &lt;strong>越界&lt;/strong>。&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - 简单的堆溢出</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/</link><pubDate>Fri, 15 Aug 2025 13:22:57 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---%E7%AE%80%E5%8D%95%E7%9A%84%E5%A0%86%E6%BA%A2%E5%87%BA/</guid><description>&lt;h2 id="示例">示例
 &lt;a class="header-anchor" href="#%e7%a4%ba%e4%be%8b">&lt;/a>
 &lt;/h2>&lt;h3 id="ezheap">
 &lt;a href="https://www.nssctf.cn/problem/3104" title="ezheap" rel="noopener external nofollow noreferrer" target="_blank" class=" exturl">
