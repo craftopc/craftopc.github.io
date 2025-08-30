@@ -1,4 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>从零开始的 Pwn 之旅 - Malloc_hook 和 Free_hook</title><url>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---malloc_hook-%E5%92%8C-free_hook/</url><categories><category>Ctf</category></categories><tags><tag>Ctf</tag><tag>Pwn</tag></tags><content type="html"><![CDATA[  前言 在栈的利用中, 我们通过劫持程序的返回地址来实现劫持程序的控制流
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>从零开始的 Pwn 之旅 - Fastbin Attack</title><url>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</url><categories><category>Ctf</category></categories><tags><tag>Ctf</tag><tag>Pwn</tag></tags><content type="html"><![CDATA[  简介 fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手法
+利用前提:
+存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞 漏洞发生于 fastbin 类型的 chunk 中 根据利用手法可分为以下几类
+fastbin double free house of spirit alloc to stack arbitrary alloc 其中，前两种主要漏洞侧重于利用 free 函数释放真的 chunk 或伪造的 chunk，然后再次申请 chunk 进行攻击，后两种侧重于故意修改 fd 指针，直接利用 malloc 申请指定位置 chunk 进行攻击
+原理 fastbin 特性:
+1 2 3 4 5 6 7 8 9 10 11 12 int main(void) { void *chunk1,*chunk2,*chunk3; chunk1=malloc(0x30); chunk2=malloc(0x30); chunk3=malloc(0x30); //进行释放 free(chunk1); free(chunk2); free(chunk3); return 0; } 释放前:
+1 2 3 4 5 6 7 8 9 10 11 12 13 0x602000: 0x0000000000000000 0x0000000000000041 &lt;=== chunk1 0x602010: 0x0000000000000000 0x0000000000000000 0x602020: 0x0000000000000000 0x0000000000000000 0x602030: 0x0000000000000000 0x0000000000000000 0x602040: 0x0000000000000000 0x0000000000000041 &lt;=== chunk2 0x602050: 0x0000000000000000 0x0000000000000000 0x602060: 0x0000000000000000 0x0000000000000000 0x602070: 0x0000000000000000 0x0000000000000000 0x602080: 0x0000000000000000 0x0000000000000041 &lt;=== chunk3 0x602090: 0x0000000000000000 0x0000000000000000 0x6020a0: 0x0000000000000000 0x0000000000000000 0x6020b0: 0x0000000000000000 0x0000000000000000 0x6020c0: 0x0000000000000000 0x0000000000020f41 &lt;=== top chunk 释放后:
+1 2 3 4 5 6 7 8 9 10 11 12 13 0x602000: 0x0000000000000000 0x0000000000000041 &lt;=== chunk1 0x602010: 0x0000000000000000 0x0000000000000000 0x602020: 0x0000000000000000 0x0000000000000000 0x602030: 0x0000000000000000 0x0000000000000000 0x602040: 0x0000000000000000 0x0000000000000041 &lt;=== chunk2 0x602050: 0x0000000000602000 0x0000000000000000 0x602060: 0x0000000000000000 0x0000000000000000 0x602070: 0x0000000000000000 0x0000000000000000 0x602080: 0x0000000000000000 0x0000000000000041 &lt;=== chunk3 0x602090: 0x0000000000602040 0x0000000000000000 0x6020a0: 0x0000000000000000 0x0000000000000000 0x6020b0: 0x0000000000000000 0x0000000000000000 0x6020c0: 0x0000000000000000 0x0000000000020f41 &lt;=== top chunk 此时位于 main_arena 中的 fastbin 链表中已经储存了指向 chunk3 的指针，并且 chunk 3、2、1 构成了一个单链表
+1 2 3 4 Fastbins[idx=2, size=0x30,ptr=0x602080] ===&gt;Chunk(fd=0x602040, size=0x40, flags=PREV_INUSE) ===&gt;Chunk(fd=0x602000, size=0x40, flags=PREV_INUSE) ===&gt;Chunk(fd=0x000000, size=0x40, flags=PREV_INUSE) 可以看到 next chunk 的 size 的 prev_inuse 位不会被清空
+fastbin double free 当一个 fastbin 大小的 chunk 被释放时, 内部的数据会被置空, 这个 chunk 将被链接进 fastbin 这个结构
+如果我们重复的释放同一块 chunk, 这块 chunk 的 fd 指向自身形成循环, 这时候我们如果使用 malloc 来申请当前 chunk 大小的块时, 获得的空间都会是指向这块 chunk 的
+重复 free chunk2 之后示意图
+在我们 malloc 得到这块空间之后如果我们能编辑这块空间的内容的话, 我们可以伪造 fd 字段来达到申请任意地址的目的
+可是开发人员早就预料到了这种情况添加了保护, 但是开发人员添加的检测方法并不完善, 我们可以绕过
+注意 fastbin 的 chunk 出于效率考虑, 在释放时不会进行合并和清除下一个 chunk size 字段的 prev_inuse 位
+这就导致了使用 prev_inuse 位无法判断 fastbin chunk 是否被 free 了
+开发人员必须重新编写一种方法来阻止 double free
+glibc2.23 部分源码:
+1 2 3 4 5 6 7 /* Check that the top of the bin is not the record we are going to add (i.e., double free). */ if (__builtin_expect (old == p, 0)) { errstr = &#34;double free or corruption (fasttop)&#34;; goto errout; } 1 2 3 /* Atomically link P to its fastbin: P-&gt;FD = *FB; *FB = P; */ mchunkptr old = *fb, old2; unsigned int old_idx = ~0u; 可以看到 fastbin 采用头插法来插入新的 chunk
+old = *fb 这里 old 是 fastbin 的链表头即上一次插入的 fastbin chunk
+p 是即将要插入 fastbin 的指针
+也就是说检查只会检查当前要释放的 chunk 是不是上一次刚释放的 chunk
+我们只需要在连续两次 free(p1) 之间插入 free(p2) 等代码即可
+使用代码验证: ctf-wiki TODO: 补充完成   ]]></content></entry><entry><title>从零开始的 Pwn 之旅 - Malloc_hook 和 Free_hook</title><url>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---malloc_hook-%E5%92%8C-free_hook/</url><categories><category>Ctf</category></categories><tags><tag>Ctf</tag><tag>Pwn</tag></tags><content type="html"><![CDATA[  前言 在栈的利用中, 我们通过劫持程序的返回地址来实现劫持程序的控制流
 要想通过堆来进行漏洞利用, 可能会想到通过在堆上写入 shellcode 的方式然后劫持返回地址到堆上
 但是程序往往会开始 NX (堆栈不可执行) 保护导致利用失败
 而且程序可能根本没有缓冲区溢出漏洞

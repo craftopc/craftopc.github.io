@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/tags/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 30 Aug 2025 18:13:43 +0800</lastBuildDate><atom:link href="/tags/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Malloc_hook 和 Free_hook</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---malloc_hook-%E5%92%8C-free_hook/</link><pubDate>Sat, 30 Aug 2025 18:13:43 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---malloc_hook-%E5%92%8C-free_hook/</guid><description>&lt;h2 id="前言">前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ctf on lhon901's blog</title><link>/tags/ctf/</link><description>Recent content in Ctf on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Sat, 30 Aug 2025 21:27:08 +0800</lastBuildDate><atom:link href="/tags/ctf/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Fastbin Attack</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</link><pubDate>Sat, 30 Aug 2025 21:27:08 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</guid><description>&lt;h2 id="简介">简介
+&lt;a class="header-anchor" href="#%e7%ae%80%e4%bb%8b">&lt;/a>
+&lt;/h2>&lt;p>fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手法&lt;/p>
+&lt;p>利用前提:&lt;/p>
+&lt;ul>
+&lt;li>存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞&lt;/li>
+&lt;li>漏洞发生于 fastbin 类型的 chunk 中&lt;/li>
+&lt;/ul>
+&lt;p>根据利用手法可分为以下几类&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Malloc_hook 和 Free_hook</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---malloc_hook-%E5%92%8C-free_hook/</link><pubDate>Sat, 30 Aug 2025 18:13:43 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---malloc_hook-%E5%92%8C-free_hook/</guid><description>&lt;h2 id="前言">前言
 &lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
 &lt;/h2>&lt;p>在栈的利用中, 我们通过劫持程序的返回地址来实现劫持程序的控制流&lt;br>
 要想通过堆来进行漏洞利用, 可能会想到通过在堆上写入 shellcode 的方式然后劫持返回地址到堆上&lt;br>
