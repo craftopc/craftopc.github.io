@@ -1,4 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pwn on lhon901's blog</title><link>/tags/pwn/</link><description>Recent content in Pwn on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Wed, 03 Sep 2025 21:50:08 +0800</lastBuildDate><atom:link href="/tags/pwn/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Fastbin Attack</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</link><pubDate>Sat, 30 Aug 2025 21:27:08 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</guid><description>&lt;h2 id="简介">简介
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pwn on lhon901's blog</title><link>/tags/pwn/</link><description>Recent content in Pwn on lhon901's blog</description><generator>Hugo</generator><language>zh-CN</language><lastBuildDate>Fri, 17 Oct 2025 23:32:19 +0800</lastBuildDate><atom:link href="/tags/pwn/rss.xml" rel="self" type="application/rss+xml"/><item><title>从零开始的 Pwn 之旅 - Php_pwn</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---php_pwn/</link><pubDate>Mon, 22 Sep 2025 17:30:19 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---php_pwn/</guid><description>&lt;h2 id="前言">前言
+&lt;a class="header-anchor" href="#%e5%89%8d%e8%a8%80">&lt;/a>
+&lt;/h2>&lt;p>php pwn 泛指利用 PHP 环境下的漏洞进行 PWN（即：利用二进制层面的漏洞进行提权、RCE等）&lt;br>
+本文主要针对 php extension 进行 pwn 利用&lt;/p>
+&lt;h2 id="前置知识">前置知识
+&lt;a class="header-anchor" href="#%e5%89%8d%e7%bd%ae%e7%9f%a5%e8%af%86">&lt;/a>
+&lt;/h2>&lt;p>php 扩展一般采用 c 语言编写&lt;br>
+php 通过加载库文件（.so / .dll）来实现扩展&lt;br>
+因为扩展函数是在 php 内部调用的，我们不能像平常那样直接执行 &lt;code>system&lt;/code> &lt;code>one_gadget&lt;/code>，这里通常是需要采用 popen 或者 exec 函数族（php 函数）来进行执行 bash命令来反弹 shell&lt;br>
+php 扩展中使用 &lt;code>printf&lt;/code> &lt;code>system&lt;/code> 等函数会产生 stdout 输出, 但是这些输出有可能会被日志捕获被丢弃等, 如果我们想得到 php 扩展的输出我们需要使用 php 提供的函数比如 &lt;code>php_printf&lt;/code>&lt;/p></description></item><item><title>从零开始的 Pwn 之旅 - Fastbin Attack</title><link>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</link><pubDate>Sat, 30 Aug 2025 21:27:08 +0800</pubDate><guid>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</guid><description>&lt;h2 id="简介">简介
 &lt;a class="header-anchor" href="#%e7%ae%80%e4%bb%8b">&lt;/a>
 &lt;/h2>&lt;p>fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手法&lt;/p>
 &lt;p>利用前提:&lt;/p>

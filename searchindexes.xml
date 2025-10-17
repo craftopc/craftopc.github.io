@@ -1,4 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>从零开始的 Pwn 之旅 - Fastbin Attack</title><url>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</url><categories><category>Ctf</category></categories><tags><tag>Ctf</tag><tag>Pwn</tag></tags><content type="html">  简介 fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手法
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>从零开始的 Pwn 之旅 - Php_pwn</title><url>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---php_pwn/</url><categories><category>Ctf</category></categories><tags><tag>Ctf</tag><tag>Pwn</tag></tags><content type="html"><![CDATA[  前言 php pwn 泛指利用 PHP 环境下的漏洞进行 PWN（即：利用二进制层面的漏洞进行提权、RCE等）
+本文主要针对 php extension 进行 pwn 利用
+前置知识 php 扩展一般采用 c 语言编写
+php 通过加载库文件（.so / .dll）来实现扩展
+因为扩展函数是在 php 内部调用的，我们不能像平常那样直接执行 system one_gadget，这里通常是需要采用 popen 或者 exec 函数族（php 函数）来进行执行 bash命令来反弹 shell
+php 扩展中使用 printf system 等函数会产生 stdout 输出, 但是这些输出有可能会被日志捕获被丢弃等, 如果我们想得到 php 扩展的输出我们需要使用 php 提供的函数比如 php_printf
+编写 php 扩展 构建 Docker 环境 首先来看一下文件结构 1 2 3 4 5 6 7 8 9 10 11 12 ➜ mini-stack tree . . ├── app │ ├── api.php │ └── index.php ├── debian.sources ├── docker-compose.yml ├── Dockerfile └── nginx └── default.conf 2 directories, 6 files Dockerfile:
+1 2 3 4 5 6 7 8 FROM php:8.2-fpm # 覆盖 debian.sources 为阿里云镜像 COPY debian.sources /etc/apt/sources.list.d/debian.sources RUN apt-get update \ &amp;amp;&amp;amp; apt-get install -y git vim zip unzip curl \ &amp;amp;&amp;amp; rm -rf /var/lib/apt/lists/* debian.sources:
+1 2 3 4 Types: deb deb-src URIs: https://mirrors.aliyun.com/debian/ Suites: trixie trixie-updates trixie-backports Components: main contrib non-free …  ]]></content></entry><entry><title>从零开始的 Pwn 之旅 - Fastbin Attack</title><url>/posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84-pwn-%E4%B9%8B%E6%97%85---fastbin-attack/</url><categories><category>Ctf</category></categories><tags><tag>Ctf</tag><tag>Pwn</tag></tags><content type="html">  简介 fastbin attack 指针对 ptmalloc2 中 fastbin 结构的攻击和漏洞利用手法
 利用前提:
 存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞 漏洞发生于 fastbin 类型的 chunk 中 根据利用手法可分为以下几类
 fastbin double free house of spirit alloc to stack arbitrary alloc 其中，前两种主要漏洞侧重于利用 free 函数释放真的 chunk 或伪造的 chunk，然后再次申请 chunk 进行攻击，后两种侧重于故意修改 fd 指针，直接利用 malloc 申请指定位置 chunk 进行攻击
